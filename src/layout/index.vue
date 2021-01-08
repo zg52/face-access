@@ -12,6 +12,7 @@
         <settings />
       </right-panel>
     </div>
+    <p class="copyright">CopyRight © 2016-2020 华捷艾米 版权所有 京ICP备18040828号-1</p>
   </div>
 </template>
 
@@ -99,4 +100,13 @@ export default {
   .mobile .fixed-header {
     width: 100%;
   }
+// 版权
+.copyright {
+  text-align: center;
+  color: #999;
+  text-align: center;
+  line-height: 40px;
+  font-size: 12px;
+}
+
 </style>

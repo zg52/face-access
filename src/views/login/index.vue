@@ -84,6 +84,7 @@
 import { validUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './components/SocialSignin'
+import { login } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -105,8 +106,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: 'yang',
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -134,6 +135,7 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    login(this.loginForm).then(() => {})
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -207,7 +209,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */

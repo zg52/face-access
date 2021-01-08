@@ -1,5 +1,13 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-08 16:42:24
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\settings.js
+ */
 module.exports = {
-  title: 'Vue Element Admin',
+  title: '人脸辨识云',
 
   /**
    * @type {boolean} true | false
