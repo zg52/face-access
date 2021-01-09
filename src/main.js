@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-09 18:41:31
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\main.js
+ */
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
@@ -17,7 +25,7 @@ import i18n from './lang' // internationalization
 import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
-
+import '../mock/public'
 import * as filters from './filters' // global filters
 
 /**

@@ -13,7 +13,7 @@ const name = defaultSettings.title || '人脸辨识云' // page title
 // For example, Mac: sudo npm run
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
-const port = process.env.port || process.env.npm_config_port || 8088 // dev port
+const port = process.env.port || process.env.npm_config_port || 8080 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -27,14 +27,15 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  // lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
     proxy: {
       "/": {
         target: "http://192.168.10.148:8765/",
         pathRewrite: { "^/apis": "" },
-        changeOrigin: true
+        changeOrigin: true,
+        // ws: true
       }
     },
     port: port,

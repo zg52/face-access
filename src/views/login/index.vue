@@ -81,10 +81,10 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+// import { validUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './components/SocialSignin'
-import { login } from '@/api/user'
+import { login, ops } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -107,18 +107,18 @@ export default {
     return {
       loginForm: {
         username: 'yang',
-        password: '123456'
+        password: '12345678'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, trigger: 'blur',}],
+        password: [{ required: true, trigger: 'blur',}]
       },
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
     }
   },
   watch: {
@@ -134,8 +134,7 @@ export default {
     }
   },
   created() {
-    // window.addEventListener('storage', this.afterQRScan)
-    login(this.loginForm).then(() => {})
+
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -163,22 +162,21 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
+      // this.$refs.loginForm.validate(valid => {
+        // if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
+          this.$store.dispatch('user/login', this.loginForm).then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
             .catch(() => {
               this.loading = false
             })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+        // } else {
+        //   console.log('error submit!!')
+        //   return false
+        // }
+      // })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
@@ -206,6 +204,9 @@ export default {
     //     }
     //   }
     // }
+  },
+  mounted() {
+ ops()
   }
 }
 </script>
