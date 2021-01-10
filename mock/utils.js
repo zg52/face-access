@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-10 16:26:23
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\mock\utils.js
+ */
 /**
  * @param {string} url
  * @returns {Object}

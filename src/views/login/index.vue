@@ -19,7 +19,7 @@
           :placeholder="$t('login.username')"
           name="username"
           type="text"
-          tabindex="1"
+          tabindex="1"  
           autocomplete="on"
         />
       </el-form-item>
@@ -52,22 +52,7 @@
         {{ $t('login.logIn') }}
       </el-button>
 
-      <div style="position:relative">
-        <div class="tips">
-          <span>{{ $t('login.username') }} : admin</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">
-            {{ $t('login.username') }} : editor
-          </span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          {{ $t('login.thirdparty') }}
-        </el-button>
-      </div>
+ 
     </el-form>
 
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
@@ -134,7 +119,6 @@ export default {
     }
   },
   created() {
-
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -206,7 +190,7 @@ export default {
     // }
   },
   mounted() {
- ops()
+ 
   }
 }
 </script>

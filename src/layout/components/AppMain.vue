@@ -1,36 +1,20 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-08 10:49:10
+ * @LastEditTime: 2021-01-10 14:09:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\AppMain.vue
 -->
-<template>
-  <section class="app-main">
-    <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cachedViews">
-        <router-view :key="key" />
-      </keep-alive>
-    </transition>
-  </section>
-</template>
-
-<script>
-export default {
-  name: 'AppMain',
-  computed: {
-    cachedViews() {
-      return this.$store.state.tagsView.cachedViews
-    },
-    key() {
-      return this.$route.path
-    }
-  }
-}
-</script>
-
 <style lang="scss" scoped>
+.v-enter,
+.v-leave-to {
+  opacity: 0; 
+}
+.v-enter-active,
+.v-leave-active {
+  transition: all .4s;
+}
 .app-main {
   /* 50= navbar  50  */
   min-height: calc(100vh - 50px);
@@ -63,3 +47,26 @@ export default {
   }
 }
 </style>
+<template>
+  <section class="app-main">
+    <transition mode="out-in">
+      <keep-alive :include="cachedViews">
+        <router-view :key="key" />
+      </keep-alive>
+    </transition>
+  </section>
+</template>
+
+<script>
+export default {
+  name: 'AppMain',
+  computed: {
+    cachedViews() {
+      return this.$store.state.tagsView.cachedViews
+    },
+    key() {
+      return this.$route.path
+    }
+  }
+}
+</script>

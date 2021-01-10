@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-10 10:33:05
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\dashboard\editor\index.vue
+-->
 <template>
   <div class="dashboard-editor-container">
     <div class=" clearfix">
@@ -27,7 +35,7 @@ export default {
   components: { PanThumb, GithubCorner },
   data() {
     return {
-      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
+      emptyGif: ''
     }
   },
   computed: {

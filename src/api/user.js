@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-09 19:03:29
+ * @LastEditTime: 2021-01-09 23:55:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\user.js
@@ -10,7 +10,7 @@ import request from '@/utils/request'
 
 export function login(params) {
   return request({
-    url: 'apis/api/user/jwt/token/user',
+    url: 'https://www.zg.com',
     method: 'post',
     data: params
   })
@@ -18,9 +18,9 @@ export function login(params) {
 
 export function getInfo(token) {
   return request({
-    url: 'https://www.zg.com',
+    url: 'http://www.xuefu.com/',
     method: 'get',
-    params: { token }
+    // params: { token }
   })
 }
 
@@ -33,7 +33,7 @@ export function logout() {
 
 export function ops() {
   return request({
-    url: 'https://www.zg.com',
+    url: '/vue-element-admin/user/logout',
     method: 'post'
   })
 }

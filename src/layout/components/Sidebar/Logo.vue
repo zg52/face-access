@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-10 14:50:41
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\Sidebar\Logo.vue
+-->
 <template>
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
@@ -24,8 +32,8 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Element Admin',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: '人 脸 辨 识 云 平 台',
+      logo: require('../../../assets/image/logo.png')
     }
   }
 }
@@ -35,44 +43,38 @@ export default {
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
-
 .sidebarLogoFade-enter,
 .sidebarLogoFade-leave-to {
   opacity: 0;
 }
-
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
-  background: #2b2f3a;
+  // height: 50px;
+  // background: #2b2f3a;
   text-align: center;
   overflow: hidden;
-
+    padding-top: 20px;
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      width: 130px;
+      // height: 32px;
       vertical-align: middle;
       margin-right: 12px;
     }
-
     & .sidebar-title {
-      display: inline-block;
-      margin: 0;
+      margin-right: 10px;
       color: #fff;
       font-weight: 600;
-      line-height: 50px;
+      line-height: 25px;
       font-size: 14px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
     }
   }
-
   &.collapse {
     .sidebar-logo {
       margin-right: 0px;

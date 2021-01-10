@@ -1,8 +1,16 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-10 16:28:18
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\role.js
+ */
 import request from '@/utils/request'
 
 export function getRoutes() {
   return request({
-    url: '/vue-element-admin/routes',
+    url: 'http://xian.xuefu.com/',
     method: 'get'
   })
 }
