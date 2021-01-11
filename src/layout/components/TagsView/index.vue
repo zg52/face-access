@@ -27,10 +27,9 @@
         margin-right: 15px;
       }
       &.active {
-        // background-color: #42b983;
-        background: #46a6ff;
+        background: #8a16ff;
         color: #fff;
-        // border-color: #42b983;
+        border-color: #8a16ff;
         &::before {
           content: '';
           background: #fff;

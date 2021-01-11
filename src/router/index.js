@@ -137,9 +137,30 @@ export const asyncRoutes = [
             path: 'visitor-manage',
             component: () => import('@/views/door-manage/people-manage/visitor-manage'),
             name: 'visitor-manage',
-            meta: { title: '访客管理' }
+            meta: { title: '访客管理' },
+            redirect: '/door-manage/people-manage/visitor-manage/list',
+            children: [
+              {
+                path: 'list',
+                component: () => import('@/views/door-manage/people-manage/visitor-manage/list'),
+                name: 'list',
+                meta: { title: '访客列表' }
+             },
+             {
+              path: 'mack',
+              component: () => import('@/views/door-manage/people-manage/visitor-manage/mack'),
+              name: 'mack',
+              meta: { title: '访客预约' }
+           }
+          ]
           }
         ]
+      },
+      {
+        path: '/face-manage',
+        name: 'face-manage',
+        component: () => import('@/views/door-manage/face-manage'),
+        meta: { title: '脸库管理' }
       },
       {
         path: '/traffic-rules',
@@ -156,6 +177,27 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/device-manage',
+    name: 'device-manag',
+    component: Layout,
+    meta: { title: '设备管理' },
+    redirect: '/device-manage/door',
+    children: [
+      {
+        path: 'door',
+        name: 'door',
+        component: () => import('@/views/device-manage/door'),
+        meta: { title: '门禁机' },
+      },
+      {
+        path: 'camera',
+        name: 'camera',
+        component: () => import('@/views/device-manage/camera'),
+        meta: { title: '摄像头' },
+      }
+    ]
+  },
+  {
     path: '/system-manage',
     component: Layout,
     name: 'system-manage',
@@ -169,43 +211,18 @@ export const asyncRoutes = [
             meta: { title: '用户管理', icon: 'lock', roles: ['admin','viewer'] }
           },
           {
-            path: '/permission',
+            path: 'permission',
             component: () => import('@/views/system-manage/'),
-            redirect: '/system-manage/permission/page',
-            alwaysShow: true, // will always show the root menu
-            name: 'Permission',
-            meta: {
-              title: '权限管理',
-              icon: 'lock',
-              roles: ['admin', 'editor'] // you can set roles in root nav
-            },
+            redirect: '/system-manage/permission/role',
+            alwaysShow: true,
+            name: 'permission',
+            meta: { title: '权限管理', icon: 'lock', roles: ['admin', 'editor'] },
             children: [
               {
-                path: 'page',
-                component: () => import('@/views/permission/page'),
-                name: 'page',
-                meta: {
-                  title: '页面权限',
-                  roles: ['admin'] // or you can only set roles in sub nav
-                }
-              },
-              {
-                path: 'directive',
-                component: () => import('@/views/permission/directive'),
-                name: 'directive',
-                meta: {
-                  title: '指令权限'
-                  // if do not set roles, means: this page does not require permission
-                }
-              },
-              {
                 path: 'role',
-                component: () => import('@/views/permission/role'),
+                component: () => import('@/views/system-manage/permission/role'),
                 name: 'role',
-                meta: {
-                  title: '角色权限',
-                  roles: ['admin']
-                }
+                meta: { title: '角色权限', roles: ['admin'] } 
               }
             ]
           }

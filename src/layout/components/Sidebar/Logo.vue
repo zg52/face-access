@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-10 14:50:41
+ * @LastEditTime: 2021-01-11 18:24:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\Sidebar\Logo.vue
@@ -14,7 +14,7 @@
         <h1 v-else class="sidebar-title">{{ title }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
+         <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>
     </transition>
@@ -51,27 +51,24 @@ export default {
   position: relative;
   width: 100%;
   // height: 50px;
-  // background: #2b2f3a;
+  background: #272c40;
   text-align: center;
   overflow: hidden;
-    padding-top: 20px;
+    padding-top: 10px;
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
 
     & .sidebar-logo {
-      width: 130px;
-      // height: 32px;
-      vertical-align: middle;
-      margin-right: 12px;
+    width: 45px;
+    vertical-align: middle;
+      margin-top: 8px;
     }
     & .sidebar-title {
-      margin-right: 10px;
       color: #fff;
       font-weight: 600;
       line-height: 25px;
-      font-size: 14px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+      font-size: 12px;
       vertical-align: middle;
     }
   }

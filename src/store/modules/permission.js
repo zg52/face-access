@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-09 18:02:02
+ * @LastEditTime: 2021-01-11 14:43:07
  * @LastEditors: Please set LastEditors
  * @Description: 通过用户的权限和之前在router.js里面asyncRouterMap的每一个页面所需要的权限做匹配，最后返回一个该用户能够访问路由有哪些。
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\store\modules\permission.js
@@ -67,6 +67,7 @@ const actions = {
       resolve(accessedRoutes)
     })
   }
+  
 }
 
 export default {
@@ -75,3 +76,4 @@ export default {
   mutations,
   actions
 }
+

@@ -1,3 +1,5 @@
 <template>
-  <div>访客管理</div>
+  <div>
+    <router-view />
+  </div>
 </template>

@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-10 16:28:18
- * @LastEditors: your name
+ * @LastEditTime: 2021-01-11 14:12:25
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\role.js
  */
@@ -17,7 +17,7 @@ export function getRoutes() {
 
 export function getRoles() {
   return request({
-    url: '/vue-element-admin/roles',
+    url: 'http://beijing.xuefu.com/',
     method: 'get'
   })
 }

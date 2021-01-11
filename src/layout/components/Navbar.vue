@@ -94,6 +94,7 @@ export default {
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
+    fill: #8a16ff;
     line-height: 46px;
     height: 100%;
     float: left;
@@ -129,7 +130,7 @@ export default {
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: #8a16ff;
       vertical-align: text-bottom;
 
       &.hover-effect {

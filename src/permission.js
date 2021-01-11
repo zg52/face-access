@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-11 09:55:12
+ * @LastEditors: Please set LastEditors
+ * @Description: 全局路由钩子
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\permission.js
+ */
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'
