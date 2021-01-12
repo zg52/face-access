@@ -6,7 +6,7 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
  
-import componentsRouter from './modules/components'
+// import componentsRouter from './modules/components'
 // import chartsRouter from './modules/charts'
 // import tableRouter from './modules/table'
 // import nestedRouter from './modules/nested'
@@ -55,7 +55,21 @@ export const constantRoutes = [
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
-  },
+  }, 
+   {
+    path: '/profile',
+    component: Layout,
+    redirect: '/profile/index',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/profile/index'),
+        name: 'Profile',
+        meta: { title: '个人中心', icon: 'user', noCache: true },
+      }
+    ]
+  }
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -81,20 +95,7 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: 'profile', icon: 'user', noCache: true },
-      }
-    ]
-  }
+
 ]
 
 export const asyncRoutes = [
@@ -103,13 +104,13 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/door-manage/people-manage/staff-manage/staff-list',
     name: 'door-manage',
-    meta: { title: '门禁管理', icon: 'nested'},
+    meta: { title: '门禁管理', icon: 'door4'},
     children: [
       {
         path: 'people-manage',
         component: () => import('@/views/door-manage/people-manage'), // Parent router-view
         name: 'people-manage',
-        meta: { title: '人员管理' },
+        meta: { title: '人员管理', icon: 'peoples' },
         redirect: '/door-manage/people-manage/staff-manage/staff-list',
         children: [
           {
@@ -160,19 +161,48 @@ export const asyncRoutes = [
         path: '/face-manage',
         name: 'face-manage',
         component: () => import('@/views/door-manage/face-manage'),
-        meta: { title: '脸库管理' }
+        meta: { title: '脸库管理', icon: 'faceManage' }
       },
       {
         path: '/traffic-rules',
         name: 'traffic-rules',
         component: () => import('@/views/door-manage/traffic-rules'),
-        meta: { title: '通行规则' }
+        meta: { title: '通行规则', icon: 'trafficRules' },
+        children: [
+          {
+            path: 'set',
+            component: () => import('@/views/door-manage/traffic-rules/set'),
+            name: 'set',
+            meta: { title: '下发规则' }
+         },
+         {
+          path: 'rules',
+          component: () => import('@/views/door-manage/traffic-rules/rules'),
+          name: 'rules',
+          meta: { title: '已下发规则' }
+       },
+      ]
       },
       {
         path: '/traffic-records',
         name: 'traffic-records',
         component: () => import('@/views/door-manage/traffic-records'),
-        meta: { title: '通行记录' }
+        meta: { title: '通行记录', icon: 'trafficRecords' },
+        redirect: '/traffic-records/list',
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/views/door-manage/traffic-records/list'),
+            name: 'list',
+            meta: { title: '记录列表' }
+         },
+         {
+          path: 'alarm',
+          component: () => import('@/views/door-manage/traffic-records/alarm'),
+          name: 'alarm',
+          meta: { title: '告警列表' }
+       },
+      ]
       },
     ]
   },
@@ -180,35 +210,53 @@ export const asyncRoutes = [
     path: '/device-manage',
     name: 'device-manag',
     component: Layout,
-    meta: { title: '设备管理' },
+    meta: { title: '设备管理', icon: 'el-icon-video-camera-solid' },
     redirect: '/device-manage/door',
     children: [
       {
         path: 'door',
         name: 'door',
         component: () => import('@/views/device-manage/door'),
-        meta: { title: '门禁机' },
+        meta: { title: '门禁机', icon: 'door' },
       },
       {
         path: 'camera',
-        name: 'camera',
         component: () => import('@/views/device-manage/camera'),
-        meta: { title: '摄像头' },
+        name: 'camera',
+        meta: { title: '摄像头', icon: 'camera' },
+      },
+      {
+        path: 'alarm',
+        component: () => import('@/views/device-manage/alarm'),
+        name: 'alarm',
+        meta: { title: '设备告警', icon: 'alarm' }
       }
+    ]
+  },
+  {
+    path: '/task',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/task'),
+        name: 'task',
+        meta: { title: '任务中心', icon: 'documentation' },
+     }
     ]
   },
   {
     path: '/system-manage',
     component: Layout,
     name: 'system-manage',
-    meta: { title: '系统管理', icon: 'icon', noCache: true },
+    meta: { title: '系统管理', icon: 'el-icon-setting', noCache: true },
     redirect: '/system-manage/user',
     children: [
           {
             path: 'user',
             component: () => import('@/views/system-manage/user'),
             name: 'user',
-            meta: { title: '用户管理', icon: 'lock', roles: ['admin','viewer'] }
+            meta: { title: '用户管理', icon: 'user', roles: ['admin','viewer'] }
           },
           {
             path: 'permission',
@@ -225,25 +273,48 @@ export const asyncRoutes = [
                 meta: { title: '角色权限', roles: ['admin'] } 
               }
             ]
+          },
+          {
+            path: 'ulog',
+            component: () => import('@/views/system-manage/ulog'),
+            name: 'ulog',
+            meta: { title: '操作日志', icon: 'clipboard', roles: ['admin', 'editor'] },
           }
     ]
   },
-
   {
-    path: '/icon',
+    path: '/pdf/download',
+    component: () => import('@/views/pdf/download'),
+    hidden: true
+  },
+  {
+    path: '/theme',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/icons/index'),
-        name: 'Icons',
-        meta: { title: 'icons', icon: 'icon', noCache: true }
+        component: () => import('@/views/theme/index'),
+        name: 'Theme',
+        meta: { title: '换肤', icon: 'theme' }
       }
     ]
   },
+  { path: '*', redirect: '/404', hidden: true }
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/icons/index'),
+  //       name: 'Icons',
+  //       meta: { title: 'icons', icon: 'icon', noCache: true }
+  //     }
+  //   ]
+  // },
 
   /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter,
+  // componentsRouter,
   // chartsRouter,
   // nestedRouter,
   // tableRouter,
@@ -401,23 +472,7 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
-  {
-    path: '/pdf/download',
-    component: () => import('@/views/pdf/download'),
-    hidden: true
-  },
-  {
-    path: '/theme',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/theme/index'),
-        name: 'Theme',
-        meta: { title: 'theme', icon: 'theme' }
-      }
-    ]
-  },
+
 
   // {
   //   path: '/clipboard',
@@ -456,7 +511,6 @@ export const asyncRoutes = [
   // },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
