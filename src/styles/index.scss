@@ -16,6 +16,7 @@ body {
 label {
   font-weight: 700;
 }
+h1,h2,h3,h4{font-weight: normal;}
 
 html {
   height: 100%;
@@ -188,6 +189,11 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+// 全局公用
+.mt10 {
+  margin-top: 10px;
 }
 .radius_45 {
   border-radius: 45px;

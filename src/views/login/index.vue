@@ -11,14 +11,16 @@ $light_gray:#eee;
 
   .login-form {
     position: relative;
-    width: 520px;
+    width: 360px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 0 35px 65px;
     margin: 0 auto;
+    margin-top: 100px;
     overflow: hidden;
     background: #272c40;
+    box-shadow: 0 0 20px #60526d;
+    border-radius: 10px;
   }
-
   .tips {
     font-size: 14px;
     color: #fff;
@@ -30,7 +32,6 @@ $light_gray:#eee;
       }
     }
   }
-
   .svg-container {
     padding: 6px 5px 6px 15px;
     color: $dark_gray;
@@ -41,13 +42,17 @@ $light_gray:#eee;
 
   .title-container {
     position: relative;
-
+    width: 360px;
+    background: #323a4f;
+    padding: 10px 0;
+    left: -35px;
+    margin-bottom:50px;
     .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
+      font-size: 28px;
+    color: #f8f6ff;
+    text-align: center;
+    font-family: cursive;
+    font-weight: bold;
     }
 
     .set-language {
@@ -87,7 +92,8 @@ $light_gray:#eee;
   width: 100%;
   display: flex;
   img {
-    width: 115px; margin-left: 75px;
+    width: 115px; 
+    margin-left: 75px;
   }
   span {
     color: #aa92ff;
@@ -113,8 +119,18 @@ $light_gray:#eee;
   justify-content: center;
   padding-top: 60px;
   .banner {
-    margin-right: 200px;
+    margin-right: 280px;
   }
+}
+.login-form ::v-deep .el-form-item--medium .el-form-item__content {
+  background: #202334!important;
+}
+::v-deep .el-form-item--medium {
+  margin-bottom: 30px;
+}
+.handle_login {
+  width:100%;margin-top: 20px;
+  padding: 12px 0!important;font-size: 20px!important;font-family: cursive!important;font-weight: bold;
 }
 </style>
 <template>
@@ -127,8 +143,7 @@ $light_gray:#eee;
       <div>
        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">人脸辨识云平台登录</h3>
-        <lang-select class="set-language" />
+        <h3 class="title">欢迎登录人脸辨识云</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container">
@@ -137,7 +152,7 @@ $light_gray:#eee;
         <el-input
           ref="username"
           v-model="loginForm.username"
-          :placeholder="$t('login.username')"
+          placeholder="用户名"
           name="username"
           type="text"
           tabindex="1"  
@@ -154,7 +169,7 @@ $light_gray:#eee;
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            :placeholder="$t('login.password')"
+            placeholder="密码"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -167,13 +182,13 @@ $light_gray:#eee;
           </span>
         </el-form-item>
       </el-tooltip>
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
-        {{ $t('login.logIn') }}
+      <el-button class="handle_login" :loading="loading" type="primary" @click.native.prevent="handleLogin">
+       登录
       </el-button>
     </el-form>
       </div>
     </div>
-    <footer class="base">版权信息： CopyRight © 2016-2020 华捷艾米 版权所有 京ICP备18040828号-1</footer>
+    <footer class="base">版权信息： CopyRight © 2016-2021 华捷艾米 版权所有 京ICP备18040828号-1</footer>
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
       {{ $t('login.thirdpartyTips') }}
       <br>

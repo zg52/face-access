@@ -100,112 +100,111 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
-    path: '/door-manage',
+    path: '/people-manage',
     component: Layout,
-    redirect: '/door-manage/people-manage/staff-manage/staff-list',
-    name: 'door-manage',
-    meta: { title: '门禁管理', icon: 'door4'},
+    name: 'people-manage',
+    meta: { title: '人员管理', icon: 'peoples' },
+    redirect: '/people-manage/staff-manage/staff-list',
     children: [
       {
-        path: 'people-manage',
-        component: () => import('@/views/door-manage/people-manage'), // Parent router-view
-        name: 'people-manage',
-        meta: { title: '人员管理', icon: 'peoples' },
-        redirect: '/door-manage/people-manage/staff-manage/staff-list',
+        path: 'section',
+        component: () => import('@/views/people-manage/section'),
+        name: 'section',
+        meta: { title: '部门管理', icon: 'section'}
+      },
+      {
+        path: 'staff-manage',
+        component: () => import('@/views/people-manage/staff-manage'),
+        name: 'staff-manage',
+        redirect: '/people-manage/staff-manage/staff-list',
+        meta: { title: '员工管理' },
         children: [
           {
-            path: 'staff-manage',
-            component: () => import('@/views/door-manage/people-manage/staff-manage'),
-            name: 'staff-manage',
-            redirect: '/door-manage/people-manage/staff-manage/staff-list',
-            meta: { title: '员工管理' },
-            children: [
-              {
-                path: 'staff-list',
-                component: () => import('@/views/door-manage/people-manage/staff-manage/staff-list'),
-                name: 'staff-list',
-                meta: { title: '员工列表', roles: ['viewer'] }
-              },
-              {
-                path: 'staff-add',
-                component: () => import('@/views/door-manage/people-manage/staff-manage/staff-add'),
-                name: 'staff-add',
-                meta: { title: '员工新增' }
-              }
-            ]
+            path: 'staff-list',
+            component: () => import('@/views/people-manage/staff-manage/staff-list'),
+            name: 'staff-list',
+            meta: { title: '员工列表', roles: ['viewer'] }
           },
           {
-            path: 'visitor-manage',
-            component: () => import('@/views/door-manage/people-manage/visitor-manage'),
-            name: 'visitor-manage',
-            meta: { title: '访客管理' },
-            redirect: '/door-manage/people-manage/visitor-manage/list',
-            children: [
-              {
-                path: 'list',
-                component: () => import('@/views/door-manage/people-manage/visitor-manage/list'),
-                name: 'list',
-                meta: { title: '访客列表' }
-             },
-             {
-              path: 'mack',
-              component: () => import('@/views/door-manage/people-manage/visitor-manage/mack'),
-              name: 'mack',
-              meta: { title: '访客预约' }
-           }
-          ]
+            path: 'staff-add',
+            component: () => import('@/views/people-manage/staff-manage/staff-add'),
+            name: 'staff-add',
+            meta: { title: '员工新增' }
           }
         ]
       },
       {
-        path: '/face-manage',
-        name: 'face-manage',
-        component: () => import('@/views/door-manage/face-manage'),
-        meta: { title: '脸库管理', icon: 'faceManage' }
-      },
-      {
-        path: '/traffic-rules',
-        name: 'traffic-rules',
-        component: () => import('@/views/door-manage/traffic-rules'),
-        meta: { title: '通行规则', icon: 'trafficRules' },
-        children: [
-          {
-            path: 'set',
-            component: () => import('@/views/door-manage/traffic-rules/set'),
-            name: 'set',
-            meta: { title: '下发规则' }
-         },
-         {
-          path: 'rules',
-          component: () => import('@/views/door-manage/traffic-rules/rules'),
-          name: 'rules',
-          meta: { title: '已下发规则' }
-       },
-      ]
-      },
-      {
-        path: '/traffic-records',
-        name: 'traffic-records',
-        component: () => import('@/views/door-manage/traffic-records'),
-        meta: { title: '通行记录', icon: 'trafficRecords' },
-        redirect: '/traffic-records/list',
+        path: 'visitor',
+        component: () => import('@/views/people-manage/visitor'),
+        name: 'visitor',
+        meta: { title: '访客管理', icon: 'visitor'  },
+        redirect: '/people-manage/visitor-manage/list',
         children: [
           {
             path: 'list',
-            component: () => import('@/views/door-manage/traffic-records/list'),
+            component: () => import('@/views/people-manage/visitor/list'),
             name: 'list',
-            meta: { title: '记录列表' }
+            meta: { title: '访客列表', icon: 'visitor' }
          },
          {
-          path: 'alarm',
-          component: () => import('@/views/door-manage/traffic-records/alarm'),
-          name: 'alarm',
-          meta: { title: '告警列表' }
-       },
+          path: 'mack',
+          component: () => import('@/views/people-manage/visitor/mack'),
+          name: 'mack',
+          meta: { title: '访客预约' }
+       }
       ]
-      },
+      }
     ]
   },
+  {
+    path: '/face-manage',
+    name: 'face-manage',
+    component: () => import('@/views/door-manage/face-manage'),
+    meta: { title: '脸库管理', icon: 'faceManage' }
+  },
+  {
+    path: '/traffic-rules',
+    name: 'traffic-rules',
+    component: Layout,
+    meta: { title: '通行规则', icon: 'trafficRules' },
+    redirect: '/traffic-rules/set',
+    children: [
+      {
+        path: 'set',
+        component: () => import('@/views/traffic-rules/set'),
+        name: 'set',
+        meta: { title: '下发规则' }
+     },
+     {
+        path: 'rules',
+        component: () => import('@/views/traffic-rules/rules'),
+        name: 'rules',
+        meta: { title: '已下发规则' }
+     }
+  ]
+  },
+  {
+    path: '/traffic-records',
+    name: 'traffic-records',
+    component: Layout,
+    meta: { title: '通行记录', icon: 'trafficRecords' },
+    redirect: '/traffic-records/list',
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/traffic-records/list'),
+        name: 'list',
+        meta: { title: '记录列表' }
+     },
+     {
+      path: 'alarm',
+      component: () => import('@/views/traffic-records/alarm'),
+      name: 'alarm',
+      meta: { title: '告警列表' }
+   },
+  ]
+  },
+ 
   {
     path: '/device-manage',
     name: 'device-manag',
