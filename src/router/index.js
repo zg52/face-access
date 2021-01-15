@@ -117,13 +117,13 @@ export const asyncRoutes = [
         component: () => import('@/views/people-manage/staff-manage'),
         name: 'staff-manage',
         redirect: '/people-manage/staff-manage/staff-list',
-        meta: { title: '员工管理' },
+        meta: { title: '员工管理', icon: 'staff' },
         children: [
           {
             path: 'staff-list',
             component: () => import('@/views/people-manage/staff-manage/staff-list'),
             name: 'staff-list',
-            meta: { title: '员工列表', roles: ['viewer'] }
+            meta: { title: '员工列表' }
           },
           {
             path: 'staff-add',
@@ -144,23 +144,11 @@ export const asyncRoutes = [
             path: 'list',
             component: () => import('@/views/people-manage/visitor/list'),
             name: 'list',
-            meta: { title: '访客列表', icon: 'visitor' }
-         },
-         {
-          path: 'mack',
-          component: () => import('@/views/people-manage/visitor/mack'),
-          name: 'mack',
-          meta: { title: '访客预约' }
-       }
+            meta: { title: '访客预约单' }
+         }
       ]
       }
     ]
-  },
-  {
-    path: '/face-manage',
-    name: 'face-manage',
-    component: () => import('@/views/door-manage/face-manage'),
-    meta: { title: '脸库管理', icon: 'faceManage' }
   },
   {
     path: '/traffic-rules',
@@ -216,13 +204,13 @@ export const asyncRoutes = [
         path: 'door',
         name: 'door',
         component: () => import('@/views/device-manage/door'),
-        meta: { title: '门禁机', icon: 'door' },
+        meta: { title: '设备列表', icon: 'door' },
       },
       {
-        path: 'camera',
-        component: () => import('@/views/device-manage/camera'),
-        name: 'camera',
-        meta: { title: '摄像头', icon: 'camera' },
+        path: 'personnel',
+        name: 'personnel',
+        component: () => import('@/views/device-manage/personnel'),
+        meta: { title: '人员下发', icon: 'guide' },
       },
       {
         path: 'alarm',
@@ -242,6 +230,18 @@ export const asyncRoutes = [
         name: 'task',
         meta: { title: '任务中心', icon: 'documentation' },
      }
+    ]
+  },
+  {
+    path: '/blacklist-manage',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/blacklist-manage'),
+        name: 'blacklist-manage',
+        meta: { title: '黑名单管理', icon: 'blacklist' },
+      }
     ]
   },
   {
