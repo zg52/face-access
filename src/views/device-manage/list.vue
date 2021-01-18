@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-15 18:10:30
+ * @LastEditTime: 2021-01-18 18:05:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -70,19 +70,80 @@ margin-left: 30px;
             
         }
     }
-    .dot_red {
-        background:red;
-        position: relative;
-    top: -1px;
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    vertical-align: middle;
-    border-radius: 50%;
+
+.device_num {
+     width: 100%;
+   display: flex;
+   justify-content: space-between;
+   margin-bottom:25px;
+& > div {
+    width: 300px;
+  height: 82px;
+  border-radius: 20px;
+   border:1.5px #8a16ff solid;
+   color: #949494;
 }
+.device_num2 {
+ border-color: #13ce66;
+ 
+}
+.device_num4 {
+  border-color:#ff4949
+}
+.device_num3 {border-color: #ffba00;}
+.lis {
+& > div:first-child {  padding:22px; }
+& > div + div {padding-top: 10px;padding-right: 22px;}
+  display: flex;
+  justify-content: space-between;
+  .num {
+    text-align: center;
+    line-height: 20px;
+  }
+}
+}
+.device {
+  fill: #8a16ff;
+  font-size: 45px;
+}
+.lis_tit {
+  margin-bottom: 20px;
+  i {
+    display: inline-block;
+    background: #8a16ff;
+    height: 16px;
+    width: 3px;
+    margin-right: 6px;
+    position: relative;
+    top:3px;
+  }
+  span {
+    color: #606266;
+  }
+}
+.pt22{padding-top: 15px!important;}
 </style>
 <template>
   <div class="app-container">
+    <div class="device_num">
+      <div class="lis">
+        <div class="num"><span>设备总数</span><div>20</div></div>
+        <div class="pt22"> <svg-icon icon-class="device" class="device" /></div>
+        </div>
+      <div class="lis device_num2">
+        <div class="num"><span>在线设备</span><div>20</div></div>
+        <div><el-progress type="circle" :percentage="90" color="#13ce66" stroke-width="2" width="60"></el-progress></div>
+        </div>
+      <div class="lis device_num3">
+        <div class="num"><span>离线设备</span><div>20</div></div>
+       <div><el-progress type="circle" :percentage="20" color="#ffba00" stroke-width="2" width="60"></el-progress></div>
+        </div>
+         <div class="lis device_num4">
+        <div class="num"><span>故障设备</span><div>20</div></div>
+        <div><el-progress type="circle" :percentage="90" color="#ff4949" stroke-width="2" width="60"></el-progress></div>
+        </div>
+    </div>
+    <div class="lis_tit"><i></i> <span>设备详情列表</span></div>
     <el-form :model="roles" :inline="true">
       <el-form-item label="创建人"
         ><el-input
@@ -177,7 +238,9 @@ margin-left: 30px;
         <svg-icon icon-class="excel" /> <span>导出</span></el-button
       >
       <el-button type="primary" @click="handleAddRole"
-        ><svg-icon icon-class="edit" /> 新增设备</el-button>
+        ><svg-icon icon-class="edit" /> <span>新增设备</span></el-button>
+   <el-button type="primary" @click="handleAddRole"
+        ><svg-icon icon-class="guide" /> <span>下发人员</span></el-button>
     </el-form>
     
     <el-table :data="rolesList" class="people_list" max-height="650">
@@ -518,7 +581,7 @@ export default {
       ],
       rolesList: [
         {
-          name: "阿娃",
+          name: "sssss",
           description: "算法应用院",
           createTime: "2020 01.12",
           updataTime: "2020 02.13",
@@ -530,7 +593,14 @@ export default {
           entryTime: "2023-12-12",
         },
         {
-          name: "阿龙",
+          name: "fewfewf",
+          description: "超管",
+          createTime: "2020 01.12",
+          updataTime: "2020 02.13",
+          switch: 1,
+        },
+         {
+          name: "fewfewfef",
           description: "超管",
           createTime: "2020 01.12",
           updataTime: "2020 02.13",

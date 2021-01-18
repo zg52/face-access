@@ -199,6 +199,8 @@ aside {
 .ml5{margin-left: 5px;}
 .mr15{margin-right: 15px;}
 
+.pt10 {padding-top: 10px;}
+
 .w100 { width: 100px; }
 .w120 {width: 120px;}
 .w130 {width: 130px;}
@@ -222,4 +224,15 @@ aside {
 }
 .t_right {
   text-align: right;
+}
+
+.dot_red {
+  background:red;
+  position: relative;
+top: -1px;
+display: inline-block;
+width: 6px;
+height: 6px;
+vertical-align: middle;
+border-radius: 50%;
 }

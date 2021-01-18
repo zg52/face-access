@@ -198,18 +198,18 @@ export const asyncRoutes = [
     name: 'device-manag',
     component: Layout,
     meta: { title: '设备管理', icon: 'el-icon-video-camera-solid' },
-    redirect: '/device-manage/door',
+    redirect: '/device-manage/list',
     children: [
       {
-        path: 'door',
-        name: 'door',
-        component: () => import('@/views/device-manage/door'),
+        path: 'list',
+        name: 'list',
+        component: () => import('@/views/device-manage/list'),
         meta: { title: '设备列表', icon: 'door' },
       },
       {
         path: 'personnel',
         name: 'personnel',
-        component: () => import('@/views/device-manage/personnel'),
+        component: () => import('@/views/device-manage/personnel/index'),
         meta: { title: '人员下发', icon: 'guide' },
       },
       {

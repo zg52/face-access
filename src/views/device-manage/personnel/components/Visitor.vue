@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-18 15:01:06
+ * @LastEditTime: 2021-01-18 17:43:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -47,13 +47,26 @@ margin-left: 30px;
     padding-left: 30px;
     line-height: 16px;
   }
+   .app-container1 {
+       padding-top: 6px;
+   }
+  
 </style>
 <template>
-  <div class="app-container">
+  <div class="app-container1">
     <el-form :model="roles" :inline="true">
-         <el-form-item label="创建人"
+ <el-form-item label="设备ID">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option>
+          </el-option> </el-select
+      ></el-form-item>
+    <el-form-item label="通行规则">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option>
+          </el-option> </el-select
+      ></el-form-item>
+      <el-form-item label="下发人"
         ><el-input
-         class="w100"
           v-model.trim="roles.roleName"
           placeholder="输入姓名搜索"
         ></el-input
@@ -75,8 +88,15 @@ margin-left: 30px;
           placeholder="输入工号搜索"
         ></el-input
       ></el-form-item>
+      <el-form-item label="被访人姓名"
+        ><el-input
+        class="w100"
+          v-model.trim="roles.roleName"
+        ></el-input
+      ></el-form-item>
       <el-form-item label="电话"
         ><el-input
+        class="w130"
           v-model.trim="roles.roleName"
           placeholder="输入电话搜索"
         ></el-input
@@ -87,18 +107,7 @@ margin-left: 30px;
           placeholder="输入电话搜索"
         ></el-input
       ></el-form-item>
-            <el-form-item label="身份证号"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="被访人姓名"
-        ><el-input
-        class="w100"
-          v-model.trim="roles.roleName"
-        ></el-input
-      ></el-form-item>
+
             <el-form-item label="被访人电话"
         ><el-input
           class="w130"
@@ -123,6 +132,12 @@ margin-left: 30px;
         >
         </el-date-picker>
       </el-form-item>
+                <el-form-item label="下发状态">
+        <el-select v-model="roles.status">
+          <el-option>已下发</el-option>
+           <el-option>未下发</el-option>
+        </el-select>
+      </el-form-item>
             <el-form-item label="预约时间">
         <el-date-picker
           type="daterange"
@@ -134,14 +149,7 @@ margin-left: 30px;
         >
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="授权状态">
-        <el-select v-model="roles.status">
-          <el-option>已授权</el-option>
-           <el-option>未授权</el-option>
-          <el-option>已过期</el-option>
-          <el-option>已拒绝</el-option>
-        </el-select>
-      </el-form-item>
+    
  
       <el-button type="success" @click="onSearch" class="search">
         <i class="el-icon-search"></i><span>查询</span></el-button
@@ -152,6 +160,8 @@ margin-left: 30px;
       <el-button type="primary" @click="onExport">
         <svg-icon icon-class="excel" /> <span>导出</span></el-button
       >
+          <el-button type="primary" @click="handleAddRole"
+        ><svg-icon icon-class="guide" />  一键下发</el-button>
     </el-form>
     
     <el-table :data="rolesList" border class="people_list" max-height="650">
@@ -176,7 +186,7 @@ margin-left: 30px;
       </el-table-column>
      <el-table-column align="center" label="来访人头像" width="140">
         <template>
-          <img src="../../../assets/image/2.png" alt="" width="140" />
+          <img src="../../../../assets/image/2.png" alt="" width="140" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="性别" width="100">
@@ -236,36 +246,27 @@ margin-left: 30px;
           {{ scope.row.updataTime }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态" width="140">
+      <el-table-column align="center" label="授权状态" width="140">
         <template>
            已授权
+        </template>
+      </el-table-column>
+        <el-table-column align="center" label="下发状态" width="140">
+        <template>
+           已下发
         </template>
       </el-table-column>
       <el-table-column align="center" label="备注">
         <template> fff </template>
       </el-table-column>
-            <el-table-column align="center" label="创建人" width="100">
+            <el-table-column align="center" label="下发人" width="100">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="210" fixed="right">
+      <el-table-column align="left" label="操作" width="190" fixed="right">
         <template slot-scope="scope">
-            <el-switch
-             class="mr15"
-            size="mini"
-            active-text=""
-            inactive-text="拒绝"
-            @change="changeUserStatus(scope.$index, scope.row)"
-          ></el-switch>
-          <el-button
-            class="radius_45"
-            type="primary"
-            size="mini"
-            @click="handleEdit(scope)"
-            ><i class="el-icon-edit"></i><span>编辑</span></el-button
-          >
-          <el-button
+           <el-button
             class="radius_45 mt10"
             type="primary"
             size="mini"
@@ -275,7 +276,14 @@ margin-left: 30px;
             class="radius_45 mt10"
             type="danger"
             size="mini"
-            ><i class="el-icon-delete"></i><span>删除</span></el-button></template>
+            ><i class="el-icon-delete"></i><span>删除</span></el-button
+          >  <el-switch
+             class="mt10"
+            size="mini"
+            active-text=""
+            inactive-text="下发"
+            @change="changeUserStatus(scope.$index, scope.row)"
+          ></el-switch></template>
       </el-table-column>
     </el-table>
 

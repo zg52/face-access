@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-11 18:24:14
+ * @LastEditTime: 2021-01-18 15:49:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\Sidebar\Logo.vue
@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      title: '人 脸 辨 识 云 平 台',
+      title: '人 脸 辨 识 云 平 台 · 门 禁',
       logo: require('../../../assets/image/logo.png')
     }
   }
