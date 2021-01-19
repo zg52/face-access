@@ -236,3 +236,21 @@ height: 6px;
 vertical-align: middle;
 border-radius: 50%;
 }
+.lis_tit {
+  margin-bottom: 20px;
+  i {
+    display: inline-block;
+    background: #8a16ff;
+    height: 16px;
+    width: 3px;
+    margin-right: 6px;
+    position: relative;
+    top:3px;
+  }
+  span {
+    color: #606266;
+  }
+}
+.app-container1 {
+  padding-top: 6px;
+}

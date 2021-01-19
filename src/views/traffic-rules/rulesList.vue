@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-19 17:40:06
+ * @LastEditTime: 2021-01-19 16:49:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -47,96 +47,36 @@ margin-left: 30px;
     padding-left: 30px;
     line-height: 16px;
   }
-
-  
 </style>
 <template>
-  <div class="app-container1">
+  <div class="app-container">
     <el-form :model="roles" :inline="true">
- <el-form-item label="设备ID">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select
-      ></el-form-item>
-    <el-form-item label="通行规则">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select
-      ></el-form-item>
-      <el-form-item label="下发人"
+      <el-form-item label="创建人"
         ><el-input
           v-model.trim="roles.roleName"
           placeholder="输入姓名搜索"
         ></el-input
       ></el-form-item>
-      <el-form-item label="来访人姓名"
-        ><el-input
-         class="w100"
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="性别">  <el-select class="w100" v-model="value" placeholder="请选择">
-          <el-option
-          >
+  <el-form-item label="通行规则名称">  <el-select  v-model="value" placeholder="请选择">
+          <el-option>
           </el-option> </el-select></el-form-item>
-      <el-form-item label="所在公司"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入工号搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="被访人姓名"
-        ><el-input
-        class="w100"
-          v-model.trim="roles.roleName"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="电话"
-        ><el-input
-        class="w130"
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input
-      ></el-form-item>
-            <el-form-item label="住址"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input
-      ></el-form-item>
-
-            <el-form-item label="被访人电话"
-        ><el-input
-          class="w130"
-          v-model.trim="roles.roleName"
-          placeholder="输入被访人电话搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="来访事由"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入来访事由搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="来访时间">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="来访日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
-      </el-form-item>
-                <el-form-item label="下发状态">
-        <el-select v-model="roles.status">
-          <el-option>已下发</el-option>
-           <el-option>未下发</el-option>
+        <el-form-item label="通行方式">
+       <div class="block">
+  <el-cascader
+    :options="options"
+    :props="props"
+    clearable></el-cascader>
+ </div>
+           </el-form-item>
+     <el-form-item label="通行人员类型">
+        <el-select v-model="roles.status" class="w130">
+          <el-option>员工</el-option>
+            <el-option
+          >访客</el-option>
         </el-select>
       </el-form-item>
-            <el-form-item label="预约时间">
+     
+      <el-form-item label="创建时间">
         <el-date-picker
           type="daterange"
           align="right"
@@ -147,8 +87,15 @@ margin-left: 30px;
         >
         </el-date-picker>
       </el-form-item>
-    
  
+      <el-form-item label="状态">
+        <el-select v-model="roles.status" class="w120">
+          <el-option>过期</el-option>
+            <el-option
+           
+          >正常</el-option>
+        </el-select>
+      </el-form-item>
       <el-button type="success" @click="onSearch" class="search">
         <i class="el-icon-search"></i><span>查询</span></el-button
       >
@@ -158,10 +105,9 @@ margin-left: 30px;
       <el-button type="primary" @click="onExport">
         <svg-icon icon-class="excel" /> <span>导出</span></el-button
       >
-          <el-button type="primary" @click="handleAddRole"
-        ><svg-icon icon-class="guide" />  一键下发</el-button>
+      <el-button type="primary" @click="handleAddRole"
+        ><svg-icon icon-class="edit" /> 新建通行规则</el-button>
     </el-form>
-    
     <el-table :data="rolesList" border class="people_list" max-height="650">
       <el-table-column
         width="50"
@@ -176,67 +122,31 @@ margin-left: 30px;
           {{ scope.row.name }}
         </template>
       </el-table-column>
-
-      <el-table-column align="center" label="来访人姓名" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-     <el-table-column align="center" label="来访人头像" width="140">
-        <template>
-          <img src="../../../../assets/image/2.png" alt="" width="140" />
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="性别" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-            <el-table-column align="center" label="所在公司" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-            <el-table-column align="center" label="电话" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-         <el-table-column align="center" label="住址" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-      
-      <el-table-column align="center" label="身份证号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="被访人姓名" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="被访人电话" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="来访事由" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
  
-     <el-table-column align="center" label="来访时间" width="108">
+      <el-table-column align="center" label="通行规则名称" width="120">
         <template slot-scope="scope">
-          {{ scope.row.job }}
+          {{ scope.row.description }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="预约时间" width="108">
+      <el-table-column align="center" label="通行方式" width="80">
         <template slot-scope="scope">
-          {{ scope.row.job }}
+          {{ scope.row.dfs }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="通行人员类型" width="120">
+        <template slot-scope="scope">
+          {{ scope.row.dfs }}
+        </template>
+      </el-table-column>
+           <el-table-column align="center" label="通行人员数量" width="120">
+        <template slot-scope="scope">
+          {{ scope.row.dfs }}
+        </template>
+      </el-table-column>
+        
+      <el-table-column align="center" label="创建时间" width="108">
+        <template slot-scope="scope">
+          {{ scope.row.entryTime }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="修改时间" width="120">
@@ -244,47 +154,53 @@ margin-left: 30px;
           {{ scope.row.updataTime }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="授权状态" width="140">
-        <template>
-           已授权
+       <el-table-column align="center" label="过期时间" width="120">
+        <template slot-scope="scope">
+          {{ scope.row.updataTime }}
         </template>
       </el-table-column>
-        <el-table-column align="center" label="下发状态" width="140">
-        <template>
-           已下发
-        </template>
+       <el-table-column align="center" label="状态" width="140">
+        <template>          
+            已过期 </template>
+      </el-table-column>
+            <el-table-column align="center" label="规则描述">
+        <template> fff </template>
       </el-table-column>
       <el-table-column align="center" label="备注">
         <template> fff </template>
       </el-table-column>
-            <el-table-column align="center" label="下发人" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
+     <el-table-column align="center" label="创建人">
+        <template> fff </template>
       </el-table-column>
-      <el-table-column align="left" label="操作" width="190" fixed="right">
+      <el-table-column align="left" label="操作" width="220" fixed="right">
         <template slot-scope="scope">
-           <el-button
+ 
+          <el-button
+            class="radius_45"
+            type="primary"
+            size="mini"
+            @click="handleEdit(scope)"
+            ><i class="el-icon-edit"></i><span>编辑</span></el-button
+          >
+          <el-button
             class="radius_45 mt10"
             type="primary"
             size="mini"
-            ><i class="el-icon-notebook-2"></i><span>详情</span></el-button
+            ><i class="el-icon-view"></i><span>通行人员</span></el-button
           >
+
           <el-button
             class="radius_45 mt10"
             type="danger"
             size="mini"
             ><i class="el-icon-delete"></i><span>删除</span></el-button
-          >  <el-switch
-             class="mt10"
-            size="mini"
-            active-text=""
-            inactive-text="下发"
-            @change="changeUserStatus(scope.$index, scope.row)"
-          ></el-switch></template>
+          ></template
+        >
       </el-table-column>
     </el-table>
 
+ 
+  
       <el-pagination
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
@@ -305,6 +221,7 @@ export default {
       userFormVisible:true,
       value: 1,
       pickerOptions: [],
+      props: { multiple: true },
       roles: [
         {
           roleName: "",
@@ -334,6 +251,32 @@ export default {
           switch: 1,
         },
       ],
+       options: [
+         {
+          label: '刷脸',
+       },
+       {
+          label: '二维码',
+       },
+         {
+          label: '刷卡',
+          children: [
+            {
+            value: 'shejiyuanze',
+            label: '门禁卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: 'IC卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: '身份证',
+           }
+          ]
+       },
+        
+       ],
      pagingParams: {
         username: "",
         email: "",

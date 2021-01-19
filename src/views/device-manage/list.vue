@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-18 18:05:03
+ * @LastEditTime: 2021-01-18 18:46:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -106,21 +106,7 @@ margin-left: 30px;
   fill: #8a16ff;
   font-size: 45px;
 }
-.lis_tit {
-  margin-bottom: 20px;
-  i {
-    display: inline-block;
-    background: #8a16ff;
-    height: 16px;
-    width: 3px;
-    margin-right: 6px;
-    position: relative;
-    top:3px;
-  }
-  span {
-    color: #606266;
-  }
-}
+
 .pt22{padding-top: 15px!important;}
 </style>
 <template>

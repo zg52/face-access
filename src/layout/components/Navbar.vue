@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-12 10:42:14
+ * @LastEditTime: 2021-01-19 18:34:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\Navbar.vue
@@ -104,9 +104,12 @@
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-    <div class="sys_tit"><svg-icon style="margin-right:4px;transform: rotateY(180deg);" icon-class="sys-tit"/>智能安防/监控/支付一脸通平台<svg-icon style="margin-left:4px" icon-class="sys-tit"/></div>
+    <div class="sys_tit"><svg-icon style="margin-right:4px;transform: rotateY(180deg);" icon-class="sys-tit"/>智能安防/监控/管理一体化门禁系统<svg-icon style="margin-left:4px" icon-class="sys-tit"/></div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
+        
+        <News class="right-menu-item" />
+
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -156,6 +159,8 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import Search from '@/components/HeaderSearch'
+import News from '@/components/News'
+
 
 export default {
   components: {
@@ -165,7 +170,8 @@ export default {
     Screenfull,
     SizeSelect,
     LangSelect,
-    Search
+    Search,
+    News
   },
   computed: {
     ...mapGetters([

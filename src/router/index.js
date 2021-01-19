@@ -161,14 +161,20 @@ export const asyncRoutes = [
         path: 'set',
         component: () => import('@/views/traffic-rules/set'),
         name: 'set',
-        meta: { title: '下发规则' }
+        meta: { title: '下发规则', icon: 'rules' }
      },
      {
         path: 'rules',
-        component: () => import('@/views/traffic-rules/rules'),
+        component: () => import('@/views/traffic-rules/rulesList'),
         name: 'rules',
-        meta: { title: '已下发规则' }
-     }
+        meta: { title: '已下发规则', icon: 'list1' }
+     },
+     {
+      path: 'person',
+      component: () => import('@/views/traffic-rules/person/index'),
+      name: 'person',
+      meta: { title: '可通行人员', icon: 't_person' }
+   }
   ]
   },
   {
@@ -192,7 +198,6 @@ export const asyncRoutes = [
    },
   ]
   },
- 
   {
     path: '/device-manage',
     name: 'device-manag',
@@ -209,15 +214,30 @@ export const asyncRoutes = [
       {
         path: 'personnel',
         name: 'personnel',
-        component: () => import('@/views/device-manage/personnel/index'),
+        component: () => import('@/views/device-manage/personnel'),
         meta: { title: '人员下发', icon: 'guide' },
       },
+    ]
+  },
+  {
+    path: '/alarm',
+    name: 'alarm',
+    component: Layout,
+    meta: { title: '告警中心', icon: 'alarm' },
+    redirect: '/alarm/device',
+    children: [
       {
-        path: 'alarm',
-        component: () => import('@/views/device-manage/alarm'),
-        name: 'alarm',
-        meta: { title: '设备告警', icon: 'alarm' }
-      }
+        path: 'device',
+        name: 'device',
+        component: () => import('@/views/alarm/device'),
+        meta: { title: '设备告警', icon: 'alarmDevice' },
+      },
+      {
+        path: 'personnel',
+        name: 'personnel',
+        component: () => import('@/views/alarm/personnel'),
+        meta: { title: '人员告警', icon: 'alarmPesonnel' },
+      },
     ]
   },
   {

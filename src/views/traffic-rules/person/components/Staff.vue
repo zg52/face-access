@@ -1,26 +1,61 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-19 15:44:21
+ * @LastEditTime: 2021-01-19 18:08:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-.p_num {
-  color: #999;
-  font-size: 12px;
-  
+.people_list {
+  // margin-top: 24px;
 }
+ .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8a16ff;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+    border:1px #8a16ff dashed;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .camera {
+margin-left: 30px;
+    margin-top: 44px;
+    i {
+      font-size: 20px;
+    }
+  }
+  .des {
+   color: #999;
+    font-size: 12px;
+    padding-left: 30px;
+    line-height: 16px;
+  }
 </style>
 <template>
   <div class="app-container">
-    <el-form :model="roles" label-width="120px">
-       <el-form-item label="选择设备ID：">
-        <el-select v-model="value" placeholder="请选择">
+    <el-form :model="roles" :inline="true">
+ 
+  <el-form-item label="通行规则">  <el-select  v-model="value" placeholder="请选择">
           <el-option>
           </el-option> </el-select></el-form-item>
-   <el-form-item label="选择通行方式：">
+        <el-form-item label="通行方式">
        <div class="block">
   <el-cascader
     :options="options"
@@ -28,113 +63,31 @@
     clearable></el-cascader>
  </div>
            </el-form-item>
-      <el-form-item label="通行规则名称：" 
-        ><el-input
-        class="w200"
-          v-model.trim="roles.roleName"
-          placeholder="常客"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="通行规则描述：" 
-               ><el-input
-               class="w200"
-         type="textarea"
-         placeholder="请输入内容"
-         v-model="roles.roleName"
-         maxlength="50"
-         show-word-limit
-       ></el-input></el-form-item>
-    <el-form-item label="通行人员类型：">
-      <el-radio-group v-model="radio">
-    <el-radio :label="3" border @click.native="yg">员工 <sub class="p_num">已选102人</sub></el-radio>
-    <el-radio :label="6" border>访客  <sub class="p_num">已选102人</sub></el-radio>
-  </el-radio-group>
-        </el-form-item>
-     <el-form-item label="选择通行时间：">
-      <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
-    <el-tab-pane label="星期制" name="first">
-  <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-  <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-    <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
-  </el-checkbox-group>
-    </el-tab-pane>
-    <el-tab-pane label="日期制" name="second">
-       <el-date-picker
-          type="datetimerange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
-    </el-tab-pane>
-  </el-tabs>
-       
-      </el-form-item>
-    <el-button type="primary" @click="handleAddRole"
-        ><svg-icon icon-class="guide" />  一键下发</el-button>
-    </el-form>
-
-    <el-dialog
-  title="选择通行人员"
-  :visible.sync="dialogVisible"
-  width="100%"
-  :before-close="handleClose">
-      <el-form :model="roles" :inline="true">
- 
-      <el-form-item label="员工姓名"
-        ><el-input
-          class="w100"
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="性别">  <el-select class="w100" v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select></el-form-item>
-      <el-form-item label="工号"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入工号搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="电话"
-        ><el-input
-        class="w130"
-          v-model.trim="roles.roleName"
-          placeholder="输入手机号搜索"
-        ></el-input
-      ></el-form-item>
- 
-      <el-form-item label="部门">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select
-      ></el-form-item>
-      <el-form-item label="职务">
-        <el-select v-model="value" placeholder="运营">
-          <el-option>
-          </el-option> </el-select
-      ></el-form-item>
-  
-     <el-form-item label="入职时间">
+     
+      <el-form-item label="加入通行规则时间">
         <el-date-picker
           type="daterange"
           align="right"
           unlink-panels
           range-separator="至"
-          start-placeholder="结束日期"
+          start-placeholder="创建日期"
           end-placeholder="结束日期"
         >
         </el-date-picker>
       </el-form-item>
- 
       <el-button type="success" @click="onSearch" class="search">
         <i class="el-icon-search"></i><span>查询</span></el-button
       >
+      <el-button type="warning" @click="onDelete">
+        <i class="el-icon-delete"></i><span>批量删除</span></el-button
+      >
+      <el-button type="primary" @click="onExport">
+        <svg-icon icon-class="excel" /> <span>导出</span></el-button
+      >
+      <el-button type="primary" @click="handleAddRole"
+        ><svg-icon icon-class="edit" /> 新增通行人员</el-button>
     </el-form>
-     <el-table :data="rolesList" border class="people_list" max-height="650">
+    <el-table :data="rolesList" border class="people_list" max-height="650">
       <el-table-column
         width="50"
         type="selection"
@@ -155,17 +108,27 @@
       </el-table-column>
       <el-table-column align="center" label="已注册人脸" width="140">
         <template>
-          <img src="../../assets/image/1.png" alt="" width="140" />
+          <img src="../../../../assets/image/1.png" alt="" width="140" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="通行规则" width="90">
+       <el-table-column align="center" label="通行规则" width="140">
         <template>
-         默认规则
+         常客
         </template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="90">
+      <el-table-column align="center" label="通行方式" width="140">
         <template>
-         女
+         刷脸+刷卡
+        </template>
+      </el-table-column>
+         <el-table-column align="center" label="加入通行规则时间" width="140">
+        <template>
+         刷脸+刷卡
+        </template>
+      </el-table-column>
+     <el-table-column align="center" label="性别" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.sex }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="部门" width="100">
@@ -218,7 +181,12 @@
           {{ scope.row.entryTime }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" width="120">
+            <el-table-column align="center" label="离职时间" width="108">
+        <template slot-scope="scope">
+          {{ scope.row.entryTime }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="员工创建时间" width="120">
         <template slot-scope="scope">
           {{ scope.row.createTime }}
         </template>
@@ -228,15 +196,25 @@
           {{ scope.row.updataTime }}
         </template>
       </el-table-column>
-       <el-table-column align="center" label="下发状态" width="140">
+       <el-table-column align="center" label="状态" width="140">
         <template>          
-            已下发 </template>
+            在职 </template>
       </el-table-column>
       <el-table-column align="center" label="备注">
         <template> fff </template>
       </el-table-column>
-     <el-table-column align="center" label="下发人">
+     <el-table-column align="center" label="创建人">
         <template> fff </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作" width="190" fixed="right">
+        <template slot-scope="scope">
+          <el-button
+            class="radius_45 mt10"
+            type="danger"
+            size="mini"
+            ><i class="el-icon-delete"></i><span>删除</span></el-button
+          ></template
+        >
       </el-table-column>
     </el-table>
       <el-pagination
@@ -248,12 +226,6 @@
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingParams['total']"
     ></el-pagination>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
-</el-dialog>   
- 
   </div>
 </template>
 <script>
@@ -261,44 +233,10 @@ import { addList } from "@/api/people-manage/staff-manage";
 export default {
   name: "",
   data() {
-     const cityOptions = ['星期一', '星期二', '星期三', '星期四', '星期五'];
     return {
-       checkAll: false,
-        checkedCities: ['星期一', '星期二'],
-        cities: cityOptions,
-        isIndeterminate: true,
-      dialogVisible: true,
-      radio: null,
-       props: { multiple: true },
-       options: [
-         {
-          label: '刷脸',
-       },
-       {
-          label: '二维码',
-       },
-         {
-          label: '刷卡',
-          children: [
-            {
-            value: 'shejiyuanze',
-            label: '门禁卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: 'IC卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: '身份证',
-           }
-          ]
-       },
-        
-       ],
-      userFormVisible:true,
       value: 1,
       pickerOptions: [],
+      props: { multiple: true },
       roles: [
         {
           roleName: "",
@@ -328,6 +266,32 @@ export default {
           switch: 1,
         },
       ],
+       options: [
+         {
+          label: '刷脸',
+       },
+       {
+          label: '二维码',
+       },
+         {
+          label: '刷卡',
+          children: [
+            {
+            value: 'shejiyuanze',
+            label: '门禁卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: 'IC卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: '身份证',
+           }
+          ]
+       },
+        
+       ],
      pagingParams: {
         username: "",
         email: "",
@@ -344,12 +308,6 @@ export default {
     };
   },
   methods: {
-    yg() {
-    //  this.radio3 = 3
-    },
-    handleAddRole() {
-        this.$message.success('张三 已下发至设备SHFFJEF')  
-    },
     onSearch(){
 
     },
@@ -358,16 +316,7 @@ export default {
     },
     onExport() {
 
-    },
-     handleCheckAllChange(val) {
-        this.checkedCities = val ? cityOptions : [];
-        this.isIndeterminate = false;
-      },
-      handleCheckedCitiesChange(value) {
-        let checkedCount = value.length;
-        this.checkAll = checkedCount === this.cities.length;
-        this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
-      }
+    }
   },
   created() {
     addList({ username: "yang", password: "12345678" }).then(() => {});

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-15 10:30:42
+ * @LastEditTime: 2021-01-19 18:03:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -195,10 +195,11 @@ margin-left: 30px;
           <img src="../../../../assets/image/1.png" alt="" width="140" />
         </template>
       </el-table-column>
-    <el-form-item label="性别">  <el-select class="w100" v-model="value" placeholder="请选择">
-          <el-option
-          >
-          </el-option> </el-select></el-form-item>
+     <el-table-column align="center" label="性别" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.sex }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="部门" width="100">
         <template slot-scope="scope">
           {{ scope.row.description }}

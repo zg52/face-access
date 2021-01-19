@@ -1,15 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-18 18:21:13
+ * @LastEditTime: 2021-01-19 18:07:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-.people_list {
-  // margin-top: 24px;
-}
+ 
  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -47,30 +45,24 @@ margin-left: 30px;
     padding-left: 30px;
     line-height: 16px;
   }
-   .app-container1 {
-       padding-top: 6px;
-   }
-  
 </style>
 <template>
-  <div class="app-container">
+  <div class="app-container1">
     <el-form :model="roles" :inline="true">
- <el-form-item label="设备ID">
-        <el-select v-model="value" placeholder="请选择">
+ 
+  <el-form-item label="通行规则">  <el-select  v-model="value" placeholder="请选择">
           <el-option>
-          </el-option> </el-select
-      ></el-form-item>
-    <el-form-item label="告警类型">
-        <el-cascader :options="options" clearable></el-cascader>
-        </el-form-item>
-      <el-form-item label="设备位置"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
-
-            <el-form-item label="告警时间">
+          </el-option> </el-select></el-form-item>
+        <el-form-item label="通行方式">
+       <div class="block">
+  <el-cascader
+    :options="options"
+    :props="props"
+    clearable></el-cascader>
+ </div>
+           </el-form-item>
+     
+      <el-form-item label="加入通行规则时间">
         <el-date-picker
           type="daterange"
           align="right"
@@ -81,7 +73,6 @@ margin-left: 30px;
         >
         </el-date-picker>
       </el-form-item>
- 
       <el-button type="success" @click="onSearch" class="search">
         <i class="el-icon-search"></i><span>查询</span></el-button
       >
@@ -91,14 +82,16 @@ margin-left: 30px;
       <el-button type="primary" @click="onExport">
         <svg-icon icon-class="excel" /> <span>导出</span></el-button
       >
+      <el-button type="primary" @click="handleAddRole"
+        ><svg-icon icon-class="edit" /> 新增通行人员</el-button>
     </el-form>
-    <el-table :data="rolesList" border>
-  <el-table-column
+ <el-table :data="rolesList" border class="people_list" max-height="650">
+      <el-table-column
         width="50"
         type="selection"
         fixed
       ></el-table-column>
-            <el-table-column label="序列" width="60" align="center">
+      <el-table-column label="序列" width="60" align="center">
         <template>1</template></el-table-column
       >
       <el-table-column align="center" label="ID" width="80">
@@ -106,75 +99,101 @@ margin-left: 30px;
           {{ scope.row.name }}
         </template>
       </el-table-column>
- 
-     <el-table-column align="center" label="设备名称" width="80">
+
+      <el-table-column align="center" label="来访人姓名" width="100">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-             <el-table-column align="center" label="告警信息" width="140">
-        <template> <i class="dot_red"></i>          
-            失联 </template>
-      </el-table-column>
-            <el-table-column align="center" label="设备类型" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
+     <el-table-column align="center" label="来访人头像" width="140">
+        <template>
+          <img src="../../../../assets/image/2.png" alt="" width="140" />
         </template>
       </el-table-column>
-                  <el-table-column align="center" label="设备型号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-                  <el-table-column align="center" label="设备厂商" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-                  <el-table-column align="center" label="设备SN" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-                  <el-table-column align="center" label="设备版本" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-                  <el-table-column align="center" label="已下发人数" width="115" sortable>
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-                  <el-table-column align="center" label="设备位置" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      
-  
-      <el-table-column align="center" label="方向" width="100">
+      <el-table-column align="center" label="性别" width="100">
         <template slot-scope="scope">
           {{ scope.row.description }}
         </template>
       </el-table-column>
- 
-      <el-table-column align="center" label="创建时间" width="120" sortable>
-        <template slot-scope="scope">
-          {{ scope.row.createTime }}
+        <el-table-column align="center" label="通行规则" width="140">
+        <template>
+         访客
         </template>
       </el-table-column>
-      <el-table-column align="center" label="修改时间" width="120" sortable>
+      <el-table-column align="center" label="通行方式" width="140">
+        <template>
+         刷脸+刷卡
+        </template>
+      </el-table-column>
+         <el-table-column align="center" label="加入通行规则时间" width="140">
+        <template>
+         刷脸+刷卡
+        </template>
+      </el-table-column>
+            <el-table-column align="center" label="所在公司" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.description }}
+        </template>
+      </el-table-column>
+            <el-table-column align="center" label="电话" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.description }}
+        </template>
+      </el-table-column>
+         <el-table-column align="center" label="住址" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.description }}
+        </template>
+      </el-table-column>
+      
+      <el-table-column align="center" label="身份证号" width="80">
+        <template slot-scope="scope">
+          {{ scope.row.dfs }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="被访人姓名" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.dfs }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="被访人电话" width="108">
+        <template slot-scope="scope">
+          {{ scope.row.phone }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="来访事由" width="108">
+        <template slot-scope="scope">
+          {{ scope.row.phone }}
+        </template>
+      </el-table-column>
+ 
+     <el-table-column align="center" label="来访时间" width="108">
+        <template slot-scope="scope">
+          {{ scope.row.job }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="预约时间" width="108">
+        <template slot-scope="scope">
+          {{ scope.row.job }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="修改时间" width="120">
         <template slot-scope="scope">
           {{ scope.row.updataTime }}
         </template>
       </el-table-column>
-
+      <el-table-column align="center" label="状态" width="140">
+        <template>
+           已授权
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="备注">
         <template> fff </template>
       </el-table-column>
-     <el-table-column align="center" label="创建人">
-        <template> fff </template>
+            <el-table-column align="center" label="访客创建人" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.name }}
+        </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="90" fixed="right">
         <template slot-scope="scope">
@@ -182,9 +201,7 @@ margin-left: 30px;
             class="radius_45 mt10"
             type="danger"
             size="mini"
-            ><i class="el-icon-delete"></i><span>删除</span></el-button
-          ></template
-        >
+            ><i class="el-icon-delete"></i><span>删除</span></el-button></template>
       </el-table-column>
     </el-table>
 
@@ -205,33 +222,9 @@ export default {
   name: "",
   data() {
     return {
-         options: [
-             {
-          label: '设备告警',
-          children: [
-              {
-               label: '失联',
-             },
-              {
-               label: '损坏',
-             }
-          ],
-         },
-          {
-          label: '人员告警',
-          children: [
-              {
-               label: '体温超标',
-             },
-              {
-               label: '未知人员',
-             }
-          ],
-         },
-         ],
-      userFormVisible:true,
       value: 1,
       pickerOptions: [],
+      props: { multiple: true },
       roles: [
         {
           roleName: "",
@@ -261,6 +254,32 @@ export default {
           switch: 1,
         },
       ],
+       options: [
+         {
+          label: '刷脸',
+       },
+       {
+          label: '二维码',
+       },
+         {
+          label: '刷卡',
+          children: [
+            {
+            value: 'shejiyuanze',
+            label: '门禁卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: 'IC卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: '身份证',
+           }
+          ]
+       },
+        
+       ],
      pagingParams: {
         username: "",
         email: "",
