@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-19 16:53:41
+ * @LastEditTime: 2021-01-20 10:56:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -216,6 +216,43 @@ margin-left: 30px;
       </el-table-column>
     </el-table>
     <div class="lis_tit"><i></i> <span>未知人员告警列表</span></div>
+ 
+         <el-table :data="rolesList" border class="people_list" max-height="650">
+      <el-table-column
+        width="50"
+        type="selection"
+        fixed
+      ></el-table-column>
+      <el-table-column label="序列" width="60" align="center">
+        <template>1</template></el-table-column
+      >
+      <el-table-column align="center" label="ID" width="80">
+        <template slot-scope="scope">
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
+ <el-table-column align="center" label="告警信息" width="140">
+        <template> <i class="dot_red"></i>          
+            未知人员 </template>
+      </el-table-column>
+      <el-table-column align="center" label="抓拍的人脸" width="140">
+        <template>
+          <img src="../../assets/image/1.png" alt="" width="140" />
+        </template>
+      </el-table-column>
+ 
+      <el-table-column align="center" label="操作" width="90">
+        <template>
+          <el-button
+            class="radius_45 mt10"
+            type="danger"
+            size="mini"
+            ><i class="el-icon-delete"></i><span>删除</span></el-button
+          ></template
+        >
+      </el-table-column>
+    </el-table>
+        <div class="lis_tit"><i></i> <span>访客告警列表</span></div>
  
          <el-table :data="rolesList" border class="people_list" max-height="650">
       <el-table-column

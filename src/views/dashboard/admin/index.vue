@@ -4,26 +4,22 @@
 
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+    <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
-    </el-row>
+    </el-row> -->
 
     <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
+         <el-col :xs="24" :sm="24" :lg="12">
         <div class="chart-wrapper">
-          <raddar-chart />
+          <DeviceChart />
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
+        <el-col :xs="24" :sm="24" :lg="12">
         <div class="chart-wrapper">
-          <pie-chart />
+          <OpenDoor />
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col>
+
     </el-row>
 
     <el-row :gutter="8">
@@ -41,12 +37,13 @@
 </template>
 
 <script>
+import DeviceChart from './components/DeviceChart'
+import OpenDoor from './components/OpenDoor'
+
 import GithubCorner from '@/components/GithubCorner'
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
 import TransactionTable from './components/TransactionTable'
 import TodoList from './components/TodoList'
 import BoxCard from './components/BoxCard'
@@ -73,12 +70,12 @@ const lineChartData = {
 export default {
   name: 'DashboardAdmin',
   components: {
+    DeviceChart,
+    OpenDoor,
     GithubCorner,
     PanelGroup,
     LineChart,
     RaddarChart,
-    PieChart,
-    BarChart,
     TransactionTable,
     TodoList,
     BoxCard

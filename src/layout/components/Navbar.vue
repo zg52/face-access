@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-19 18:34:38
+ * @LastEditTime: 2021-01-20 14:27:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\Navbar.vue
@@ -95,7 +95,7 @@
   font-size: 14px;
   text-align: center;
   float: left;
-  margin-left: 20%;
+  margin-left: 4%;
 }
 </style>
 

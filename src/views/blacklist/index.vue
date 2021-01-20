@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-20 10:26:55
+ * @LastEditTime: 2021-01-20 11:30:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -49,22 +49,19 @@ margin-left: 30px;
   }
 </style>
 <template>
-  <div class="app-container1">
+  <div class="app-container">
     <el-form :model="roles" :inline="true">
- 
-  <el-form-item label="通行规则">  <el-select  v-model="value" placeholder="请选择">
+   <el-form-item label="姓名"><el-input></el-input></el-form-item>
+    <el-form-item label="性别">  <el-select  v-model="value" placeholder="请选择">
           <el-option>
           </el-option> </el-select></el-form-item>
-        <el-form-item label="通行方式">
-       <div class="block">
-  <el-cascader
-    :options="options"
-    :props="props"
-    clearable></el-cascader>
- </div>
-           </el-form-item>
+         <el-form-item label="人员类型">  <el-select  v-model="value" placeholder="请选择">
+          <el-option>访客 </el-option>
+          <el-option>人员 </el-option>
+           </el-select>
+          </el-form-item>
      
-      <el-form-item label="加入通行规则时间">
+      <el-form-item label="创建时间">
         <el-date-picker
           type="daterange"
           align="right"
@@ -84,8 +81,7 @@ margin-left: 30px;
       <el-button type="primary" @click="onExport">
         <svg-icon icon-class="excel" /> <span>导出</span></el-button
       >
-      <el-button type="primary" @click="handleAddRole"
-        ><svg-icon icon-class="edit" /> 新增通行人员</el-button>
+ 
     </el-form>
     <el-table :data="rolesList" border class="people_list" max-height="650">
       <el-table-column
@@ -101,112 +97,36 @@ margin-left: 30px;
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="员工姓名" width="80">
+      <el-table-column align="center" label="姓名" width="80">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="已注册人脸" width="140">
         <template>
-          <img src="../../../../assets/image/1.png" alt="" width="140" />
+          <img src="../../assets/image/2.png" alt="" width="140" />
         </template>
       </el-table-column>
-       <el-table-column align="center" label="通行规则" width="140">
-        <template>
-         常客
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="通行方式" width="140">
-        <template>
-         刷脸+刷卡
-        </template>
-      </el-table-column>
-         <el-table-column align="center" label="加入通行规则时间" width="140">
-        <template>
-         刷脸+刷卡
-        </template>
-      </el-table-column>
-     <el-table-column align="center" label="性别" width="100">
+           <el-table-column align="center" label="性别" width="100">
         <template slot-scope="scope">
           {{ scope.row.sex }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="部门" width="100">
+        <el-table-column align="center" label="设备ID" width="80">
         <template slot-scope="scope">
-          {{ scope.row.description }}
+          {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="身份证号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="工号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="电话" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-         <el-table-column align="center" label="住址" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="邮箱" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="职务" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
-        </template>
-      </el-table-column>
-     <el-table-column align="center" label="门禁卡" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="IC卡" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="入职时间" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.entryTime }}
-        </template>
-      </el-table-column>
-            <el-table-column align="center" label="离职时间" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.entryTime }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="员工创建时间" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.createTime }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="修改时间" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.updataTime }}
-        </template>
-      </el-table-column>
-       <el-table-column align="center" label="状态" width="140">
-        <template>          
-            在职 </template>
-      </el-table-column>
-      <el-table-column align="center" label="备注">
+            <el-table-column align="center" label="创建人" width="90">
         <template> fff </template>
       </el-table-column>
-     <el-table-column align="center" label="创建人">
+     <el-table-column align="center" label="人员类型" width="90">
         <template> fff </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="190" fixed="right">
+          <el-table-column align="center" label="备注">
+        <template> fff </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作" width="90">
         <template slot-scope="scope">
           <el-button
             class="radius_45 mt10"

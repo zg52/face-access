@@ -179,23 +179,14 @@ export const asyncRoutes = [
   },
   {
     path: '/traffic-records',
-    name: 'traffic-records',
     component: Layout,
-    meta: { title: '通行记录', icon: 'trafficRecords' },
-    redirect: '/traffic-records/list',
     children: [
       {
-        path: 'list',
-        component: () => import('@/views/traffic-records/list'),
-        name: 'list',
-        meta: { title: '记录列表' }
+        path: 'index',
+        component: () => import('@/views/traffic-records'),
+        name: 'traffic-records',
+        meta: { title: '通行记录', icon: 'trafficRecords' },
      },
-     {
-      path: 'alarm',
-      component: () => import('@/views/traffic-records/alarm'),
-      name: 'alarm',
-      meta: { title: '告警列表' }
-   },
   ]
   },
   {
@@ -241,6 +232,18 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/blacklist',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/blacklist'),
+        name: 'blacklist',
+        meta: { title: '黑名单管理', icon: 'blacklist' },
+      }
+    ]
+  },
+  {
     path: '/task',
     component: Layout,
     children: [
@@ -250,18 +253,6 @@ export const asyncRoutes = [
         name: 'task',
         meta: { title: '任务中心', icon: 'documentation' },
      }
-    ]
-  },
-  {
-    path: '/blacklist-manage',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/blacklist-manage'),
-        name: 'blacklist-manage',
-        meta: { title: '黑名单管理', icon: 'blacklist' },
-      }
     ]
   },
   {
@@ -305,18 +296,6 @@ export const asyncRoutes = [
     path: '/pdf/download',
     component: () => import('@/views/pdf/download'),
     hidden: true
-  },
-  {
-    path: '/theme',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/theme/index'),
-        name: 'Theme',
-        meta: { title: '换肤', icon: 'theme' }
-      }
-    ]
   },
   { path: '*', redirect: '/404', hidden: true }
   // {

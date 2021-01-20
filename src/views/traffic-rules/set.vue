@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-19 15:44:21
+ * @LastEditTime: 2021-01-20 11:34:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -273,6 +273,9 @@ export default {
        options: [
          {
           label: '刷脸',
+       },
+       {
+          label: '指纹',
        },
        {
           label: '二维码',
