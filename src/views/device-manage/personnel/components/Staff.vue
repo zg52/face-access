@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-18 17:37:58
+ * @LastEditTime: 2021-01-21 18:47:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -257,6 +257,9 @@ margin-left: 30px;
         <template> fff </template>
       </el-table-column>
      <el-table-column align="center" label="下发人">
+        <template> fff </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建人">
         <template> fff </template>
       </el-table-column>
       <el-table-column label="操作" width="190" fixed="right">

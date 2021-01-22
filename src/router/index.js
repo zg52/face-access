@@ -114,39 +114,29 @@ export const asyncRoutes = [
       },
       {
         path: 'staff-manage',
-        component: () => import('@/views/people-manage/staff-manage'),
+        component: () => import('@/views/people-manage/staff-manage/staff-list'),
         name: 'staff-manage',
-        redirect: '/people-manage/staff-manage/staff-list',
         meta: { title: '员工管理', icon: 'staff' },
-        children: [
-          {
-            path: 'staff-list',
-            component: () => import('@/views/people-manage/staff-manage/staff-list'),
-            name: 'staff-list',
-            meta: { title: '员工列表' }
-          },
-          {
-            path: 'staff-add',
-            component: () => import('@/views/people-manage/staff-manage/staff-add'),
-            name: 'staff-add',
-            meta: { title: '员工新增' }
-          }
-        ]
+      //   children: [
+      //     {
+      //       path: 'staff-list',
+      //       component: () => import('@/views/people-manage/staff-manage/staff-list'),
+      //       name: 'staff-list',
+      //       meta: { title: '员工管理' }
+      //     },
+      //     // {
+      //     //   path: 'staff-add',
+      //     //   component: () => import('@/views/people-manage/staff-manage/staff-add'),
+      //     //   name: 'staff-add',
+      //     //   meta: { title: '员工新增' }
+      //     // }
+      //   ]
       },
       {
         path: 'visitor',
-        component: () => import('@/views/people-manage/visitor'),
+        component: () => import('@/views/people-manage/visitor/list'),
         name: 'visitor',
-        meta: { title: '访客管理', icon: 'visitor'  },
-        redirect: '/people-manage/visitor-manage/list',
-        children: [
-          {
-            path: 'list',
-            component: () => import('@/views/people-manage/visitor/list'),
-            name: 'list',
-            meta: { title: '访客预约单' }
-         }
-      ]
+        meta: { title: '访客管理', icon: 'visitor' },
       }
     ]
   },

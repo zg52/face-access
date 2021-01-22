@@ -11,7 +11,7 @@ $light_gray:#eee;
 
   .login-form {
     position: relative;
-    width: 360px;
+    width: 440px;
     max-width: 100%;
     padding: 0 35px 65px;
     margin: 0 auto;
@@ -42,7 +42,7 @@ $light_gray:#eee;
 
   .title-container {
     position: relative;
-    width: 360px;
+    width: 440px;
     background: #323a4f;
     padding: 10px 0;
     left: -35px;
@@ -143,7 +143,7 @@ $light_gray:#eee;
       <div>
        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">欢迎登录人脸辨识云</h3>
+        <h3 class="title">人脸辨识云·门禁系统</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container">

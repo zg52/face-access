@@ -1,11 +1,3 @@
-<!--
- * @Author: your name
- * @Date: 2021-01-20 18:16:03
- * @LastEditTime: 2021-01-20 18:55:43
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\dashboard\admin\components\OpenDoor.vue
--->
 <template>
     <div :class="className" :style="{height:height,width:width}" />
   </div>
@@ -41,10 +33,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-        let _this = this
-     setTimeout(function () {
-          _this.initChart()
-     })
+      this.initChart()
     })
   },
   beforeDestroy() {
@@ -55,67 +44,112 @@ export default {
     this.chart = null
   },
   methods: {
-    initChart() {  
+    initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-     this.chart.setOption({
-        legend: {},
-        tooltip: {
-            trigger: 'axis',
-            showContent: false
-        },
-        dataset: {
-            source: [
-                ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
-                ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
-                ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
-                ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
-                ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
-            ]
-        },
-        xAxis: {type: 'category'},
-        yAxis: {gridIndex: 0},
-        grid: {top: '55%'},
-        series: [
-            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            {
-                type: 'pie',
-                id: 'pie',
-                radius: '30%',
-                center: ['50%', '25%'],
-                label: {
-                    formatter: '{b}: {@2012} ({d}%)'
-                },
-                encode: {
-                    itemName: 'product',
-                    value: '2012',
-                    tooltip: '2012'
-                }
-            }
-        ]
-    }
-        
-)
-_this.$el.on('updateAxisPointer', function (event) {
-        var xAxisInfo = event.axesInfo[0];
-        if (xAxisInfo) {
-            var dimension = xAxisInfo.value + 1;
-            myChart.setOption({
-                series: {
-                    id: 'pie',
-                    label: {
-                        formatter: '{b}: {@[' + dimension + ']} ({d}%)'
-                    },
-                    encode: {
-                        value: dimension,
-                        tooltip: dimension
-                    }
-                }
-            });
+
+  this.chart.setOption( {
+      title: {
+        text: '今日开门施监控',
+        textStyle: {
+          color: '#333',
+          fontSize: 14
         }
-    });
+    },
+ textStyle: {
+      color: '#8a16ff'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data: ['刷脸', '刷卡', '二维码', '指纹']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            dataView: {
+              show: true, 
+              readOnly: false,
+               emphasis: {
+                 iconStyle: {
+                   borderColor: '#8a16ff'
+                 }
+               }
+               },
+            magicType: {
+              show: true,
+             type: ['line', 'bar', 'red'],
+              emphasis: {
+                 iconStyle: {
+                   borderColor: '#8a16ff'
+                 }
+               }
+             },
+            restore: {
+              show: true,
+               emphasis: {
+                 iconStyle: {
+                   borderColor: '#8a16ff'
+                 }
+               }
+            },
+            saveAsImage: {
+              show: true,
+               emphasis: {
+                 iconStyle: {
+                   borderColor: '#8a16ff'
+                 }
+               }
+            }
+        },
+        iconStyle: {
+          borderColor:'#d1a9fb',
+        }
+    },
+    xAxis: {
+        type: 'category',
+        name: '时间',
+        boundaryGap: false,
+        data: ['0时', '1时', '2时', '3时', '4时', '5时', '6时', '7时', '8时', '9时', '10时', '11时', '12时', '13时', '14时', '15时', '16时', '17时', '18时', '19时', '20时', '21时', '22时', '23时']
+    },
+    yAxis: {
+        type: 'value',
+        name: '人数'
+    },
+    series: [
+        {
+            name: '刷脸',
+            type: 'line',
+            stack: '总量',
+            data: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
+        },
+        {
+            name: '刷卡',
+            type: 'line',
+            stack: '总量',
+            data: [220, 182, 191, 234, 290, 330, 310,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
+        },
+        {
+            name: '二维码',
+            type: 'line',
+            stack: '总量',
+            data: [150, 232, 201, 154, 190, 330, 410,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
+        },
+        {
+            name: '指纹',
+            type: 'line',
+            stack: '总量',
+            data: [320, 332, 301, 334, 390, 330, 320,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
+        },
+    ]
+}
+)
     }
   }
 }
