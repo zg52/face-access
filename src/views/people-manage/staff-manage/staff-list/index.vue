@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-20 14:19:16
+ * @LastEditTime: 2021-01-22 18:16:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -146,9 +146,7 @@ margin-left: 30px;
       </el-form-item>
       <el-form-item label="有无人脸">
         <el-select v-model="roles.status" class="w100">
-          <el-option
-           
-          ></el-option>
+          <el-option></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="状态">
@@ -275,19 +273,12 @@ margin-left: 30px;
      <el-table-column align="center" label="创建人">
         <template> fff </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="190" fixed="right">
+      <el-table-column align="left" label="操作" width="190" fixed="right">
         <template slot-scope="scope">
             <el-switch
             size="mini"
             active-text="离职"
             inactive-text="在职"
-            @change="changeUserStatus(scope.$index, scope.row)"
-          ></el-switch>
-           <el-switch
-           class="mt10"
-            size="mini"
-            active-text="恢复"
-            inactive-text="拉黑"
             @change="changeUserStatus(scope.$index, scope.row)"
           ></el-switch>
           <el-button
@@ -351,6 +342,10 @@ margin-left: 30px;
         >
         </el-date-picker>
       </el-form-item>
+      <el-form-item label="头像类型：">
+         <el-radio v-model="radio" label="1">证件照</el-radio>
+         <el-radio v-model="radio" label="2">生活照</el-radio>
+      </el-form-item>
  
      <el-form-item label="备注：" prop="description"><el-input class="w400"
   type="textarea"
@@ -400,6 +395,7 @@ export default {
   name: "",
   data() {
     return {
+      
       userFormVisible:true,
       value: 1,
       pickerOptions: [],

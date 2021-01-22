@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-20 11:34:22
+ * @LastEditTime: 2021-01-22 18:32:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -23,6 +23,7 @@
    <el-form-item label="选择通行方式：">
        <div class="block">
   <el-cascader
+     class="w250"
     :options="options"
     :props="props"
     clearable></el-cascader>
@@ -297,6 +298,23 @@ export default {
            }
           ]
        },
+       {
+          label: '刷卡 + 刷脸',
+          children: [
+            {
+            value: 'shejiyuanze',
+            label: '刷卡 + 门禁卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: '刷卡 + IC卡',
+           },
+           {
+            value: 'shejiyuanze',
+            label: '刷卡 + 身份证',
+           }
+          ]
+       }
         
        ],
       userFormVisible:true,

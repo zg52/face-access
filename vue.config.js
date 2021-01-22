@@ -31,6 +31,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     proxy: {
+      
       "/": {
         target: "http://192.168.10.148:8765/",
         pathRewrite: { "^/apis": "" },

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-21 16:37:11
+ * @LastEditTime: 2021-01-22 17:55:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -252,11 +252,11 @@ margin-left: 30px;
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="210" fixed="right">
+      <el-table-column align="left" label="操作" width="210" fixed="right">
         <template slot-scope="scope">
-            <el-switch
+            <!-- <el-switch
             size="mini"
-            active-text="通过"
+            active-text="通过" 
             inactive-text="拒绝"
             @change="changeUserStatus(scope.$index, scope.row)"
           ></el-switch>
@@ -266,7 +266,7 @@ margin-left: 30px;
             active-text="拉黑"
             inactive-text="正常"
             @change="changeUserStatus(scope.$index, scope.row)"
-          ></el-switch><br>
+          ></el-switch><br> -->
           <el-button
             class="radius_45"
             type="primary"
