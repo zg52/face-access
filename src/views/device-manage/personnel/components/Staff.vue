@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-21 18:47:52
+ * @LastEditTime: 2021-01-23 10:58:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -54,15 +54,15 @@ margin-left: 30px;
 <template>
   <div class="app-container1">
     <el-form :model="roles" :inline="true">
+        <el-form-item label="设备名称">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option>
+          </el-option> </el-select></el-form-item>
        <el-form-item label="设备ID">
         <el-select v-model="value" placeholder="请选择">
           <el-option>
           </el-option> </el-select></el-form-item>
-    <el-form-item label="通行规则">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select
-      ></el-form-item>
+ 
       <el-form-item label="下发人"
         ><el-input
           v-model.trim="roles.roleName"
@@ -179,9 +179,14 @@ margin-left: 30px;
           <img src="../../../../assets/image/1.png" alt="" width="140" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="通行规则" width="90">
-        <template>
-         默认规则
+       <el-table-column align="center" label="所在设备" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.description }}
+        </template>
+      </el-table-column>
+             <el-table-column align="center" label="所在设备ID" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.description }}
         </template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="90">

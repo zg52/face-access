@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-22 18:32:54
+ * @LastEditTime: 2021-01-23 10:39:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -16,10 +16,14 @@
 <template>
   <div class="app-container">
     <el-form :model="roles" label-width="120px">
-       <el-form-item label="选择设备ID：">
+       <el-form-item label="选择设备名称：">
         <el-select v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select></el-form-item>
+          <el-option>  <el-radio-group v-model="radio">
+    <el-radio :label="3" border @click.native="yg">员工 <sub class="p_num">已选102人</sub></el-radio>
+    <el-radio :label="6" border>访客  <sub class="p_num">已选102人</sub></el-radio>
+  </el-radio-group></el-option> 
+          </el-select>
+          </el-form-item>
    <el-form-item label="选择通行方式：">
        <div class="block">
   <el-cascader
@@ -47,8 +51,12 @@
        ></el-input></el-form-item>
     <el-form-item label="通行人员类型：">
       <el-radio-group v-model="radio">
-    <el-radio :label="3" border @click.native="yg">员工 <sub class="p_num">已选102人</sub></el-radio>
-    <el-radio :label="6" border>访客  <sub class="p_num">已选102人</sub></el-radio>
+    <el-radio :label="3" @click.native="yg" border>全部员工</el-radio>
+    <el-radio :label="343" @click.native="yg" border>指定员工 <sub class="p_num"> 已选102人</sub> </el-radio><br>
+    <div class="mt10">
+      <el-radio :label="23" @click.native="yg" border>全部访客</el-radio>
+    <el-radio :label="33" @click.native="yg" border>指定访客 <sub class="p_num"> 已选102人</sub> </el-radio>
+    </div>
   </el-radio-group>
         </el-form-item>
      <el-form-item label="选择通行时间：">
@@ -262,7 +270,7 @@ import { addList } from "@/api/people-manage/staff-manage";
 export default {
   name: "",
   data() {
-     const cityOptions = ['星期一', '星期二', '星期三', '星期四', '星期五'];
+     const cityOptions = ['星期一', '星期二', '星期三', '星期四', '星期五','星期六','星期日'];
     return {
        checkAll: false,
         checkedCities: ['星期一', '星期二'],

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-20 11:30:33
+ * @LastEditTime: 2021-01-23 11:21:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -55,11 +55,6 @@ margin-left: 30px;
     <el-form-item label="性别">  <el-select  v-model="value" placeholder="请选择">
           <el-option>
           </el-option> </el-select></el-form-item>
-         <el-form-item label="人员类型">  <el-select  v-model="value" placeholder="请选择">
-          <el-option>访客 </el-option>
-          <el-option>人员 </el-option>
-           </el-select>
-          </el-form-item>
      
       <el-form-item label="创建时间">
         <el-date-picker
@@ -95,7 +90,7 @@ margin-left: 30px;
       <el-table-column align="center" label="ID" width="80">
         <template slot-scope="scope">
           {{ scope.row.name }}
-        </template>
+        </template> 
       </el-table-column>
       <el-table-column align="center" label="姓名" width="80">
         <template slot-scope="scope">
@@ -120,9 +115,7 @@ margin-left: 30px;
             <el-table-column align="center" label="创建人" width="90">
         <template> fff </template>
       </el-table-column>
-     <el-table-column align="center" label="人员类型" width="90">
-        <template> fff </template>
-      </el-table-column>
+ 
           <el-table-column align="center" label="备注">
         <template> fff </template>
       </el-table-column>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-18 18:46:41
+ * @LastEditTime: 2021-01-23 11:31:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -275,30 +275,7 @@ margin-left: 30px;
            <el-form-item label="状态：">
             <span>{{ props.row.name }}</span>
           </el-form-item>
-      
-           <el-form-item label="网关IP：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
-           <el-form-item label="操作系统：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item> <el-form-item label="摄像头：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
-           <el-form-item label="识别高度：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
-           <el-form-item label="存贮容量：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
-                     <el-form-item label="人脸容量：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
-                     <el-form-item label="可刷卡类型：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
-                     <el-form-item label="图像分辨率：">
-            <span>{{ props.row.name }}</span>
-          </el-form-item>
+ 
         </el-form>
       </template>
     </el-table-column>
@@ -377,7 +354,7 @@ margin-left: 30px;
      <el-table-column align="center" label="创建人">
         <template> fff </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="190" fixed="right">
+      <el-table-column align="center" label="操作" width="300" fixed="right">
         <template slot-scope="scope">
           <el-button
             class="radius_45"
@@ -387,11 +364,24 @@ margin-left: 30px;
             ><i class="el-icon-edit"></i><span>编辑</span></el-button
           >
           <el-button
-            class="radius_45 mt10"
+            class="radius_45"
             type="danger"
             size="mini"
-            ><i class="el-icon-delete"></i><span>删除</span></el-button
-          ></template
+            ><i class="el-icon-delete"></i><span>删除</span></el-button>
+            <el-dropdown class="ml10">
+             <el-button type="primary" class="radius_45" size="mini">
+               更多操作<i class="el-icon-arrow-down el-icon--right"></i>
+             </el-button>
+             <el-dropdown-menu slot="dropdown">
+               <el-dropdown-item>开门</el-dropdown-item>
+               <el-dropdown-item>关门</el-dropdown-item>
+               <el-dropdown-item>常开</el-dropdown-item>
+               <el-dropdown-item>长关</el-dropdown-item>
+               <el-dropdown-item>重启</el-dropdown-item>
+                <el-dropdown-item>关机</el-dropdown-item>
+             </el-dropdown-menu>
+           </el-dropdown>
+            </template
         >
       </el-table-column>
     </el-table>
@@ -446,87 +436,6 @@ margin-left: 30px;
       ></el-form-item>
       <el-form-item label="方向：">  <el-select class="w100"  v-model="value" placeholder="请选择">
           <el-option>进</el-option><el-option>出</el-option> </el-select></el-form-item>
-      <el-form-item label="创建时间：">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
-      </el-form-item>
-            <el-form-item label="状态：">
-        <el-select v-model="roles.status" class="w100">
-          <el-option>正常</el-option>
-            <el-option >失联</el-option>
-             <el-option >关机</el-option>
-        </el-select>
-      </el-form-item><br>
-       <el-form-item label="系统信息：" class="h25"></el-form-item><br>
-        <el-form-item label="网关IP:">
-        <el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input>
-      </el-form-item>
-       <el-form-item label="CPU:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input
-      >
-      </el-form-item>
-             <el-form-item label="操作系统:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input
-      >
-      </el-form-item>
-       <el-form-item label="摄像头:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="双目，210 万有效像素，1920*1080"
-        ></el-input
-      >
-      </el-form-item>
-      <el-form-item label="识别高度:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="1.2~2.2 米，角度可调"
-        ></el-input
-      >
-      </el-form-item>
-            <el-form-item label="存贮容量:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="6 万条抓拍记录"
-        ></el-input
-      >
-      </el-form-item>
-      <el-form-item label="人脸容量:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="10000 张"
-        ></el-input
-      >
-      </el-form-item>
-     <el-form-item label="可刷卡类型:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="10000 张"
-        ></el-input
-      >
-      </el-form-item>
-           <el-form-item label="图像分辨率:">
-                 <el-input
-          v-model.trim="roles.roleName"
-          placeholder="50Hz: 25fps (1920×1080,1280×720)"
-        ></el-input
-      >
-      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer t_right">
       <el-button type="primary" @click="resetFaceLibraryForm('addLibraryRule')"><i class="el-icon-folder-add" /><span>批量导入</span></el-button>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-19 16:49:16
+ * @LastEditTime: 2021-01-23 10:42:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -88,14 +88,14 @@ margin-left: 30px;
         </el-date-picker>
       </el-form-item>
  
-      <el-form-item label="状态">
+      <!-- <el-form-item label="状态">
         <el-select v-model="roles.status" class="w120">
           <el-option>过期</el-option>
             <el-option
            
           >正常</el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-button type="success" @click="onSearch" class="search">
         <i class="el-icon-search"></i><span>查询</span></el-button
       >
@@ -159,10 +159,10 @@ margin-left: 30px;
           {{ scope.row.updataTime }}
         </template>
       </el-table-column>
-       <el-table-column align="center" label="状态" width="140">
+       <!-- <el-table-column align="center" label="状态" width="140">
         <template>          
             已过期 </template>
-      </el-table-column>
+      </el-table-column> -->
             <el-table-column align="center" label="规则描述">
         <template> fff </template>
       </el-table-column>
