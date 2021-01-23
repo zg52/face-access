@@ -6,8 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || '人脸辨识云' // page title
-
+const name = defaultSettings.title || '人脸辨识云 · 门禁' // 页面标签标题
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run

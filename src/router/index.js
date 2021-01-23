@@ -3,7 +3,6 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-/* Layout */
 import Layout from '@/layout'
  
 // import componentsRouter from './modules/components'
@@ -273,6 +272,24 @@ export const asyncRoutes = [
     hidden: true
   },
   { path: '*', redirect: '/404', hidden: true }
+]
+const createRouter = () => new Router({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRoutes
+})
+
+const router = createRouter()
+
+// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
+export default router
+
+// 非必须路由组件（按业务需求开放）
   // {
   //   path: '/icon',
   //   component: Layout,
@@ -483,21 +500,5 @@ export const asyncRoutes = [
   //   ]
   // },
 
-  // 404 page must be placed at the end !!!
-]
+// ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
-
-const router = createRouter()
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
-}
-
-export default router

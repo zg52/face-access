@@ -65,15 +65,6 @@ div:focus {
 .fl {
   float: left;
 }
-
-.pr-5 {
-  padding-right: 5px;
-}
-
-.pl-5 {
-  padding-left: 5px;
-}
-
 .block {
   display: block;
 }
@@ -191,7 +182,8 @@ aside {
   z-index: 1000 !important;
 }
 
-// 全局公用
+// 全局公用 
+// 外边距
 .mt10 {margin-top: 10px;}
 .mt15 {margin-top: 15px;}
 .mt20{margin-top:20px;}
@@ -200,8 +192,12 @@ aside {
 .mr15{margin-right: 15px;}
 .ml10{margin-left:10px;}
 
+// 内边距
 .pt10 {padding-top: 10px;}
+.pr-5 {padding-right: 5px;}
+.pl-5 {padding-left: 5px;}
 
+// 宽高圆角
 .w100 { width: 100px; }
 .w120 {width: 120px;}
 .w130 {width: 130px;}

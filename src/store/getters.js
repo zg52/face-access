@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-23 15:25:45
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\store\getters.js
+ */
 const getters = {
   sidebar: state => state.app.sidebar,
   language: state => state.app.language,

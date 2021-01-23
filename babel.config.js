@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-01-23 15:20:45
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\babel.config.js
+ */
 module.exports = {
   presets: [
     // https://github.com/vuejs/vue-cli/tree/master/packages/@vue/babel-preset-app
