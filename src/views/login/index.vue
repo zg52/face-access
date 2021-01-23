@@ -157,14 +157,9 @@ $light_gray:#eee;
   </div>
 </template>
 <script>
-// import { validUsername } from '@/utils/validate'
-import LangSelect from '@/components/LangSelect'
-import SocialSign from './components/SocialSignin'
-import { login, ops } from '@/api/user'
 
 export default {
   name: 'Login',
-  components: { LangSelect, SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -182,12 +177,12 @@ export default {
     }
     return {
       loginForm: {
-        username: 'yang',
+        username: '',
         password: '12345678'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur',}],
-        password: [{ required: true, trigger: 'blur',}]
+        username: [{ required: true, message: '用户名不能为空', trigger: 'blur',}],
+        password: [{ required: true, message: '密码不能为空', trigger: 'blur',}]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -237,8 +232,8 @@ export default {
       })
     },
     handleLogin() {
-      // this.$refs.loginForm.validate(valid => {
-        // if (valid) {
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
               // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
@@ -247,11 +242,11 @@ export default {
             .catch(() => {
               this.loading = false
             })
-        // } else {
-        //   console.log('error submit!!')
-        //   return false
-        // }
-      // })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
