@@ -97,7 +97,6 @@ export const constantRoutes = [
   // },
 
 ]
-
 export const asyncRoutes = [
   {
     path: '/people-manage',
@@ -106,31 +105,17 @@ export const asyncRoutes = [
     meta: { title: '人员管理', icon: 'peoples' },
     redirect: '/people-manage/staff-manage/staff-list',
     children: [
-      {
-        path: 'section',
-        component: () => import('@/views/people-manage/section'),
-        name: 'section',
-        meta: { title: '部门管理', icon: 'section'}
-      },
+      // {
+      //   path: 'section',
+      //   component: () => import('@/views/people-manage/section'),
+      //   name: 'section',
+      //   meta: { title: '部门管理', icon: 'section'}
+      // },
       {
         path: 'staff-manage',
         component: () => import('@/views/people-manage/staff-manage/staff-list'),
         name: 'staff-manage',
-        meta: { title: '员工管理', icon: 'staff' },
-      //   children: [
-      //     {
-      //       path: 'staff-list',
-      //       component: () => import('@/views/people-manage/staff-manage/staff-list'),
-      //       name: 'staff-list',
-      //       meta: { title: '员工管理' }
-      //     },
-      //     // {
-      //     //   path: 'staff-add',
-      //     //   component: () => import('@/views/people-manage/staff-manage/staff-add'),
-      //     //   name: 'staff-add',
-      //     //   meta: { title: '员工新增' }
-      //     // }
-      //   ]
+        meta: { title: '员工管理', icon: 'staff' }
       },
       {
         path: 'visitor',
