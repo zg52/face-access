@@ -8,7 +8,6 @@ $light_gray:#eee;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
-
   .login-form {
     position: relative;
     width: 440px;
@@ -18,7 +17,7 @@ $light_gray:#eee;
     margin-top: 100px;
     overflow: hidden;
     background: #272c40;
-    box-shadow: 0 0 20px #60526d;
+    // box-shadow: 0 0 20px #60526d;
     border-radius: 10px;
   }
   .tips {
@@ -39,7 +38,6 @@ $light_gray:#eee;
     width: 30px;
     display: inline-block;
   }
-
   .title-container {
     position: relative;
     width: 440px;
@@ -54,7 +52,6 @@ $light_gray:#eee;
     font-family: cursive;
     font-weight: bold;
     }
-
     .set-language {
       color: #fff;
       position: absolute;
@@ -64,7 +61,6 @@ $light_gray:#eee;
       cursor: pointer;
     }
   }
-
   .show-pwd {
     position: absolute;
     right: 10px;
@@ -135,70 +131,31 @@ $light_gray:#eee;
 </style>
 <template>
   <div class="login-container">
-    <div class="container_tit"><img src="../../assets/image/home-logo.png"><span>智能安防 · 监控门禁系统<svg-icon style="margin-left:4px" icon-class="sys-tit"/></span></div>
-    <div class="main">
-      <div class="banner">
-        <img src="../../assets/image/banner.png" width="490">
-      </div>
-      <div>
-       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-      <div class="title-container">
-        <h3 class="title">人脸辨识云·门禁系统</h3>
-      </div>
+    <div class="container_tit"><img src="../../assets/image/home-logo.png"><span>智能安防 · 监控门禁系统<svg-icon class="ml4" icon-class="sys-tit"/></span></div>
+    <div class="main"><div class="banner"> <img src="../../assets/image/banner.png" width="490"></div><div>
+
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+      <div class="title-container"><h3 class="title">人脸辨识云·门禁系统</h3></div>
       <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="用户名"
-          name="username"
-          type="text"
-          tabindex="1"  
-          autocomplete="on"
-        />
+        <span class="svg-container"><svg-icon icon-class="user" /></span>
+        <el-input ref="username" v-model="loginForm.username" placeholder="用户名" name="username" type="text" tabindex="1" autocomplete="on" />
       </el-form-item>
+
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
-          </span>
-          <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="密码"
-            name="password"
-            tabindex="2"
-            autocomplete="on"
-            @keyup.native="checkCapslock"
-            @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
-          />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
+          <span class="svg-container"><svg-icon icon-class="password" /></span>
+          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="密码" name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false" @keyup.enter.native="handleLogin" />
+          <span class="show-pwd" @click="showPwd"><svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" /></span>
         </el-form-item>
       </el-tooltip>
-      <el-button class="handle_login" :loading="loading" type="primary" @click.native.prevent="handleLogin">
-       登录
-      </el-button>
+      <el-button class="handle_login" :loading="loading" type="primary" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
       </div>
     </div>
+
     <footer class="base">版权信息： CopyRight © 2016-2021 华捷艾米 版权所有 京ICP备18040828号-1</footer>
-    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
-      {{ $t('login.thirdpartyTips') }}
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog>
   </div>
 </template>
-
 <script>
 // import { validUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
@@ -284,7 +241,7 @@ export default {
         // if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
             .catch(() => {
@@ -304,27 +261,8 @@ export default {
         return acc
       }, {})
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   },
   mounted() {
- 
   }
 }
 </script>
@@ -339,7 +277,7 @@ $cursor: #fff;
   }
 }
 
-/* reset element-ui css */
+/* 重置element-ui css */
 .login-container {
   .el-input {
     display: inline-block;

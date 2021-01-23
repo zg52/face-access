@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-09 18:22:11
- * @LastEditTime: 2021-01-11 14:11:34
+ * @LastEditTime: 2021-01-23 16:28:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\mock\public.js
@@ -42,6 +42,7 @@ const roles = [
     }
   ]
 var Mock = require('mockjs')
+// 登录
  Mock.mock('https://www.zg.com', {
     code: 0,
     data: {
