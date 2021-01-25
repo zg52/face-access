@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-23 15:42:28
+ * @LastEditTime: 2021-01-23 18:23:10
  * @LastEditors: Please set LastEditors
  * @Description: 全局路由钩子
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\permission.js
@@ -29,8 +29,8 @@ router.beforeEach(async(to, from, next) => {
 
   if (hasToken) {
     if (to.path === '/login') { // 若登陆去主页
-      next({ path: '/' }) 
-      NProgress.done() 
+      next({ path: '/' })
+      NProgress.done()
     } else {
       // 通过getInfo判断用户是否获得了权限角色
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
@@ -63,7 +63,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     /* has no token*/
     if (whiteList.indexOf(to.path) !== -1) {
-      // 在免费登录白名单中，直接进入
+      // 在免登录白名单中，直接进入
       next()
     } else {
       // 其他没有访问权限的页面被重定向到登录页面

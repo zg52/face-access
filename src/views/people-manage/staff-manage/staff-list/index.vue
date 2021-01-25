@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-22 18:16:50
+ * @LastEditTime: 2021-01-25 14:35:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -305,54 +305,30 @@ margin-left: 30px;
       </el-table-column>
     </el-table>
 
-      <el-dialog title="新增员工" :visible.sync="userFormVisible" width="1000px">
+    <el-dialog title="新增员工" :visible.sync="userFormVisible" width="1000px">
      <div v-loading="addSave_loading"  element-loading-text="拼命保存中"  element-loading-spinner="el-icon-loading">
     <el-form :model="addUserForm" label-width="auto" :rules="libraryRule" ref="addLibraryRule" class="addUserForm" :inline="true">
-       <el-form-item label="创建人："><el-input v-model="username" style="width: 160px"></el-input></el-form-item>
-      <el-form-item label="员工姓名："><el-input v-model="username" style="width: 160px"></el-input></el-form-item>
-        <el-form-item label="性别："><el-input v-model="username" class="w100"></el-input></el-form-item>
-          <el-form-item label="电话："><el-input v-model="username"></el-input></el-form-item>
-             <el-form-item label="住址："><el-input v-model="username"></el-input></el-form-item>
-           <el-form-item label="身份证号："><el-input v-model="username"></el-input></el-form-item>
-           <el-form-item label="邮箱："><el-input v-model="username"></el-input></el-form-item>
-      <el-form-item label="工号：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}">
-        <el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input>
-      </el-form-item>
-        <el-form-item label="职务："><el-input v-model="username" class="w150"></el-input></el-form-item>
+       <el-form-item label="创建人："><el-input v-model="username" class="w160" disabled></el-input></el-form-item>
+       <el-form-item label="员工姓名："><el-input v-model="username" class="w160"></el-input></el-form-item>
+       <el-form-item label="性别："><el-input v-model="username" class="w100"></el-input></el-form-item>
+       <el-form-item label="电话："><el-input v-model="username"></el-input></el-form-item>
+       <el-form-item label="住址："><el-input v-model="username"></el-input></el-form-item>
+       <el-form-item label="身份证号："><el-input v-model="username"></el-input></el-form-item>
+       <el-form-item label="邮箱："><el-input v-model="username"></el-input></el-form-item>
+       <el-form-item label="工号：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}"> <el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input> </el-form-item>
+       <el-form-item label="职务："><el-input v-model="username" class="w150"></el-input></el-form-item>
        <el-form-item label="所属部门：">
-      <el-select v-model="addUserForm.region" placeholder="超级管理员">
-        <el-option label="人力组" value="shanghai"></el-option>
-        <el-option label="行政组" value="beijing"></el-option>
-      </el-select>
-   </el-form-item>
-         <el-form-item label="IC卡号：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}">
-        <el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input>
+         <el-select v-model="addUserForm.region" placeholder="超级管理员">
+           <el-option label="人力组" value="shanghai"></el-option>
+           <el-option label="行政组" value="beijing"></el-option>
+         </el-select>
       </el-form-item>
-          <el-form-item label="门禁卡号：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}">
-        <el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input>
-      </el-form-item>
-           <el-form-item label="入职时间：">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="头像类型：">
-         <el-radio v-model="radio" label="1">证件照</el-radio>
-         <el-radio v-model="radio" label="2">生活照</el-radio>
-      </el-form-item>
- 
-     <el-form-item label="备注：" prop="description"><el-input class="w400"
-  type="textarea"
-  :rows="2"
-  placeholder="请输入内容"
-  v-model="textarea">
-</el-input></el-form-item><br>
+      <el-form-item label="IC卡号：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}"><el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input></el-form-item>
+      <el-form-item label="门禁卡号：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}"><el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input></el-form-item>
+      <el-form-item label="入职时间："> <el-date-picker type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="创建日期" end-placeholder="结束日期"></el-date-picker></el-form-item>
+      <el-form-item label="头像类型："> <el-radio v-model="radio" label="1">证件照</el-radio> <el-radio v-model="radio" label="2">生活照</el-radio> </el-form-item>
+      <el-form-item label="备注：" prop="description"><el-input class="w400" type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"> </el-input></el-form-item><br>
+
           <el-form-item label="头像采集：" prop="description">
               <el-upload
              class="avatar-uploader fl"
@@ -363,10 +339,10 @@ margin-left: 30px;
              <img v-if="imageUrl" :src="imageUrl" class="avatar">
              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
            </el-upload>
-         <div class="fl">
-             <el-button type="primary" class="camera"><i class="el-icon-camera-solid" /></el-button>
-             <p class="des">上传图片文件支持PNG、JPG、<br>JPEG、BMP，图片大小不超过2M</p>
-         </div>
+           <div class="fl">
+               <el-button type="primary" class="camera"><i class="el-icon-camera-solid" /></el-button>
+               <p class="des">上传图片文件支持PNG、JPG、<br>JPEG、BMP，图片大小不超过2M</p>
+           </div>
           </el-form-item>
      </el-form>
     <div slot="footer" class="dialog-footer t_right">
@@ -390,7 +366,7 @@ margin-left: 30px;
   </div>
 </template>
 <script>
-import { addList } from "@/api/people-manage/staff-manage";
+import { addStaff } from '@/api/people-manage/staffManage'
 export default {
   name: "",
   data() {
@@ -455,7 +431,7 @@ export default {
     }
   },
   created() {
-    addList({ username: "yang", password: "12345678" }).then(() => {});
+    console.log(addStaff)
   },
   mounted() {},
 };

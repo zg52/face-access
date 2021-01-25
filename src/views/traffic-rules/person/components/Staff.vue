@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-20 10:26:55
+ * @LastEditTime: 2021-01-25 14:15:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -229,7 +229,6 @@ margin-left: 30px;
   </div>
 </template>
 <script>
-import { addList } from "@/api/people-manage/staff-manage";
 export default {
   name: "",
   data() {

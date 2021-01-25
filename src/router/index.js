@@ -117,9 +117,9 @@ export const asyncRoutes = [
         meta: { title: '员工管理', icon: 'staff' }
       },
       {
-        path: 'visitor',
-        component: () => import('@/views/people-manage/visitor/list'),
-        name: 'visitor',
+        path: 'visitor-manage',
+        component: () => import('@/views/people-manage/visitor-manage/list'),
+        name: 'visitor-manage',
         meta: { title: '访客管理', icon: 'visitor' },
       }
     ]
@@ -168,12 +168,12 @@ export const asyncRoutes = [
     name: 'device-manag',
     component: Layout,
     meta: { title: '设备管理', icon: 'el-icon-video-camera-solid' },
-    redirect: '/device-manage/list',
+    redirect: '/device-manage/deviceList',
     children: [
       {
-        path: 'list',
-        name: 'list',
-        component: () => import('@/views/device-manage/list'),
+        path: 'deviceList',
+        name: 'deviceList',
+        component: () => import('@/views/device-manage/deviceList'),
         meta: { title: '设备列表', icon: 'door' },
       },
       {

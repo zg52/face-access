@@ -3,7 +3,7 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          <svg-icon icon-class="peoples" class-name="card-panel-icon card-panel-icon1" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
@@ -42,7 +42,7 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" style="color:red"/>
+          <svg-icon icon-class="peoples" class-name="card-panel-icon card-panel-icon2" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
@@ -72,7 +72,7 @@ export default {
 
 <style lang="scss" scoped>
 .panel-group {
-  margin-top: 18px;
+  margin-top: 5px;
 
   .card-panel-col {
     margin-bottom: 32px;
@@ -88,14 +88,15 @@ export default {
     background: #fff;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
     border-color: rgba(0, 0, 0, .05);
-
+.card-panel-icon2 {color: #f4516c;}
     &:hover {
       .card-panel-icon-wrapper {
         color: #fff;
       }
 
       .icon-people {
-        background: #40c9c6;
+        background: #8a16ff;
+        .card-panel-icon1 {color: #fff;}
       }
 
       .icon-message {
@@ -107,12 +108,16 @@ export default {
       }
 
       .icon-shopping {
-        background: #34bfa3
+        background: #f4516c;
+        .card-panel-icon2 {color: #fff;}
       }
     }
 
     .icon-people {
       color: #40c9c6;
+    }
+    .card-panel-icon1 {
+      color: #8a16ff;
     }
 
     .icon-message {

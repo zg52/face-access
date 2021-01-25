@@ -33,9 +33,9 @@ module.exports = {
 
       "/": {
         target: "http://192.168.10.148:8765/",
-        pathRewrite: { "^/apis": "" },
+        pathRewrite: { "^/~api": "" },
         changeOrigin: true,
-        // ws: true
+        // ws: true //代理websockes
       }
     },
     port: port,

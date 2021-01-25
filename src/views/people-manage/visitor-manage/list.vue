@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-22 17:55:46
+ * @LastEditTime: 2021-01-25 11:50:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -297,40 +297,23 @@ margin-left: 30px;
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingParams['total']"
     ></el-pagination>
-          <el-dialog title="新增访客" :visible.sync="userFormVisible" width="1000px">
+
+
+    <el-dialog title="新增访客" :visible.sync="userFormVisible" width="1000px">
      <div v-loading="addSave_loading"  element-loading-text="拼命保存中"  element-loading-spinner="el-icon-loading">
-    <el-form :model="addUserForm" label-width="auto" :rules="libraryRule" ref="addLibraryRule" class="addUserForm" :inline="true">
-      <el-form-item label="访客姓名："><el-input v-model="username" style="width: 160px"></el-input></el-form-item>
-        <el-form-item label="性别："><el-input v-model="username" class="w100"></el-input></el-form-item>
-             <el-form-item label="所在公司："><el-input v-model="username"></el-input></el-form-item>
+          <el-form :model="addUserForm" label-width="auto" :rules="libraryRule" ref="addLibraryRule" class="addUserForm" :inline="true">
+          <el-form-item label="访客姓名："><el-input v-model="username" style="width: 160px"></el-input></el-form-item>
+          <el-form-item label="性别："><el-input v-model="username" class="w100"></el-input></el-form-item>
+          <el-form-item label="所在公司："><el-input v-model="username"></el-input></el-form-item>
           <el-form-item label="电话："><el-input v-model="username"></el-input></el-form-item>
-           <el-form-item label="住址："><el-input v-model="username"></el-input></el-form-item>
-           <el-form-item label="身份证号："><el-input v-model="username"></el-input></el-form-item>
-           <el-form-item label="被访人姓名："><el-input v-model="username"></el-input></el-form-item>
-      <el-form-item label="被访人电话：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}">
-        <el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input>
-      </el-form-item>
-       <el-form-item label="访问事由：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}">
-        <el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input>
-      </el-form-item>
-           <el-form-item label="访问时间：">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
-      </el-form-item>
- 
-     <el-form-item label="备注：" prop="description"><el-input class="w400"
-  type="textarea"
-  :rows="2"
-  placeholder="请输入内容"
-  v-model="textarea">
-</el-input></el-form-item><br>
+          <el-form-item label="住址："><el-input v-model="username"></el-input></el-form-item>
+          <el-form-item label="身份证号："><el-input v-model="username"></el-input></el-form-item>
+          <el-form-item label="被访人姓名："><el-input v-model="username"></el-input></el-form-item>
+          <el-form-item label="被访人电话：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}"><el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input></el-form-item>
+          <el-form-item label="访问事由：" prop="displayName" :rules="{ required: true, message: '脸库名称不能为空'}"><el-input v-model.trim="addUserForm.displayName" placeholder="工号" maxlength="30"></el-input></el-form-item>
+          <el-form-item label="访问时间："><el-date-picker type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="创建日期" end-placeholder="结束日期"></el-date-picker></el-form-item>
+          <el-form-item label="备注：" prop="description"><el-input class="w400" type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"> </el-input></el-form-item><br>
+          
           <el-form-item label="头像采集：" prop="description">
               <el-upload
              class="avatar-uploader fl"
@@ -341,11 +324,8 @@ margin-left: 30px;
              <img v-if="imageUrl" :src="imageUrl" class="avatar">
              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
            </el-upload>
-         <div class="fl">
-             <el-button type="primary" class="camera"><i class="el-icon-camera-solid" /></el-button>
-             <p class="des">上传图片文件支持PNG、JPG、<br>JPEG、BMP，图片大小不超过2M</p>
-         </div>
-          </el-form-item>
+         <div class="fl"><el-button type="primary" class="camera"><i class="el-icon-camera-solid" /></el-button><p class="des">上传图片文件支持PNG、JPG、<br>JPEG、BMP，图片大小不超过2M</p></div>
+        </el-form-item>
      </el-form>
     <div slot="footer" class="dialog-footer t_right">
       <el-button type="primary" @click="resetFaceLibraryForm('addLibraryRule')"><i class="el-icon-folder-add" /><span>批量导入</span></el-button>
@@ -358,7 +338,6 @@ margin-left: 30px;
   </div>
 </template>
 <script>
-import { addList } from "@/api/people-manage/staff-manage";
 export default {
   name: "",
   data() {
@@ -395,6 +374,7 @@ export default {
           switch: 1,
         },
       ],
+// 新增访客
      pagingParams: {
         username: "",
         email: "",

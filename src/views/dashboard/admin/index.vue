@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
     <!-- <github-corner class="github-corner" /> -->
-
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
 
     <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
@@ -9,29 +8,11 @@
     </el-row> -->
 
     <el-row :gutter="32">
-         <el-col :xs="24" :sm="24" :lg="12">
-        <div class="chart-wrapper">
-          <DeviceChart />
-        </div>
-      </el-col>
-        <el-col :xs="24" :sm="24" :lg="12">
-        <div class="chart-wrapper">
-          <OpenDoor />
-        </div>
-      </el-col>
-
+         <el-col :xs="24" :sm="24" :lg="12"><div class="chart-wrapper"><DeviceChart /></div></el-col>
+          <el-col :xs="24" :sm="24" :lg="12"><div class="chart-wrapper"><Visitor /></div></el-col>
     </el-row>
-        <el-row :gutter="32">
-         <el-col :xs="24" :sm="24" :lg="12">
-        <div class="chart-wrapper">
-          <Visitor />
-        </div>
-      </el-col>
-        <el-col :xs="24" :sm="24" :lg="12">
-        <div class="chart-wrapper">
-          <OpenDoor />
-        </div>
-      </el-col>
+     <el-row :gutter="32">
+        <el-col :xs="24" :sm="24" :lg="32"><div class="chart-wrapper"><OpenDoor /></div></el-col>
     </el-row>
 
     <!-- <el-row :gutter="8">
@@ -109,7 +90,7 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard-editor-container {
-  padding: 32px;
+  padding: 20px;
   background-color: rgb(240, 242, 245);
   position: relative;
 

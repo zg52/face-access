@@ -266,7 +266,6 @@
   </div>
 </template>
 <script>
-import { addList } from "@/api/people-manage/staff-manage";
 export default {
   name: "",
   data() {

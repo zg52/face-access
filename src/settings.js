@@ -1,13 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-10 13:57:12
+ * @LastEditTime: 2021-01-23 18:21:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\settings.js
  */
 module.exports = {
-  title: '人脸辨识云',
+  title: '人脸辨识云 · 门禁',
 
   /**
    * @type {boolean} true | false
