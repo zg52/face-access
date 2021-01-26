@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-25 19:12:19
+ * @LastEditTime: 2021-01-26 18:53:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -128,58 +128,19 @@ margin-left: 30px;
     </div>
     
     <div class="lis_tit"><i></i> <span>设备详情列表</span></div>
-    <el-form :model="roles" :inline="true">
-      <el-form-item label="创建人"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="设备名称"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
-         <el-form-item label="设备类型"
-        ><el-select><el-option>五寸屏
-          </el-option><el-option>八寸屏桌面机
-          </el-option></el-select></el-form-item>
-       <el-form-item label="设备型号"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
+    <el-form :model="deviceListData" :inline="true">
+      <!-- <el-form-item label="创建人"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索"></el-input></el-form-item> -->
+      <el-form-item label="设备名称"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索"></el-input></el-form-item>
+         <el-form-item label="设备类型" ><el-select><el-option>五寸屏 </el-option><el-option>八寸屏桌面机 </el-option></el-select></el-form-item>
+       <el-form-item label="设备型号"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索"></el-input ></el-form-item>
  
       <el-form-item label="设备厂商">  <el-select   v-model="value" placeholder="请选择">
           <el-option>
           </el-option> </el-select></el-form-item>
-      <el-form-item label="设备SN"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入工号搜索"
-        ></el-input
-      ></el-form-item>
-    <el-form-item label="设备版本"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入工号搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="已下发人数"
-        ><el-input
-        class="w120"
-          v-model.trim="roles.roleName"
-          placeholder="输入手机号搜索"
-        ></el-input
-      ></el-form-item>
-            <el-form-item label="设备位置"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input
-      ></el-form-item>
+      <el-form-item label="设备SN"><el-input v-model.trim="roles.roleName" placeholder="输入工号搜索"></el-input></el-form-item>
+    <el-form-item label="设备版本"><el-input v-model.trim="roles.roleName" placeholder="输入工号搜索"></el-input></el-form-item>
+      <el-form-item label="已下发人数" ><el-input class="w120" v-model.trim="roles.roleName" placeholder="输入手机号搜索"></el-input></el-form-item>
+      <el-form-item label="设备位置" ><el-input v-model.trim="roles.roleName" placeholder="输入电话搜索"></el-input></el-form-item>
       <el-form-item label="方向">  <el-select class="w100"  v-model="value" placeholder="请选择">
           <el-option>进</el-option><el-option>出</el-option> </el-select></el-form-item>
       <el-form-item label="创建时间">
@@ -352,12 +313,14 @@ margin-left: 30px;
       <el-form :model="addDeviceData" :inline="true" :rules="addDeviceDataRule" ref="addDeviceData">
         <el-form-item label="创建人："><el-input v-model.trim="addDeviceData.username" disabled></el-input></el-form-item>
         <el-form-item label="设备名称：" prop="name"><el-input v-model.trim="addDeviceData.name" placeholder="输入设备名称"></el-input></el-form-item>
+        <el-form-item label="设备类型：">
+          <el-select v-model="addDeviceData.type" @change="deviceTypeChange"><el-option v-for="(type, index) of addDeviceData.typeValue" :key="index" :value="type.value"></el-option></el-select>
+        </el-form-item>
         <el-form-item label="设备型号：" prop="model"><el-input v-model.trim="addDeviceData.model" placeholder="输入设备型号"></el-input></el-form-item>
         <el-form-item label="设备厂商：" prop="manufacturer"><el-input v-model.trim="addDeviceData.manufacturer" placeholder="输入设备厂商"></el-input></el-form-item>
         <el-form-item label="设备SN：" prop="sn" ><el-input v-model.trim="addDeviceData.sn" placeholder="输入设备SN"></el-input></el-form-item>
         <el-form-item label="设备位置：" prop="location"><el-input v-model.trim="addDeviceData.location" placeholder="输入设备位"></el-input></el-form-item>
         <el-form-item label="描述：" prop="description"><el-input class="w400" v-model.trim="addDeviceData.description" placeholder="输入设备位"></el-input></el-form-item>
-        <!-- <el-form-item label="设备类型："><el-select><el-option>五寸屏 </el-option><el-option>八寸屏桌面机</el-option></el-select></el-form-item> -->
         <!-- <el-form-item label="设备版本：" ><el-input v-model.trim="roles.roleName" placeholder="输入工号搜索" ></el-input></el-form-item> -->
         <!-- <el-form-item label="方向："><el-select class="w100" v-model="value" placeholder="请选择"><el-option>进</el-option><el-option>出</el-option></el-select></el-form-item> -->
     </el-form>
@@ -386,24 +349,29 @@ export default {
   name: "",
   data() {
     const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
+    let deviceType = [
+             { value: '门禁' },
+             { value: '闸机' }
+           ]
     return {
       addSave_loading: false,
-      addDeviceVisible:true,
+      addDeviceVisible: true,
       value: 1,
       pickerOptions: [],
-
+// 设备查询
+      deviceListData: [],
 // 新增设备
       addDeviceData: {
            username: '艾米',
            name: '门禁主机1',
-           username: '艾米',
+           type:deviceType[0].value,
            model: 'fewfa32',
            manufacturer: '艾米',
            sn: '门禁主机1',
            location: '门禁主机1',
-           description: '门禁主机1'
+           description: '门禁主机1',
+           typeValue: deviceType
          },
-         
 // 设备提交验证
     addDeviceDataRule: {
        name: notNull,
@@ -479,7 +447,7 @@ export default {
        let _this = this
        this.$refs[el].validate((valid) => {
           if (valid) {
-            addDevice().then((res) => {
+            addDevice(this.addDeviceData).then((res) => {
              if(res.code === 0 && res.data) {
                this.$message.success(res.msg)
              }
@@ -491,6 +459,11 @@ export default {
     },
     onDelete() {
 
+    },
+    deviceTypeChange() {
+      let deviceType = this.addDeviceData.type,
+          typeValue = this.addDeviceData.typeValue
+          deviceType = deviceType == typeValue[0] ? typeValue[0] : typeValue[1]
     },
     onExport() {
 
