@@ -51,7 +51,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard', affix: true, roles: ['admin','viewer'] }
       }
     ]
   }, 
@@ -240,7 +240,7 @@ export const asyncRoutes = [
             path: 'user',
             component: () => import('@/views/system-manage/user'),
             name: 'user',
-            meta: { title: '用户管理', icon: 'user', roles: ['admin','viewer'] }
+            meta: { title: '用户管理', icon: 'user', roles: ['1','admin','viewer'] }
           },
           {
             path: 'permission',
@@ -248,13 +248,13 @@ export const asyncRoutes = [
             redirect: '/system-manage/permission/role',
             alwaysShow: true,
             name: 'permission',
-            meta: { title: '权限管理', icon: 'lock', roles: ['admin', 'editor'] },
+            meta: { title: '权限管理', icon: 'lock', roles: ['1','admin', 'editor'] },
             children: [
               {
                 path: 'role',
                 component: () => import('@/views/system-manage/permission/role'),
                 name: 'role',
-                meta: { title: '角色权限', roles: ['admin'] } 
+                meta: { title: '角色权限', roles: ['1','admin'] } 
               }
             ]
           },
@@ -262,7 +262,7 @@ export const asyncRoutes = [
             path: 'ulog',
             component: () => import('@/views/system-manage/ulog'),
             name: 'ulog',
-            meta: { title: '操作日志', icon: 'clipboard', roles: ['admin', 'editor'] },
+            meta: { title: '操作日志', icon: 'clipboard', roles: ['1','admin', 'editor'] },
           }
     ]
   },

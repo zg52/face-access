@@ -32,8 +32,8 @@ module.exports = {
     proxy: {
 
       "/": {
-        target: "http://192.168.10.148:8765/",
-        pathRewrite: { "^/~api": "" },
+        target: "http://10.0.0.128:8082/",
+        pathRewrite: { "^/_api": "" },
         changeOrigin: true,
         // ws: true //代理websockes
       }

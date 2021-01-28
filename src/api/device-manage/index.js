@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-01-27 17:23:48
+ * @LastEditTime: 2021-01-28 16:25:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -24,20 +24,41 @@ export function addList(params) {
  */
 export function addDevice(params) {
  return request({
-    url: '/device',
+    url: '_api/device',
     method: 'POST',
     data: params
   })
 }
 
 /**
+ * @description: 修改设备
+ * @param {id}
+ */
+export function editDevice() {
+  return request({
+     url: `_api/device/${ id }`,
+     method: 'PUT',
+   })
+ }
+
+/**
  * @description: 查设备列表
  */
 export function searchDevice(data) {
   return request({
-     url: '/device',
+     url: '_api/device',
      method: 'GET',
      data
+   })
+ }
+
+ /**
+ * @description: 查设备详情
+ */
+export function getDeviceDetails() {
+  return request({
+     url: `_api/device/${ id }`,
+     method: 'GET',
    })
  }
 
@@ -46,7 +67,10 @@ export function searchDevice(data) {
  */
 export function deleteDevice(id) {
   return request({
-     url: `/device/${ id }`,
+     url: `_api/device/${ id }`,
      method: 'DELETE',
    })
  }
+
+
+ 

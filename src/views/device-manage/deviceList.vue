@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-27 19:14:00
+ * @LastEditTime: 2021-01-28 19:53:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -52,7 +52,7 @@ margin-left: 30px;
   .demo-table-expand .el-form-item {
   margin-right: 0!important;
     margin-bottom: 0;
-    width: 20%;
+    width: 27%;
     border-bottom: 1px #eee dashed;
   }
     .demo-table-expand ::v-deep .el-form-item__label {
@@ -177,7 +177,9 @@ margin-left: 30px;
                <!-- <el-form-item label="方向："><span>{{ props.row.name }}</span></el-form-item> -->
                <el-form-item label="在线状态："><span>{{ props.row.online }}</span></el-form-item>
                <el-form-item label="设备状态："><span>{{ props.row.state }}</span></el-form-item>
+               <el-form-item label="设备密钥："><span>{{ props.row.secret }}</span></el-form-item>
                <el-form-item label="设备信息："><span>{{ props.row.information }}</span></el-form-item>
+               <el-form-item label="设备末次心跳同步时间："><span>{{ props.row.astHeartbeatTime }}</span></el-form-item>
                <el-form-item label="创建时间："><span>{{ props.row.createTime }}</span></el-form-item>
                <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime }}</span></el-form-item>
            </el-form>
@@ -202,7 +204,7 @@ margin-left: 30px;
 
       <el-table-column align="center" label="操作" :width="300" fixed="right">
         <template v-slot="scope">
-          <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope)" ><i class="el-icon-edit"></i><span>编辑</span></el-button >
+          <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button >
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
@@ -224,6 +226,16 @@ margin-left: 30px;
             </template>
       </el-table-column>
     </el-table>   
+
+   <el-pagination
+    @size-change="handleSizeChange"
+    @current-change="handleCurrentChange"
+    :current-page="pagingParams['current']"
+    :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
+    :page-size="pagingParams['size']"
+    layout="total, sizes, prev, pager, next, jumper"
+    :total="pagingParams['total']">
+  </el-pagination>
 
   <el-dialog title="新增设备" :visible.sync="addDeviceVisible" width="1000px">
      <div v-loading="addSave_loading" element-loading-text="拼命保存中" element-loading-spinner="el-icon-loading">
@@ -249,22 +261,36 @@ margin-left: 30px;
     </div>
      </div>
   </el-dialog>
-  <el-pagination
-    @size-change="handleSizeChange"
-    @current-change="handleCurrentChange"
-    :current-page="pagingParams['current']"
-    :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
-    :page-size="pagingParams['size']"
-    layout="total, sizes, prev, pager, next, jumper"
-    :total="pagingParams['total']">
-  </el-pagination>
+
+    <el-dialog title="编辑设备" :visible.sync="editDeviceVisible" width="1000px">
+     <div v-loading="editSave_loading" element-loading-text="拼命保存中" element-loading-spinner="el-icon-loading">
+      <el-form :model="editDeviceData" :inline="true" :rules="addDeviceDataRule" ref="editDeviceData">
+        <!-- <el-form-item label="创建人："><el-input v-model.trim="editDeviceData.username" disabled></el-input></el-form-item> -->
+        <el-form-item label="设备名称：" prop="name"><el-input v-model.trim="editDeviceData.name" placeholder="输入设备名称"></el-input></el-form-item>
+        <el-form-item label="设备型号：" prop="model"><el-input v-model.trim="editDeviceData.model" placeholder="输入设备型号"></el-input></el-form-item>
+        <el-form-item label="设备厂商：" prop="manufacturer"><el-input v-model.trim="editDeviceData.manufacturer" placeholder="输入设备厂商"></el-input></el-form-item>
+        <el-form-item label="设备SN：" prop="sn"><el-input v-model.trim="editDeviceData.sn" placeholder="输入设备SN"></el-input></el-form-item>
+        <el-form-item label="设备位置：" prop="location"><el-input v-model.trim="editDeviceData.location" placeholder="输入设备位"></el-input></el-form-item>
+        <el-form-item label="设备密钥：" prop="secret"><el-input v-model.trim="editDeviceData.secret" placeholder="输入设备位"></el-input></el-form-item>
+        <el-form-item label="描述：" prop="description"><el-input class="w400" v-model.trim="editDeviceData.description" placeholder="输入设备位"></el-input></el-form-item>
+        <!-- <el-form-item label="设备版本：" ><el-input v-model.trim="roles.roleName" placeholder="输入工号搜索" ></el-input></el-form-item> -->
+        <!-- <el-form-item label="方向："><el-select class="w100" v-model="value" placeholder="请选择"><el-option>进</el-option><el-option>出</el-option></el-select></el-form-item> -->
+    </el-form>
+    <div slot="footer" class="dialog-footer t_right">
+      <el-button @click="cancelEdit">取 消</el-button>
+      <el-button type="primary" @click="saveAddDeviceData('editDeviceData')" :disabled="editSave_loading"><i :class="{'el-icon-loading':editSave_loading}"></i> &nbsp;保 存</el-button>
+    </div>
+     </div>
+  </el-dialog>
+
   </div>
 </template>
 <script>
 import { 
-  addDevice,  //新增设备
-  searchDevice,  //查询设备列表
-  deleteDevice  //查询设备列表
+  addDevice,  //增设备
+  editDevice, //编辑设备
+  searchDevice,  //查设备列表
+  deleteDevice  //删设备
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import moment from "moment"
@@ -282,27 +308,45 @@ export default {
        ],
       deviceStatus = [
         { value: '正常' },
-        { value: '已禁用' }
+        { value: '已禁用' },
+        { value: '故障' },
+        { value: '升级' },
+        { value: '常开' },
+        { value: '长关' }
       ]
     return {
-      addSave_loading: false,
-      addDeviceVisible: false,
       table_loading: false,
+      addSave_loading: false,
+      editSave_loading: false,
+      addDeviceVisible: false,
+      editDeviceVisible: false,
       value: 1,
       pickerOptions: pickerOptions(),
       multipleSelection: [], //多选删除
 
 // 新增设备
       addDeviceData: {
-       username: '艾米',
-       name: '门禁主机1',
+       username: '',
+       name: '',
        type: deviceType[0].value,
-       model: 'fewfa32',
-       manufacturer: '艾米',
-       sn: '门禁主机1',
-       location: '门禁主机1',
-       description: '门禁主机1',
+       model: '',
+       manufacturer: '',
+       sn: '',
+       location: '',
+       description: '',
        typeValue: deviceType
+       },
+       
+ // 编辑设备
+      editDeviceData: {
+       username: '',
+       name: '',
+       model: '',
+       manufacturer: '',
+       sn: '',
+       location: '',
+       description: '',
+       secret:'',
        },
 
 // 设备查询/分页参数
@@ -361,28 +405,13 @@ export default {
        sn: notNull,
        location: notNull,
        description: notNull,
+       secret: notNull
     },
-      roles: [
-        {
-          roleName: "",
-        },
-      ],
-      addUserForm: [
-        
-      ],
-    }
+  }
   },
   methods: {
-     submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
+
+// 新增设备
     saveAddDeviceData(el) {
        let _this = this
        this.$refs[el].validate((valid) => {
@@ -392,7 +421,20 @@ export default {
                this.$message.success(res.msg)
              }
             })
-          }})
+         }})
+    },
+
+// 编辑设备
+    handleEdit(x, y) {
+      this.editDeviceVisible = true
+      this.editDeviceData1 = y
+       this.editDeviceData =  [...this.editDeviceData1]
+    },
+// 取消编辑
+    cancelEdit() {
+      this.editDeviceVisible = false
+      this.editDeviceData = []
+      this.editDeviceData = this.addDeviceData
     },
     
 // 查设备列表
@@ -431,7 +473,7 @@ export default {
       })
     },
 
-  // 批量删设备
+// 批量删设备
     onDeletes() {
        if (this.multipleSelection.length !== 0) {
         this.$confirm("此操作将永久删除已选设备, 是否继续?", "提示", {
@@ -449,7 +491,6 @@ export default {
                 }
               })
             }
-          
           }).catch(() => {
              this.$message.success.info({message: '已取消删除'})
              this.$refs.multipleTable.clearSelection()
@@ -459,7 +500,7 @@ export default {
           message: "请在列表中勾选要删除的设备",
           type: "warning"
         })
-      }
+      }1
     },
     deviceTypeChange() {
       let deviceType = this.addDeviceData.type,
@@ -468,9 +509,6 @@ export default {
     },
     onExport() {
 
-    },
-    handleEdit(index, row) {
-      console.log(index, row)
     },
     handleSizeChange(val) {
       this.pagingParams.size = val
@@ -485,9 +523,10 @@ export default {
     },
 
 // 重置表单
-    resetAddDeviceData(e) { //重置新增
+    resetAddDeviceData(e) { 
     this.$refs[e].resetFields()
    },
+   
   },
   created() {
   },
