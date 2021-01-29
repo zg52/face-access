@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-01-28 16:25:48
+ * @LastEditTime: 2021-01-29 11:22:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -72,5 +72,16 @@ export function deleteDevice(id) {
    })
  }
 
+  /**
+ * @description: 操作设备
+ * @param {deviceIds}
+ */
+export function instructDevice(type, params) {
+  return request({
+     url: `_api /device/instruct/${ type }`,
+     method: 'POST',
+     data: params
+   })
+ }
 
  

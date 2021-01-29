@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-28 19:53:20
+ * @LastEditTime: 2021-01-29 15:03:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -147,13 +147,13 @@ margin-left: 30px;
           @change="changeDate">
         </el-date-picker>
       </el-form-item>
-     <el-form-item label="设备状态"><el-select class="w100" v-model="pagingParams.deviceStatus" clearable><el-option v-for="(deviceStatus, index) of pagingParams.statusValue" :key="index" :value="deviceStatus.value"></el-option></el-select></el-form-item>
+     <el-form-item label="设备状态"><el-select class="w100" v-model="pagingParams.deviceStatus" clearable><el-option v-for="(deviceStatus, index) of pagingParams.statusValue" :key="index" :command="deviceStatus.command" :value="deviceStatus.value"></el-option></el-select></el-form-item>
      
       <el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="onExport"><svg-icon icon-class="excel"/> <span>导出</span></el-button>
       <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
-      <el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button>
+      <el-button type="primary"><svg-icon icon-class="guide"/> <span><router-link to="/device-manage/personnel">下发人员</router-link></span></el-button>
     </el-form>
     
     <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
@@ -212,15 +212,10 @@ margin-left: 30px;
             @onConfirm="handleDelete(scope.$index, scope.row)">
             <el-button  class="radius_45 ml10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
           </el-popconfirm>
-            <el-dropdown class="ml10">
+            <el-dropdown class="ml10" @command="handleCommand(scope.row)">
                <el-button type="primary" class="radius_45" size="mini"> 更多操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
                <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item>开门</el-dropdown-item>
-                 <el-dropdown-item>关门</el-dropdown-item>
-                 <el-dropdown-item>常开</el-dropdown-item>
-                 <el-dropdown-item>长关</el-dropdown-item>
-                 <el-dropdown-item>重启</el-dropdown-item>
-                 <el-dropdown-item>关机</el-dropdown-item>
+                 <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.command">{{ command.value }}</el-dropdown-item>
                </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -228,13 +223,13 @@ margin-left: 30px;
     </el-table>   
 
    <el-pagination
-    @size-change="handleSizeChange"
-    @current-change="handleCurrentChange"
-    :current-page="pagingParams['current']"
-    :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
-    :page-size="pagingParams['size']"
-    layout="total, sizes, prev, pager, next, jumper"
-    :total="pagingParams['total']">
+     @size-change="handleSizeChange"
+     @current-change="handleCurrentChange"
+     :current-page="pagingParams['current']"
+     :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
+     :page-size="pagingParams['size']"
+     layout="total, sizes, prev, pager, next, jumper"
+     :total="pagingParams['total']">
   </el-pagination>
 
   <el-dialog title="新增设备" :visible.sync="addDeviceVisible" width="1000px">
@@ -277,8 +272,8 @@ margin-left: 30px;
         <!-- <el-form-item label="方向："><el-select class="w100" v-model="value" placeholder="请选择"><el-option>进</el-option><el-option>出</el-option></el-select></el-form-item> -->
     </el-form>
     <div slot="footer" class="dialog-footer t_right">
-      <el-button @click="cancelEdit">取 消</el-button>
-      <el-button type="primary" @click="saveAddDeviceData('editDeviceData')" :disabled="editSave_loading"><i :class="{'el-icon-loading':editSave_loading}"></i> &nbsp;保 存</el-button>
+      <el-button @click="cancelEdit('editDeviceData')">取 消</el-button>
+      <el-button type="primary" @click="saveEditDeviceData('editDeviceData')" :disabled="editSave_loading"><i :class="{'el-icon-loading':editSave_loading}"></i> &nbsp;保 存</el-button>
     </div>
      </div>
   </el-dialog>
@@ -287,10 +282,12 @@ margin-left: 30px;
 </template>
 <script>
 import { 
-  addDevice,  //增设备
-  editDevice, //编辑设备
-  searchDevice,  //查设备列表
-  deleteDevice  //删设备
+  addDevice,  // 增设备
+  editDevice, // 编辑设备
+  searchDevice,  // 查设备列表
+  getDeviceDetails, // 查设备详情
+  deleteDevice,  // 删设备
+  instructDevice // 操作设备
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import moment from "moment"
@@ -307,12 +304,38 @@ export default {
         { value: '离线' }
        ],
       deviceStatus = [
-        { value: '正常' },
-        { value: '已禁用' },
-        { value: '故障' },
-        { value: '升级' },
-        { value: '常开' },
-        { value: '长关' }
+          {
+            command: 'removed',
+            value: '已删除'
+          },
+          {
+            command: 'out_of_order',
+            value: '故障'
+          },
+          {
+           command: 'close',
+           value: '关门'
+         },
+         {
+           command: 'open',
+           value: '开门'
+         },
+          {
+           command: 'always_open',
+           value: '常开门'
+         },
+          {
+           command: 'always_close',
+           value: '常关门'
+         },
+         {
+           command: 'restart',
+           value: '重启'
+         },
+         {
+           command: 'shutdown',
+           value: '关机'
+         },
       ]
     return {
       table_loading: false,
@@ -348,7 +371,7 @@ export default {
        description: '',
        secret:'',
        },
-
+       editParam: null, // 编辑参数
 // 设备查询/分页参数
      pagingParams: {
       //  username: '艾米',
@@ -357,7 +380,7 @@ export default {
        typeValue: deviceType,
        isOnline: deviceISOnline[0].value,
        online: deviceISOnline,
-       deviceStatus: deviceStatus[0].value,
+      //  deviceStatus: deviceStatus[0].value,
        statusValue: deviceStatus,
        model: 'fewfa32',
        isOnline:'在线',
@@ -394,6 +417,25 @@ export default {
         "lastHeartbeatTime": "2021-01-20 16:31:25",
         "createTime": "2021-01-20 15:30:36",
         "lastUpdateTime": null
+        },
+        {
+          "id": 1,
+        "name": "闸u67tu6t7u机01",
+        "description": null,
+        "manufacturer": "华捷艾米",
+        "model": "初代",
+        "sn": "A0001",
+        "location": "东门",
+        "unique_device_identifier": "rworuowjqwueoqweqw",
+        "secret": "ow9243ssd99x@@12",
+        "online": true,
+        "state": "normal",
+        "status": "normal",
+        "information": null,
+        "firmware_version": null,
+        "lastHeartbeatTime": "2021-01-20 16:31:25",
+        "createTime": "2021-01-20 15:30:36",
+        "lastUpdateTime": null
         }
       ],
 
@@ -404,13 +446,21 @@ export default {
        manufacturer: notNull,
        sn: notNull,
        location: notNull,
-       description: notNull,
        secret: notNull
     },
+    
+// 设备操作字段
+    commandes: deviceStatus.slice(2)
   }
   },
+  watch: {
+    editDeviceVisible:{
+      handler(val) {
+       !val ? this.$refs['editDeviceData'].resetFields() : null
+      }
+    }
+  },
   methods: {
-
 // 新增设备
     saveAddDeviceData(el) {
        let _this = this
@@ -423,17 +473,30 @@ export default {
             })
          }})
     },
-
+    
 // 编辑设备
-    handleEdit(x, y) {
-      this.editDeviceVisible = true
-      this.editDeviceData1 = y
-       this.editDeviceData =  [...this.editDeviceData1]
+    saveEditDeviceData(el) {
+        let _this = this
+       this.$refs[el].validate((valid) => {
+          if (valid) {
+            editDevice(this.editParam ? this.editParam : null).then((res) => {
+             if(res.code === 0 && res.data) {
+               this.$message.success(res.msg)
+             }
+            })
+         }})
     },
+    handleEdit(x, y) {
+      this.editParam = y.id
+      this.editDeviceVisible = true
+      this.editDeviceData = JSON.parse(JSON.stringify(y))
+    },
+    
 // 取消编辑
-    cancelEdit() {
+    cancelEdit(e) {
       this.editDeviceVisible = false
       this.editDeviceData = []
+       this.$refs[e].resetFields()
       this.editDeviceData = this.addDeviceData
     },
     
@@ -470,6 +533,8 @@ export default {
         } else {
           this.$message.warning({message: res.msg})
         }
+      }).catch(() => {
+        
       })
     },
 
@@ -502,6 +567,12 @@ export default {
         })
       }1
     },
+// 操作设备
+     handleCommand(rowData,command) {
+       instructDevice(command,{ deviceIds: rowData.id }).then((res) => {
+       res.code === 0 ? this.$message.success(res.msg) : this.$message.success('操作失败，请重试')
+      })
+      },
     deviceTypeChange() {
       let deviceType = this.addDeviceData.type,
           typeValue = this.addDeviceData.typeValue
@@ -529,6 +600,7 @@ export default {
    
   },
   created() {
+    // delete this.commandes[0].
   },
   mounted() {
   },

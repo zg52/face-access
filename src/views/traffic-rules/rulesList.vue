@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-23 10:42:46
+ * @LastEditTime: 2021-01-29 17:30:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -198,8 +198,6 @@ margin-left: 30px;
         >
       </el-table-column>
     </el-table>
-
- 
   
       <el-pagination
          @size-change="handleSizeChange"

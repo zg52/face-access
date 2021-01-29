@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-23 10:39:39
+ * @LastEditTime: 2021-01-29 20:14:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -15,28 +15,28 @@
 </style>
 <template>
   <div class="app-container">
-    <el-form :model="roles" label-width="120px">
+    <el-form :model="addRules" label-width="120px">
+      
        <el-form-item label="选择设备名称：">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option>  <el-radio-group v-model="radio">
-    <el-radio :label="3" border @click.native="yg">员工 <sub class="p_num">已选102人</sub></el-radio>
-    <el-radio :label="6" border>访客  <sub class="p_num">已选102人</sub></el-radio>
-  </el-radio-group></el-option> 
-          </el-select>
-          </el-form-item>
-   <el-form-item label="选择通行方式：">
+        <el-select v-model="deviceName" placeholder="请选择">
+         <el-option v-for="(deviceName, index) of deviceNames" :key="index" :deviceIds="deviceName.deviceIds" :value="deviceName.name"></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="选择通行方式：">
        <div class="block">
-  <el-cascader
-     class="w250"
-    :options="options"
-    :props="props"
-    clearable></el-cascader>
- </div>
-           </el-form-item>
+            <el-cascader
+               class="w250"
+              :options="passWay"
+              :props="passWayProps"
+              clearable></el-cascader>
+           </div>
+      </el-form-item>
+      
       <el-form-item label="通行规则名称：" 
         ><el-input
         class="w200"
-          v-model.trim="roles.roleName"
+          v-model.trim="addRules.roleName"
           placeholder="常客"
         ></el-input
       ></el-form-item>
@@ -45,7 +45,7 @@
                class="w200"
          type="textarea"
          placeholder="请输入内容"
-         v-model="roles.roleName"
+         v-model="addRules.roleName"
          maxlength="50"
          show-word-limit
        ></el-input></el-form-item>
@@ -90,12 +90,12 @@
   :visible.sync="dialogVisible"
   width="100%"
   :before-close="handleClose">
-      <el-form :model="roles" :inline="true">
+      <el-form :model="addRules" :inline="true">
  
       <el-form-item label="员工姓名"
         ><el-input
           class="w100"
-          v-model.trim="roles.roleName"
+          v-model.trim="addRules.roleName"
           placeholder="输入姓名搜索"
         ></el-input
       ></el-form-item>
@@ -104,14 +104,14 @@
           </el-option> </el-select></el-form-item>
       <el-form-item label="工号"
         ><el-input
-          v-model.trim="roles.roleName"
+          v-model.trim="addRules.roleName"
           placeholder="输入工号搜索"
         ></el-input
       ></el-form-item>
       <el-form-item label="电话"
         ><el-input
         class="w130"
-          v-model.trim="roles.roleName"
+          v-model.trim="addRules.roleName"
           placeholder="输入手机号搜索"
         ></el-input
       ></el-form-item>
@@ -143,7 +143,7 @@
         <i class="el-icon-search"></i><span>查询</span></el-button
       >
     </el-form>
-     <el-table :data="rolesList" border class="people_list" max-height="650">
+     <el-table :data="addRulesList" border class="people_list" max-height="650">
       <el-table-column
         width="50"
         type="selection"
@@ -266,6 +266,10 @@
   </div>
 </template>
 <script>
+import { addRules } from'@/api/traffic-rules'
+import { 
+  searchDevice,  // 查设备列表
+ } from '@/api/device-manage'
 export default {
   name: "",
   data() {
@@ -275,59 +279,83 @@ export default {
         checkedCities: ['星期一', '星期二'],
         cities: cityOptions,
         isIndeterminate: true,
-      dialogVisible: true,
+      dialogVisible: false,
       radio: null,
-       props: { multiple: true },
-       options: [
-         {
-          label: '刷脸',
-       },
-       {
-          label: '指纹',
-       },
-       {
-          label: '二维码',
-       },
-         {
-          label: '刷卡',
-          children: [
+
+//  设备名称
+        deviceName: '',
+        deviceNames: [
+           {
+             name: '设备1',
+             deviceIds: 1
+           },
             {
-            value: 'shejiyuanze',
-            label: '门禁卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: 'IC卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: '身份证',
+             name: '设备2',
+             deviceIds: 1
            }
-          ]
-       },
-       {
-          label: '刷卡 + 刷脸',
-          children: [
-            {
-            value: 'shejiyuanze',
-            label: '刷卡 + 门禁卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: '刷卡 + IC卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: '刷卡 + 身份证',
-           }
-          ]
-       }
+         ],
+       addRules: {
+         deviceIds: ''
         
+       },
+
+// 通行方式
+       passWayProps: { multiple: true },
+       passWay: [
+          {
+            label: '刷脸',
+            mark: 'face'
+          },
+          {
+            label: '指纹',
+            mark: 'fingerprint'
+          },
+          {
+            label: '二维码',
+            mark: 'qr_code'
+          },
+          {
+            label: '刷卡',
+              children: [
+                {
+                 label: '门禁卡',
+                 mark: 'wg_card'
+               },
+               {
+                label: 'IC卡',
+                mark: 'ic_card'
+              },
+             {
+                label: '身份证',
+                mark: 'identity_card'
+             }
+          ]
+       },
+       {
+           label: '刷卡 + 刷脸',
+            children: [
+              {
+              value: 'shejiyuanze',
+              label: '刷脸 + 门禁卡',
+              mark: ['face','wg_card']
+             },
+             {
+              value: 'shejiyuanze',
+              label: '刷脸 + IC卡',
+              mark: ['face','ic_card']
+             },
+             {
+              value: 'shejiyuanze',
+              label: '刷脸 + 身份证',
+              mark: ['face','identity_card']
+             }
+            ]
+       }
        ],
       userFormVisible:true,
       value: 1,
       pickerOptions: [],
-      roles: [
+      addRules: [
         {
           roleName: "",
         },
@@ -335,7 +363,7 @@ export default {
       addUserForm: [
         
       ],
-      rolesList: [
+      addRulesList: [
         {
           name: "阿娃",
           description: "算法应用院",
@@ -398,6 +426,23 @@ export default {
       }
   },
   created() {
+
+// 获取默认设备名称
+    searchDevice(this.pagingParams).then((res) => {
+          let data = res.data.rescords
+         if(res.code === 0 && data.length !== 0) {
+              data.map((x,y) => {
+                this.deviceNames.push({
+                   name: x.name,
+                   deviceIds: x.id
+                })
+              })
+              this.deviceName = this.deviceNames[0].name
+              this.addRules.deviceIds = this.deviceNames[0].id
+            } else {
+               this.$message.warning('无可用设备，请先添加设备')
+            }
+      })
     addList({ username: "yang", password: "12345678" }).then(() => {});
   },
   mounted() {},

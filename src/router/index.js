@@ -129,12 +129,12 @@ export const asyncRoutes = [
     name: 'traffic-rules',
     component: Layout,
     meta: { title: '通行规则', icon: 'trafficRules' },
-    redirect: '/traffic-rules/set',
+    redirect: '/traffic-rules/addRules',
     children: [
       {
-        path: 'set',
-        component: () => import('@/views/traffic-rules/set'),
-        name: 'set',
+        path: 'addRules',
+        component: () => import('@/views/traffic-rules/addRules'),
+        name: 'addRules',
         meta: { title: '下发规则', icon: 'rules' }
      },
      {
@@ -270,6 +270,18 @@ export const asyncRoutes = [
     path: '/pdf/download',
     component: () => import('@/views/pdf/download'),
     hidden: true
+  },
+  {
+    path: '/tab',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/tab/index'),
+        name: 'Tab',
+        meta: { title: 'tab', icon: 'tab' }
+      }
+    ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
