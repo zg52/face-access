@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-01-25 14:19:23
+ * @LastEditTime: 2021-01-30 17:24:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -17,10 +17,10 @@ export function addList(params) {
 }
 
 // 人员管理（员工/访客）
+
 /**
  * @description: 员工新增
  * @param {*}
- * @return {*}
  */
 export function addStaff(params) {
  return request({
@@ -29,3 +29,15 @@ export function addStaff(params) {
     data: params
   })
 }
+
+/**
+ * @description: 员工列表
+ * @param {*}
+ */
+export function getStaffLis(data) {
+  return request({
+     url: '/',
+     method: 'GET',
+     data
+   })
+ }

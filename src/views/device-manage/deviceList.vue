@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-29 15:03:04
+ * @LastEditTime: 2021-01-30 17:13:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -561,11 +561,8 @@ export default {
              this.$refs.multipleTable.clearSelection()
           })
       } else {
-        this.$message({
-          message: "请在列表中勾选要删除的设备",
-          type: "warning"
-        })
-      }1
+        this.$message.warning('请在列表中勾选要删除的设备')
+      }
     },
 // 操作设备
      handleCommand(rowData,command) {
