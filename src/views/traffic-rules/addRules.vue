@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-29 20:14:10
+ * @LastEditTime: 2021-01-30 10:11:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -27,9 +27,14 @@
        <div class="block">
             <el-cascader
                class="w250"
+               v-model="addRules.verificationModes"
               :options="passWay"
               :props="passWayProps"
-              clearable></el-cascader>
+              clearable
+              @change="changeRuleNode"
+              @getCheckedNodes="getCheckedNodes"
+              >
+             </el-cascader>
            </div>
       </el-form-item>
       
@@ -48,7 +53,8 @@
          v-model="addRules.roleName"
          maxlength="50"
          show-word-limit
-       ></el-input></el-form-item>
+       ></el-input>
+     </el-form-item>
     <el-form-item label="通行人员类型：">
       <el-radio-group v-model="radio">
     <el-radio :label="3" @click.native="yg" border>全部员工</el-radio>
@@ -59,8 +65,8 @@
     </div>
   </el-radio-group>
         </el-form-item>
-     <el-form-item label="选择通行时间：">
-      <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
+     <!-- <el-form-item label="选择通行时间：">
+      <el-tabs v-model="activeName" type="border-card">
     <el-tab-pane label="星期制" name="first">
   <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
   <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
@@ -80,12 +86,12 @@
     </el-tab-pane>
   </el-tabs>
        
-      </el-form-item>
+      </el-form-item> -->
     <el-button type="primary" @click="handleAddRole"
         ><svg-icon icon-class="guide" />  一键下发</el-button>
     </el-form>
 
-    <el-dialog
+    <!-- <el-dialog
   title="选择通行人员"
   :visible.sync="dialogVisible"
   width="100%"
@@ -261,7 +267,7 @@
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
-</el-dialog>   
+</el-dialog>    -->
  
   </div>
 </template>
@@ -279,8 +285,8 @@ export default {
         checkedCities: ['星期一', '星期二'],
         cities: cityOptions,
         isIndeterminate: true,
-      dialogVisible: false,
-      radio: null,
+        dialogVisible: false,
+        radio: null,
 
 //  设备名称
         deviceName: '',
@@ -294,61 +300,59 @@ export default {
              deviceIds: 1
            }
          ],
-       addRules: {
-         deviceIds: ''
-        
-       },
+         addRules: {
+           deviceIds: '',
+           verificationModes: ['face']
+          
+         },
 
 // 通行方式
        passWayProps: { multiple: true },
        passWay: [
           {
             label: '刷脸',
-            mark: 'face'
+            value: 'face'
           },
           {
             label: '指纹',
-            mark: 'fingerprint'
+            value: 'fingerprint'
           },
           {
             label: '二维码',
-            mark: 'qr_code'
+            value: 'qr_code'
           },
           {
             label: '刷卡',
               children: [
                 {
                  label: '门禁卡',
-                 mark: 'wg_card'
+                 value: 'wg_card'
                },
                {
                 label: 'IC卡',
-                mark: 'ic_card'
+                value: 'ic_card'
               },
-             {
+              {
                 label: '身份证',
-                mark: 'identity_card'
-             }
+                value: 'identity_card'
+              }
           ]
        },
        {
-           label: '刷卡 + 刷脸',
+           label: '刷脸 + 刷卡',
             children: [
               {
-              value: 'shejiyuanze',
-              label: '刷脸 + 门禁卡',
-              mark: ['face','wg_card']
-             },
-             {
-              value: 'shejiyuanze',
-              label: '刷脸 + IC卡',
-              mark: ['face','ic_card']
-             },
-             {
-              value: 'shejiyuanze',
-              label: '刷脸 + 身份证',
-              mark: ['face','identity_card']
-             }
+                label: '刷脸 + 门禁卡',
+                value: 'face,wg_card'
+              },
+              {
+                label: '刷脸 + IC卡',
+                value: 'face,ic_card'
+              },
+              {
+                label: '刷脸 + 身份证',
+                value: 'face,identity_card'
+              }
             ]
        }
        ],
@@ -400,6 +404,12 @@ export default {
     };
   },
   methods: {
+    changeRuleNode() {
+      console.log(this.addRules.verificationModes)
+    },
+    getCheckedNodes(leafOnly) {
+      alert(leafOnly)
+    },
     yg() {
     //  this.radio3 = 3
     },
@@ -423,27 +433,30 @@ export default {
         let checkedCount = value.length;
         this.checkAll = checkedCount === this.cities.length;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
-      }
-  },
-  created() {
+      },
 
 // 获取默认设备名称
-    searchDevice(this.pagingParams).then((res) => {
-          let data = res.data.rescords
-         if(res.code === 0 && data.length !== 0) {
-              data.map((x,y) => {
-                this.deviceNames.push({
-                   name: x.name,
-                   deviceIds: x.id
-                })
+    getDeviceName() {
+      searchDevice(this.pagingParams).then((res) => {
+        let data = res.data.rescords
+       if(res.code === 0 && data.length !== 0) {
+            data.map((x,y) => {
+              this.deviceNames.push({
+                 name: x.name,
+                 deviceIds: x.id
               })
-              this.deviceName = this.deviceNames[0].name
-              this.addRules.deviceIds = this.deviceNames[0].id
-            } else {
-               this.$message.warning('无可用设备，请先添加设备')
-            }
+            })
+            this.deviceName = this.deviceNames[0].name
+            this.addRules.deviceIds = this.deviceNames[0].id
+          } else {
+             this.$message.warning('无可用设备，请先添加设备')
+          }
       })
-    addList({ username: "yang", password: "12345678" }).then(() => {});
+    }
+  },
+  created() {
+    // this.getDeviceName()
+
   },
   mounted() {},
 };
