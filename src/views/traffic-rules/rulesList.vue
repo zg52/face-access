@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-01 16:48:05
+ * @LastEditTime: 2021-02-01 19:55:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -65,6 +65,25 @@ margin-left: 30px;
         <el-option v-for="(personType, index) of personTypes" :key="index" :value="personType.name"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="通行时间-星期制">
+        <div class="block">
+             <el-cascader class="w250" v-model="pagingParams.queryWeek" :options="queryWeek" :props="queryWeeksProps" clearable @change="changeRuleNode1"></el-cascader>
+         </div>
+      </el-form-item>
+      <el-form-item label="通行时间-日期制">
+        <el-date-picker
+          v-model="date"
+          type="datetimerange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="创建日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions1"
+          :default-time="['00:00:00', '23:59:59']"
+          @change="changeDate1">
+           </el-date-picker>
+      </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker
           v-model="createTime"
@@ -96,15 +115,16 @@ margin-left: 30px;
       <el-table-column align="center" label="通行规则名称" width="120"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="通行方式" width="80"><template v-slot="scope">{{ scope.row.verificationModes }}</template></el-table-column>
       <el-table-column align="center" label="通行人员类型" width="120"> <template v-slot="scope">{{ scope.row.value === 'employee' ? '员工' : '访客' }}</template></el-table-column>
-      <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
       <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
-      <el-table-column align="center" label="修改时间" width="120"><template v-slot="scope">{{ scope.row.lastUpdateTime }}</template></el-table-column>
+      <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
+      <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput(scope.row.week) }}</template></el-table-column>
+      <el-table-column align="center" label="通行日期+时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.endTime } ~ ${ scope.row.startDate } ${ scope.row.endTime }` }}</template></el-table-column>
       <el-table-column align="center" label="规则描述"><template v-slot="scope">{{ scope.row.description }}</template> </el-table-column> 
       <el-table-column align="center" label="创建人"><template v-slot="scope">{{ scope.row.userId }}</template></el-table-column>
       
       <el-table-column align="left" label="操作" width="220" fixed="right">
         <template v-slot="scope">
-          <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
+          <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-button class="radius_45 mt10" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
           <el-popconfirm
             confirmButtonText="确认"
@@ -132,8 +152,10 @@ margin-left: 30px;
 import { getRules, deleteRules } from'@/api/traffic-rules'
 import { pickerOptions } from '@/utils'
 import moment from 'moment'
+
+const optionsWeek = ['一', '二', '三', '四', '五', '六', '日']
 export default {
-  name: "",
+  name: 'rulesList',
   data() {
     return {
       userFormVisible: true,
@@ -161,6 +183,8 @@ export default {
             }
           }]
         },
+        pickerOptions1: pickerOptions(),
+        date: null,
         props: { multiple: true },
         createTime: null,
 
@@ -237,6 +261,10 @@ export default {
           value: '禁用'
         }
        ],
+       
+  // 通行时间
+      queryWeeksProps: { multiple: true },
+      queryWeek: [],
       ruleList: [
         {
           name: "阿娃",
@@ -250,6 +278,12 @@ export default {
           job: "打杂专员",
           sex: "女",
           entryTime: "2023-12-12",
+            startDate: '2021-12-21',
+       endDate: '2021-09-32',
+       startTime: '06:00:00',
+       endTime: '06:00:00',
+       week: '0123456'
+
         },
       ],
      pagingParams: {
@@ -261,11 +295,33 @@ export default {
        ruleType: 'personType',
        value: null,
        createTime: null,
+       queryWeek: null,
+       startDate: null,
+       endDate: null,
+       startTime: null,
+       endTime: null,
+
        current: 1,
        size: 20,
        total: 10,
        status: ''
       },
+    }
+  },
+  computed: {
+   
+  },
+  filters: {
+    weekComput(value) {
+      let weekArr = value.split(''),
+          weekStr = []
+          optionsWeek.map((item, index) => {
+            if(item == weekArr[index]) {
+              weekArr[index] == 0 ? weekStr.push('周日') : weekStr.push(`周${ item }`)
+            }
+          })
+          return weekStr
+
     }
   },
   methods: {
@@ -279,12 +335,39 @@ export default {
       this.pagingParams['verificationModes'] =  this.pagingParams['verificationModes'] ?? Array.from(new Set(newArr))
     },
 
+ // 获取通行星期参数
+    changeRuleNode1() {
+      let queryWeek = this.pagingParams,
+          querWeekStr = []
+          if(queryWeek['queryWeek'].length !== 0) {
+                queryWeek['queryWeek'].forEach((item, index) => {
+                 querWeekStr.push(item[0])
+              })
+              querWeekStr = querWeekStr.join()
+               queryWeek['queryWeek'] = querWeekStr
+          }
+    },
+
+ // 获取通行日期时间参数
+    changeRuleNode1() {
+      let queryWeek = this.pagingParams,
+          querWeekStr = []
+          if(queryWeek['queryWeek'].length !== 0) {
+                queryWeek['queryWeek'].forEach((item, index) => {
+                 querWeekStr.push(item[0])
+              })
+              querWeekStr = querWeekStr.join()
+               queryWeek['queryWeek'] = querWeekStr
+          }
+    },
+
 // 获取通行人员类型参数
     personTypeHandle() {
       let _p = this.personTypes,
           param = this.pagingParams
           this.personType === _p[0]['name'] ? param.value = _p[0]['value'] : param.value = _p[1]['value']
     },
+    
 // 查设备列表
     onSearch(){
       this.pagingParams.current = 1
@@ -307,7 +390,7 @@ export default {
       deleteRules(y.id).then((res) => {
         if (res.code == 0 && res.data) {
           this.$message.success({message: res.msg})
-          this.getDeviceList()
+          this.onSearch()
         } else {
           this.$message.warning({message: res.msg})
         }
@@ -344,7 +427,11 @@ export default {
     onExport() {
 
     },
-  
+
+// 修改规则
+    handleEdit() {
+      
+    },
 // 获取默认设备名称
     getDeviceName() {
       searchDevice(this.pagingParams).then((res) => {
@@ -374,12 +461,31 @@ export default {
     handleSelectionChange(val) {
      this.multipleSelection = val
     },
+    changeDate1() {
+      let _this = this,
+          date = this.pagingParams,
+          dateItem = ['startDate', 'endDate', 'startTime', 'endTime']
+          getDate()
+          function getDate() {
+           dateItem.map((item, index) => { 
+             index <= 1 ? date[dateItem[index]] =  moment(_this.date[index]).format('YYYY-MM-DD') : date[dateItem[index]] =  moment(_this.date[index]).format('hh:mm')
+            })
+          }
+    },
     changeDate() {
-      this.pagingParams.createTime = moment(this.createTime).format('YYYY-MM-DD hh:mm:ss')
+      this.pagingParams.createTime = moment(this.createTime).format('YYYY-MM-DD hh:mm')
     },
   },
   created() {
     // this.getDeviceName()
+    {
+     optionsWeek.map((item, index) => {
+         this.queryWeek.push({
+          value: item === '日' ? 0 : index + 1,
+          label: `周${ item }`
+       })
+     })
+    }
   },
   mounted() {},
 };
