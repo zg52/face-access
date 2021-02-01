@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-30 20:01:57
+ * @LastEditTime: 2021-02-01 13:38:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -14,7 +14,7 @@
 </style>
 <template>
   <div class="app-container">
-    <el-form :model="addRules" label-width="120px" :rules="rules" ref="el_addRules">
+    <el-form :model="addRules" label-width="120px" ref="el_addRules">
       
        <el-form-item label="选择设备名称：">
         <el-select v-model="deviceName" placeholder="请选择">
@@ -26,13 +26,17 @@
             <el-cascader class="w250" v-model="verificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode" @getCheckedNodes="getCheckedNodes"></el-cascader>
         </div>
       </el-form-item>
-      <el-form-item label="通行规则名称：" prop="name" :rules="{ required: true, message: '域名不能为空', trigger: 'blur' }"><el-input class="w200" v-model.trim="addRules.name" placeholder="通行规则名称"></el-input></el-form-item>
-      <el-form-item label="通行规则描述：" prop="description"  :rules=" { required: true, message: '请输入描述信息', trigger: 'blur' }"><el-input class="w200" type="textarea" placeholder="请输入描述信息" v-model="addRules.description" maxlength="50" show-word-limit></el-input></el-form-item>
+      <el-form-item label="通行规则名称：" prop="name" :rules="{ required: true, message: '通行规则名称不能为空', trigger: 'blur' }"><el-input class="w200" v-model.trim="addRules.name" placeholder="通行规则名称"></el-input></el-form-item>
+      <el-form-item label="通行规则描述：" prop="description" :rules=" { required: true, message: '请输入描述信息', trigger: 'blur' }"><el-input class="w200" type="textarea" placeholder="请输入描述信息" v-model="addRules.description" maxlength="50" show-word-limit></el-input></el-form-item>
       <el-form-item label="通行人员类型：">
         <el-radio-group v-model="personTypeRadio" @change="personTypeHandle">
          <el-radio :label="personTypeList[0]" border>全部员工</el-radio>
-         <el-radio :label="personTypeList[1]" @click.native="staffHandle" border>指定员工<sub class="p_num"> 已选102人</sub> </el-radio>
-         <el-radio :label="personTypeList[2]" @click.native="visitorHandle" border>指定访客<sub class="p_num"> 已选102人</sub> </el-radio>
+         <el-radio :label="personTypeList[1]" @click.native="staffHandle" border>指定员工
+           <!-- <sub class="p_num"> 已选102人</sub> -->
+            </el-radio>
+         <el-radio :label="personTypeList[2]" @click.native="visitorHandle" border>指定访客
+           <!-- <sub class="p_num"> 已选102人</sub> -->
+            </el-radio>
          <!-- <div class="mt10"> -->
            <!-- <el-radio :label="'ruleType_personType'" border>全部访客</el-radio> -->
          <!-- </div> -->
@@ -47,22 +51,20 @@
             <el-checkbox v-for="(week, index) in weeks" :label="weeks[index]" :key="week.name">{{ week.name }}</el-checkbox>
           </el-checkbox-group>
           </el-tab-pane>
-          <el-tab-pane label="日期制" name="date">
+          <el-tab-pane label="日期制" name="dateTime">
              <el-date-picker
-                type="datetimerange"
-                align="right"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              >
-              </el-date-picker>
+               v-model="dateTime"
+               type="datetimerange"
+               range-separator="至"
+               start-placeholder="开始日期"
+               end-placeholder="结束日期"
+               @change="changeDateTime"
+               >
+            </el-date-picker>
           </el-tab-pane>
       </el-tabs>
     </el-form-item>
-    <el-button type="primary" @click="handleAddRule"
-        ><svg-icon icon-class="guide" />  一键下发</el-button>
-    </el-form>
+    <el-button type="primary" @click="handleAddRule"><svg-icon icon-class="guide" />  一键下发</el-button></el-form>
 
      <el-dialog title="选择通行员工" :visible.sync="staff_dialogVisible" width="100%">
       <el-form :model="addRules" :inline="true">
@@ -232,7 +234,7 @@
 import { addRules } from'@/api/traffic-rules'
 import { searchDevice } from '@/api/device-manage'
 import { getStaffLis } from '@/api/people-manage/staffManage'
-
+import moment from "moment"
  const optionsNum = ['一', '二', '三', '四', '五', '六', '日'] //  星期制
  var weekOptions = []
      optionsNum.map((item, index) => {
@@ -257,6 +259,8 @@ export default {
         multipleSelection: [],
         personTypeRadio: personTypeList[0], //默认指定所有员工
         personTypeList: personTypeList,
+        dateTime: null,
+        //  [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
 
 //  设备名称
         deviceName: '',
@@ -273,23 +277,19 @@ export default {
          verificationModes: [['face']],
          addRules: {
            deviceIds: '',
-           verificationModes: null,
-           name: '常客',
-           description: 'fewfaewafew',
+           verificationModes: ['face'],
+           name: null,
+           description: null,
            ruleType: 'personType', // 指定人员（指定员工和指定访客）或全部人员（全员工和全访客）
-           personType: null, // 指定人员或全部人员的类别
+           personType: 'employee', // 指定人员或全部人员的类别
            personIds: null, //  指定人员（员工）的id
            visitorIds: null,  //  指定人员（访客）的id
-           week: null,
+           week: [1,2,3,4,5],
            startDate: null,
            endDate: null,
            startTime: null,
            endTime: null
          },
-         rules: {
-             verificationModes: [{ required: true, message: '请选择通行方式', trigger: 'change' }]
-         },
-
 // 通行方式
        passWayProps: { multiple: true },
        passWay: [
@@ -459,23 +459,20 @@ export default {
       },
     getCheckedNodes(leafOnly) {
     },
-    yg() {
-    //  this.radio3 = 3
-    },
     handleAddRule() {
-             this.$refs['el_addRules'].validate((valid) => {
+      this.$refs['el_addRules'].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            addRules(this.addRules).then((res) => {
+              if(res.code === 0 && res.data.length !==0) {
+                this.$message.success(res.msg)
+              }
+            }).catch(() => {
+
+        })
           } else {
-            console.log('error submit!!');
-            return false;
+            return false
           }
-        });
-      addRules(this.addRules).then((res) => {
-
-      }).catch(() => {
-
-      })
+        })
         this.$message.success('张三 已下发至设备SHFFJEF')  
     },
     onSearch(){
@@ -484,6 +481,26 @@ export default {
 
     },
     onExport() {
+
+    },
+   changeDateTime() {
+   var _this = this,
+       addDate = this.addRules,
+       d = ['startDate', 'endDate', 'startTime', 'endTime']
+    function dataTimeHandle(x, conversionMode, num) {
+       return moment(_this.dateTime[num]).format(conversionMode)
+    }
+    for(let i = 0; i < d.length; i++) {
+       if(i <= 1) {
+         addDate[d[i]] = dataTimeHandle(d['startDate'], 'YYYY-MM-DD', 0)
+         console.log("🚀 ~ file: addRul", dataTimeHandle(d['startDate'], 'YYYY-MM-DD', 0))
+       } else {
+         addDate[d[i]] = dataTimeHandle(d[i], 'hh:mm', i)
+       }
+    }
+    console.log(_this.addRules)
+
+
 
     },
     handleSizeChange(val) {
