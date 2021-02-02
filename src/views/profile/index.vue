@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-02-02 11:29:23
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\index.vue
+-->
 <template>
   <div class="app-container">
     <div v-if="user">
@@ -35,7 +43,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'name',
+      'username',
       'avatar',
       'roles'
     ])
@@ -46,7 +54,7 @@ export default {
   methods: {
     getUser() {
       this.user = {
-        name: this.name,
+        username: this.username,
         role: this.roles.join(' | '),
         email: 'hjimi@test.com',
         avatar: this.avatar

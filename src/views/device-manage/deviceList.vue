@@ -547,7 +547,7 @@ export default {
           type: "warning",
         }).then(() => {
             for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteDevice(y.id).then((res) => {
+              deleteDevice(this.multipleSelection[i].id).then((res) => {
                 if (res.code == 0 && res.data) {
                   if(i + 1 >= this.multipleSelection.length) {
                   this.onSearch()

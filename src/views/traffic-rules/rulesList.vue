@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-01 19:55:26
+ * @LastEditTime: 2021-02-02 15:59:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -108,7 +108,7 @@ margin-left: 30px;
       <el-button type="primary"><router-link to="/traffic-rules/addRules"><svg-icon icon-class="edit"/> 新建通行规则</router-link></el-button>
     </el-form>
       
-    <el-table :data="ruleList" border class="people_list" max-height="650" v-loading="table_loading">
+    <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingParams.size * (pagingParams.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="ID" width="80"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
@@ -153,7 +153,15 @@ import { getRules, deleteRules } from'@/api/traffic-rules'
 import { pickerOptions } from '@/utils'
 import moment from 'moment'
 
-const optionsWeek = ['一', '二', '三', '四', '五', '六', '日']
+const optionsWeek = [
+  { id: 1, value: '一' },
+  { id: 2, value: '二' },
+  { id: 3, value: '三' },
+  { id: 4, value: '四' },
+  { id: 5, value: '五' },
+  { id: 6, value: '六' },
+  { id: 0, value: '日' }
+]
 export default {
   name: 'rulesList',
   data() {
@@ -184,6 +192,7 @@ export default {
           }]
         },
         pickerOptions1: pickerOptions(),
+        multipleSelection: [], //多选删除
         date: null,
         props: { multiple: true },
         createTime: null,
@@ -282,7 +291,7 @@ export default {
        endDate: '2021-09-32',
        startTime: '06:00:00',
        endTime: '06:00:00',
-       week: '0123456'
+       week: '56'
 
         },
       ],
@@ -313,16 +322,16 @@ export default {
   },
   filters: {
     weekComput(value) {
-      let weekArr = value.split(''),
-          weekStr = []
-          optionsWeek.map((item, index) => {
-            if(item == weekArr[index]) {
-              weekArr[index] == 0 ? weekStr.push('周日') : weekStr.push(`周${ item }`)
-            }
-          })
-          return weekStr
-
-    }
+          let weekStr = []
+          optionsWeek.forEach((item, index) => {
+            value.includes(item?.id) ? weekStr.push(`周${ item?.value }`) : ''
+            })
+         if(value.length === 7) {
+           return '周一至周日'
+         } else {
+            return weekStr.join('，')
+         }
+  }
   },
   methods: {
     
@@ -407,7 +416,7 @@ export default {
           type: "warning",
         }).then(() => {
             for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteRules(y.id).then((res) => {
+              deleteRules(this.multipleSelection[i].id).then((res) => {
                 if (res.code == 0 && res.data) {
                   if(i + 1 >= this.multipleSelection.length) {
                   this.onSearch()
@@ -417,7 +426,7 @@ export default {
               })
             }
           }).catch(() => {
-             this.$message.success.info({message: '已取消删除'})
+             this.$message.info({message: '已取消删除'})
              this.$refs.multipleTable.clearSelection()
           })
       } else {
@@ -432,6 +441,7 @@ export default {
     handleEdit() {
       
     },
+    
 // 获取默认设备名称
     getDeviceName() {
       searchDevice(this.pagingParams).then((res) => {
@@ -461,6 +471,8 @@ export default {
     handleSelectionChange(val) {
      this.multipleSelection = val
     },
+
+// 转换通行时间
     changeDate1() {
       let _this = this,
           date = this.pagingParams,
@@ -468,7 +480,7 @@ export default {
           getDate()
           function getDate() {
            dateItem.map((item, index) => { 
-             index <= 1 ? date[dateItem[index]] =  moment(_this.date[index]).format('YYYY-MM-DD') : date[dateItem[index]] =  moment(_this.date[index]).format('hh:mm')
+             index <= 1 ? date[dateItem[index]] = moment(_this.date[index]).format('YYYY-MM-DD') : date[dateItem[index]] =  moment(_this.date[index]).format('hh:mm')
             })
           }
     },
@@ -481,8 +493,8 @@ export default {
     {
      optionsWeek.map((item, index) => {
          this.queryWeek.push({
-          value: item === '日' ? 0 : index + 1,
-          label: `周${ item }`
+          value: item.value === '日' ? 0 : index + 1,
+          label: `周${ item.value }`
        })
      })
     }
