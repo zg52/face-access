@@ -1,14 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-03 19:39:05
+ * @LastEditTime: 2021-02-03 17:23:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'
-const user = '_api/person/person'
-// 人员管理-员工
+
+// 人员管理-访客
 
 /**
  * @description: 员工新增
@@ -16,7 +16,7 @@ const user = '_api/person/person'
  */
 export function saveStaff(params) {
  return request({
-    url: user,
+    url: '_api/person',
     method: 'POST',
     data: params,
     // headers: {"Content-Type": "application/json"}
@@ -28,7 +28,7 @@ export function saveStaff(params) {
  */
 export function getStaffList(data) {
   return request({
-     url: user,
+     url: '/person',
      method: 'GET',
      data
    })

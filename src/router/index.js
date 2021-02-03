@@ -170,10 +170,26 @@ export const asyncRoutes = [
       },
       {
         path: 'visitor-manage',
-        component: () => import('@/views/people-manage/visitor-manage/list'),
-        name: 'visitor-manage',
+        component: () => import('@/views/people-manage'),
+        redirect: '/people-manage/visitor-manage/visitor-list',
+        alwaysShow: true,
         meta: { title: '访客管理', icon: 'visitor' },
-      }
+        children: [
+          {
+            path: 'visitor-list',
+            component: () => import('@/views/people-manage/visitor-manage/visitor-list'),
+            name: 'visitor-list',
+            meta: { title: '访客列表' },
+          },
+          {
+            path: 'visitor-add',
+            component: () => import('@/views/people-manage/visitor-manage/visitor-add'),
+            name: 'visitor-add',
+            meta: { title: '新增访客' }
+         },
+        ]
+      },
+ 
     ]
   },
   {

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-03 11:56:45
+ * @LastEditTime: 2021-02-03 19:49:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -154,7 +154,7 @@ export default {
       faceTypes: faceTypes,
       imageUrl: '',
       img_type: faceTypes[0].name,
-      files: null,
+     
       addStaffForm: {
            name: null,
            gender: genders[0].id,
@@ -168,6 +168,7 @@ export default {
            gateCardId: null,
            enrollTime: null,
            img_type: faceTypes[0].id,
+            files: null,
          },
       addStaffRule: {
           name: notNull('姓名'),
@@ -253,7 +254,7 @@ export default {
         setTimeout(() => {
           this.imgUploading = false
           this.imageUrl = URL.createObjectURL(file.raw)
-          this.files = file.raw
+          this.addStaffForm.files = file.raw
            }, 700)
       },
    async httpRequest(content){

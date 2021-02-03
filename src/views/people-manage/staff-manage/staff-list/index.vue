@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-03 15:28:57
+ * @LastEditTime: 2021-02-03 19:43:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -32,7 +32,7 @@
     display: block;
   }
   .camera {
-margin-left: 30px;
+    margin-left: 30px;
     margin-top: 44px;
     i {
       font-size: 20px;
@@ -241,7 +241,7 @@ margin-left: 30px;
         >
       </el-table-column>
     </el-table> 
-      <!-- <el-pagination
+      <el-pagination
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
          :current-page="pagingQuery['current']"
@@ -249,7 +249,7 @@ margin-left: 30px;
          :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingQuery['total']"
-    ></el-pagination> -->
+    ></el-pagination>
   </div>
 </template>
 <script>
