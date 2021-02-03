@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-02 17:05:25
+ * @LastEditTime: 2021-02-03 15:28:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -47,141 +47,79 @@ margin-left: 30px;
 </style>
 <template>
   <div class="app-container">
-    <!-- <el-form :model="roles" :inline="true">
-      <el-form-item label="创建人"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="员工姓名"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="性别">  <el-select class="w100" v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select></el-form-item>
-      <el-form-item label="工号"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入工号搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="电话"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入手机号搜索"
-        ></el-input
-      ></el-form-item>
-            <el-form-item label="住址"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入电话搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="邮箱"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入手机号搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="部门">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select
-      ></el-form-item>
-      <el-form-item label="职务"
-        ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入部门搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="入职时间">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
+  <el-form :model="pagingQuery" :inline="true">
+      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator"></el-input></el-form-item>
+      <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name"></el-input></el-form-item>
+       <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
+      <el-form-item label="工号"><el-input v-model.trim="pagingQuery.companyId"></el-input></el-form-item>
+      <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone"></el-input></el-form-item>
+      <el-form-item label="住址"><el-input v-model.trim="pagingQuery.address"></el-input></el-form-item>
+      <el-form-item label="邮箱"><el-input v-model.trim="pagingQuery.mail"></el-input></el-form-item>
+      <el-form-item label="部门"> <el-select disabled v-model="value"></el-select></el-form-item> 
+      <el-form-item label="职务" ><el-input v-model.trim="pagingQuery.position"></el-input></el-form-item>
+      <el-form-item label="入职时间：">
+        <el-date-picker class="w300" v-model="pagingQuery.enrollTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate1"></el-date-picker>
       </el-form-item>
       <el-form-item label="离职时间">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
+        <el-date-picker class="w300" v-model="pagingQuery.expiredTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate2"></el-date-picker>
       </el-form-item>
-      <el-form-item label="门禁卡号">
-        <el-input v-model.trim="roles.roleName" placeholder="输入部门搜索" ></el-input>
-        </el-form-item>
+      <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId"></el-input></el-form-item>
       <el-form-item label="IC卡号"
         ><el-input
-          v-model.trim="roles.roleName"
-          placeholder="输入部门搜索"
+          v-model.trim="pagingQuery.icCardId"
         ></el-input
       ></el-form-item>
- 
-      <el-form-item label="创建时间">
+            <el-form-item label="状态">
+        <el-select v-model="pagingQuery.isDelete" class="w100">
+         <el-option v-for="(isDelete, index) of isDeletes" :key="index" :label="isDelete.value" :value="isDelete.id"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="创建日期">
         <el-date-picker
+          v-model="date"
           type="daterange"
           align="right"
           unlink-panels
           range-separator="至"
           start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
+          end-placeholder="更新日期"
+          :picker-options="pickerOptions"
+          :default-time="['00:00:00', '23:59:59']"
+          @change="changeDate3">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="有无人脸">
-        <el-select v-model="roles.status" class="w100">
+      <!-- <el-form-item label="有无人脸">
+        <el-select v-model="pagingQuery.status" class="w100">
           <el-option></el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select v-model="roles.status" class="w100">
-          <el-option>在职</el-option>
-            <el-option
-           
-          >离职</el-option>
-        </el-select>
-      </el-form-item>
+      </el-form-item> -->
+
       <el-button type="success" @click="onSearch" class="search">
         <i class="el-icon-search"></i><span>查询</span></el-button
       >
-      <el-button type="warning" @click="onDelete">
+      <el-button type="warning" @click="onDeletes">
         <i class="el-icon-delete"></i><span>批量删除</span></el-button
       >
       <el-button type="primary" @click="onExport">
         <svg-icon icon-class="excel" /> <span>导出</span></el-button
       >
-      <el-button type="primary" @click="handleAddRole"
-        ><svg-icon icon-class="edit" /> 新增员工</el-button>
-    </el-form> -->
-    <!-- <el-table :data="rolesList" border class="people_list" max-height="650">
+      <el-button type="primary"><router-link to="/people-manage/staff-manage/staff-add"><svg-icon icon-class="edit" /> 新增员工</router-link></el-button>
+    </el-form>
+    <el-table :data="pagingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading">
+      <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column
         width="50"
         type="selection"
         fixed
       ></el-table-column>
-      <el-table-column label="序列" width="60" align="center">
-        <template>1</template></el-table-column
-      >
+      <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column >
       <el-table-column align="center" label="ID" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
+        <template v-slot="scope">
+          {{ scope.row.id }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="员工姓名" width="80">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
@@ -191,72 +129,72 @@ margin-left: 30px;
         </template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.sex }}
+        <template v-slot="scope">
+          {{ scope.row.gender }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="部门" width="100">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.description }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="身份证号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
+        <template v-slot="scope">
+          {{ scope.row.idNum }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="工号" width="80">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.dfs }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="电话" width="108">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.phone }}
         </template>
       </el-table-column>
          <el-table-column align="center" label="住址" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
+        <template v-slot="scope">
+          {{ scope.row.address }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="邮箱" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
+        <template v-slot="scope">
+          {{ scope.row.mail }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="职务" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
+        <template v-slot="scope">
+          {{ scope.row.position }}
         </template>
       </el-table-column>
      <el-table-column align="center" label="门禁卡" width="108">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.job }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="IC卡" width="108">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.job }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="入职时间" width="108">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.entryTime }}
         </template>
       </el-table-column>
             <el-table-column align="center" label="离职时间" width="108">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.entryTime }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" width="120">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.createTime }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="修改时间" width="120">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           {{ scope.row.updataTime }}
         </template>
       </el-table-column>
@@ -271,8 +209,9 @@ margin-left: 30px;
         <template> fff </template>
       </el-table-column>
       <el-table-column align="left" label="操作" width="190" fixed="right">
-        <template slot-scope="scope">
+        <template v-slot="scope">
             <el-switch
+            disabled
             size="mini"
             active-text="离职"
             inactive-text="在职"
@@ -291,94 +230,40 @@ margin-left: 30px;
             size="mini"
             ><i class="el-icon-notebook-2"></i><span>详情</span></el-button
           >
-
-          <el-button
-            class="radius_45 mt10"
-            type="danger"
-            size="mini"
-            ><i class="el-icon-delete"></i><span>删除</span></el-button
-          ></template
+          <el-popconfirm
+            confirmButtonText="确认"
+            cancelButtonText="取消"
+            title="确定要删除该设备？"
+            @onConfirm="handleDelete(scope.$index, scope.row)">
+            <el-button  class="radius_45 ml0 mt10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
+          </el-popconfirm>
+         </template
         >
       </el-table-column>
-    </el-table> -->
-
-    <el-dialog title="新增员工" :visible.sync="addStaffFormVisible" width="1000px">
-     <div v-loading="addSave_loading"  element-loading-text="拼命保存中"  element-loading-spinner="el-icon-loading">
-    <el-form :model="addStaffForm" label-width="auto" :rules="addStaffRule" ref="addLibraryRule" class="addStaffForm" :inline="true">
-       <el-form-item label="创建人："><el-input v-model="username" class="w160" disabled></el-input></el-form-item>
-       <el-form-item label="员工姓名：" prop="name"><el-input v-model="addStaffForm.name" class="w160"></el-input></el-form-item>
-       <el-form-item label="性别："><el-select class="w100" v-model="pagingParams.gender"><el-option v-for="(gender, index) of genders" :key="index" :value="gender.value"></el-option></el-select></el-form-item>
-       <el-form-item label="电话：" prop="phone"><el-input v-model="addStaffForm.phone"></el-input></el-form-item>
-       <el-form-item label="住址：" prop="address"><el-input v-model="addStaffForm.address"></el-input></el-form-item>
-       <el-form-item label="身份证号：" prop="idNum"><el-input v-model="addStaffForm.idNum"></el-input></el-form-item>
-       <el-form-item label="邮箱：" prop="mail"><el-input v-model="addStaffForm.mail"></el-input></el-form-item>
-       <el-form-item label="工号：" prop="companyId"> <el-input v-model.trim="addStaffForm.companyId" maxlength="30"></el-input> </el-form-item>
-       <el-form-item label="职务："><el-input v-model="addStaffForm.position" class="w150"></el-input></el-form-item>
-       <el-form-item label="所属部门：">
-         <el-select v-model="addStaffForm.region" placeholder="超级管理员" disabled>
-           <el-option label="人力组" value="shanghai"></el-option>
-           <el-option label="行政组" value="beijing"></el-option>
-         </el-select>
-      </el-form-item>
-      <el-form-item label="IC卡号：" prop="icCardId"><el-input v-model.trim="addStaffForm.icCardId" maxlength="30"></el-input></el-form-item>
-      <el-form-item label="门禁卡号：" prop="gateCardId"><el-input v-model.trim="addStaffForm.gateCardId" maxlength="30"></el-input></el-form-item>
-      <el-form-item label="入职时间：">
-        <el-date-picker
-          v-model="enrollTime"
-           type="datetime"
-          align="right"
-          unlink-panels
-          start-placeholder="创建日期"
-          :picker-options="pickerOptions"
-          @change="changeDate">
-        </el-date-picker>
-        </el-form-item>
-        <el-form-item label="头像类型：">
-          <el-radio-group v-model="addStaffForm.face_type"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.id">{{ faceType.name }}</el-radio></el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注：" prop="description"><el-input class="w400" type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"> </el-input></el-form-item><br>
-          <el-form-item label="头像采集：" prop="description">
-              <el-upload
-             class="avatar-uploader fl"
-             action="https://jsonplaceholder.typicode.com/posts/"
-             :show-file-list="false"
-             :on-success="handleAvatarSuccess"
-             :before-upload="beforeAvatarUpload">
-             <img v-if="imageUrl" :src="imageUrl" class="avatar">
-             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-           </el-upload>
-           <div class="fl">
-               <el-button type="primary" class="camera"><i class="el-icon-camera-solid" /></el-button>
-               <p class="des">上传图片文件支持PNG、JPG、<br>JPEG、BMP，图片大小不超过2M</p>
-           </div>
-          </el-form-item>
-     </el-form>
-    <div slot="footer" class="dialog-footer t_right">
-      <el-button type="primary" @click="resetFaceLibraryForm('addLibraryRule')"><i class="el-icon-folder-add" /><span>批量导入</span></el-button>
-      <el-button @click="resetFaceLibraryForm('addLibraryRule')">重 置</el-button>
-      <el-button @click="faceFormVisible = false">取 消</el-button>
-      <el-button type="primary" @click="addFaceLibraryHandler('addLibraryRule')" :disabled="addSave_loading"><i :class="{'el-icon-loading':addSave_loading}"></i> &nbsp;保 存</el-button>
-    </div>
-     </div>
-  </el-dialog> 
-  
+    </el-table> 
       <!-- <el-pagination
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
-         :current-page="pagingParams['current']"
+         :current-page="pagingQuery['current']"
          :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
-         :page-size="pagingParams['size']"
+         :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
-         :total="pagingParams['total']"
+         :total="pagingQuery['total']"
     ></el-pagination> -->
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { addStaff } from '@/api/people-manage/staffManage'
+import { getStaffList, deleteStaff } from '@/api/people-manage/staffManage'
+import { pickerOptions } from '@/utils'
+import moment from 'moment'
 const genders = [
    { value: '男', id: 'MALE' }, 
    { value: '女', id: 'FEMALE' }
+ ]
+ const isDeletes = [
+   { value: '在职', id: true }, 
+   { value: '离职', id: false }
  ]
 const faceTypes = [
    { id: 'zj', name: '证件照' }, 
@@ -388,34 +273,39 @@ export default {
   name: "",
   data() {
     return {
-      addSave_loading: false,
-      addStaffFormVisible: true,
-      value: 1,
+      table_loading:false,
+      value: '华捷艾米',
       genders: genders,
+      isDeletes: isDeletes,
       faceTypes: faceTypes,
-      pickerOptions: [],
-      roles: [
-        {
-          roleName: "",
-        },
-      ],
-      addStaffForm:  {
-           name: '',
-           gender: genders[0].value,
-           phone: '',
-           address: '',
-           idNum: '',
-           mail: '',
-           companyId: '',
-           position: '',
-           icCardId: '',
-           gateCardId: '',
-           enrollTime: '',
-           face_type: faceTypes[0].id,
-           files: ''
-         },
-      addStaffRule:[],
-      rolesList: [
+      pickerOptions: pickerOptions(),
+      date: null,
+      multipleSelection: [],
+      
+      pagingQuery: {
+        operator: null,
+        name: null,
+        gender: null,
+        phone: null,
+        address: null,
+        idNum: null,
+        mail: null,
+        companyId: null,
+        position: null,
+        icCardId: null,
+        gateCardId: null,
+        enrollTime: null,
+        expiredTime: null,
+        createTime: null,
+        createTimeTo: null,
+        isDelete: null,
+        
+        current: 1, 
+        size: 20,
+        total: 0,
+      },
+
+      pagingQueryList: [
         {
           name: "阿娃",
           description: "算法应用院",
@@ -436,20 +326,7 @@ export default {
           switch: 1,
         },
       ],
-     pagingParams: {
-        username: "",
-        email: "",
-        // appkey: "",
-        // secret:"",
-        createDateFrom: "",
-        createDateTo: "",
-        current: 1, //默认当前页数为1
-        size: 10,
-        total: 0,
-        status: "",
-        // type:'0',
-      },
-    };
+    }
   },
   computed: {
     ...mapGetters([
@@ -457,18 +334,103 @@ export default {
     ])
   },
   methods: {
-    onSearch(){
+    getStaffList() {
+      let params = this.pagingQuery
+      console.log("🚀 ~ file: index.vue ~ line 337 ~ getStaffList ~ pagingQuery", params)
+      this.table_loading = true
+      getStaffList(this.pagingQuery).then((res) => {
+        params.size = res.data.size
+        params.current = res.data.current
+        params.total = res.data.total
+        this.tableData = res.data.records
+        this.table_loading = false
 
+        //  转换status为Boolean
+        // let satatusArr = []
+        // this.tableData.map((x, index) => {
+        //   satatusArr.push({
+        //     status: x.status == "disabled" ? false : true,
+        //   })
+        // })
+        // this.userStatus = satatusArr
+      })
+      // this.tableData = this.tableData.reverse()
     },
-    onDelete() {
-
+    onSearch() {
+      let params = this.pagingQuery
+      params.current = 1
+      this.getStaffList()
+    },
+     handleDelete(x, y) {
+      deleteStaff(y.id).then((res) => {
+        if (res.code == 0 && res.data) {
+          this.$message.success({message: res.msg})
+          this.getDeviceList()
+        } else {
+          this.$message.warning({message: res.msg})
+        }
+      }).catch(() => {
+        
+      })
+    },
+    onDeletes() {
+       if (this.multipleSelection.length !== 0) {
+        this.$confirm("此操作将永久删除已选员工, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+            for (let i = 0; i < this.multipleSelection.length; i++) {
+              deleteStaff(this.multipleSelection[i].id).then((res) => {
+                if (res.code == 0 && res.data) {
+                  if(i + 1 >= this.multipleSelection.length) {
+                  this.onSearch()
+                  this.$message.success({message: res.msg})
+                  } 
+                }
+              })
+            }
+          }).catch(() => {
+             this.$message.success.info({message: '已取消删除'})
+             this.$refs.multipleTable.clearSelection()
+          })
+      } else {
+        this.$message.warning('请在列表中勾选要删除的员工')
+      }
     },
     onExport() {
 
-    }
+    },
+   changeDate(item) {
+     let a = this.pagingQuery
+         a[item] =  moment(a[item]).format('YYYY-MM-DD')
+  },
+  changeDate1() {
+    this.changeDate('enrollTime')
+  },
+  changeDate2() {
+    this.changeDate('expiredTime')
+  },
+  changeDate3() {
+    let _p = this.pagingQuery
+      this.date && this.date.length
+        ? ((_p.createTime = moment( this.date[0]).format("YYYY-MM-DD")),
+          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
+        :  _p.createTime = _p.createTimeTo = null
+    },
+    handleSizeChange(val) {
+      this.pagingParams.size = val
+      this.getUserList()
+    },
+    handleCurrentChange(val) {
+      this.pagingParams.current = val
+      this.getUserList()
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
   },
   created() {
-    console.log(addStaff())
   },
   mounted() {
     console.log()

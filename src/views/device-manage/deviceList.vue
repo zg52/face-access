@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-30 17:13:58
+ * @LastEditTime: 2021-02-03 14:57:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -122,20 +122,20 @@ margin-left: 30px;
     </div>
     
     <div class="lis_tit"><i></i> <span>设备详情列表</span></div>
-    <el-form :model="pagingParams" :inline="true">
+    <el-form :model="pagingQuery" :inline="true">
       <!-- <el-form-item label="创建人"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索"></el-input></el-form-item> -->
-      <el-form-item label="设备名称"><el-input v-model.trim="pagingParams.name"></el-input></el-form-item>
-      <el-form-item label="设备类型"><el-select v-model="pagingParams.type" @change="deviceTypeChange"><el-option v-for="(type, index) of pagingParams.typeValue" :key="index" :value="type.value"></el-option></el-select></el-form-item>
-      <el-form-item label="设备型号"><el-input v-model.trim="pagingParams.model"></el-input ></el-form-item>
-      <el-form-item label="设备厂商"><el-input v-model="pagingParams.manufacturer"></el-input></el-form-item>
-      <el-form-item label="设备SN"><el-input v-model.trim="pagingParams.sn"></el-input></el-form-item>
-      <el-form-item label="设备位置"><el-input v-model.trim="pagingParams.location"></el-input></el-form-item>
-      <!-- <el-form-item label="已下发人数" ><el-input class="w120" v-model.trim="pagingParams.num"></el-input></el-form-item> -->
-      <el-form-item label="设备在线状态"><el-select class="w100" v-model="pagingParams.isOnline" clearable><el-option v-for="(isOnline, index) of pagingParams.online" :key="index" :value="isOnline.value"></el-option></el-select></el-form-item>
+      <el-form-item label="设备名称"><el-input v-model.trim="pagingQuery.name"></el-input></el-form-item>
+      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type" @change="deviceTypeChange"><el-option v-for="(type, index) of pagingQuery.typeValue" :key="index" :value="type.value"></el-option></el-select></el-form-item>
+      <el-form-item label="设备型号"><el-input v-model.trim="pagingQuery.model"></el-input ></el-form-item>
+      <el-form-item label="设备厂商"><el-input v-model="pagingQuery.manufacturer"></el-input></el-form-item>
+      <el-form-item label="设备SN"><el-input v-model.trim="pagingQuery.sn"></el-input></el-form-item>
+      <el-form-item label="设备位置"><el-input v-model.trim="pagingQuery.location"></el-input></el-form-item>
+      <!-- <el-form-item label="已下发人数" ><el-input class="w120" v-model.trim="pagingQuery.num"></el-input></el-form-item> -->
+      <el-form-item label="设备在线状态"><el-select class="w100" v-model="pagingQuery.isOnline" clearable><el-option v-for="(isOnline, index) of pagingQuery.online" :key="index" :value="isOnline.value"></el-option></el-select></el-form-item>
        <!-- <el-form-item label="方向">  <el-select class="w100"  v-model="value" placeholder="请选择"> <el-option>进</el-option><el-option>出</el-option> </el-select></el-form-item> -->
       <el-form-item label="创建时间">
         <el-date-picker
-          v-model="pagingParams.date"
+          v-model="pagingQuery.date"
           type="daterange"
           align="right"
           unlink-panels
@@ -147,7 +147,7 @@ margin-left: 30px;
           @change="changeDate">
         </el-date-picker>
       </el-form-item>
-     <el-form-item label="设备状态"><el-select class="w100" v-model="pagingParams.deviceStatus" clearable><el-option v-for="(deviceStatus, index) of pagingParams.statusValue" :key="index" :command="deviceStatus.command" :value="deviceStatus.value"></el-option></el-select></el-form-item>
+     <el-form-item label="设备状态"><el-select class="w100" v-model="pagingQuery.deviceStatus" clearable><el-option v-for="(deviceStatus, index) of pagingQuery.statusValue" :key="index" :command="deviceStatus.command" :value="deviceStatus.value"></el-option></el-select></el-form-item>
      
       <el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
@@ -159,7 +159,7 @@ margin-left: 30px;
     <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column :width="50" type="selection" fixed></el-table-column>
-      <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingParams.size * (pagingParams.current - 1)) + 1 }}</template></el-table-column>
+      <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
 
 <!-- 详情 -->
        <el-table-column type="expand" label="详情" :width="60">
@@ -225,11 +225,11 @@ margin-left: 30px;
    <el-pagination
      @size-change="handleSizeChange"
      @current-change="handleCurrentChange"
-     :current-page="pagingParams['current']"
+     :current-page="pagingQuery['current']"
      :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
-     :page-size="pagingParams['size']"
+     :page-size="pagingQuery['size']"
      layout="total, sizes, prev, pager, next, jumper"
-     :total="pagingParams['total']">
+     :total="pagingQuery['total']">
   </el-pagination>
 
   <el-dialog title="新增设备" :visible.sync="addDeviceVisible" width="1000px">
@@ -373,7 +373,7 @@ export default {
        },
        editParam: null, // 编辑参数
 // 设备查询/分页参数
-     pagingParams: {
+     pagingQuery: {
       //  username: '艾米',
        name: '门禁主机1',
        type: deviceType[0].value,
@@ -502,22 +502,26 @@ export default {
     
 // 查设备列表
     onSearch(){
-      this.pagingParams.current = 1
+      this.pagingQuery.current = 1
       this.getDeviceList()
     },
     getDeviceList() {
-      let _this = this
+      let _this = this,
+          params = this.pagingQuery
       this.table_loading = true
-      searchDevice(this.pagingParams).then((res) => {
+      searchDevice(this.pagingQuery).then((res) => {
          if(res.code === 0 && res.data) {
-               _this.table_loading = false
+           params.size = res.data.size
+           params.current = res.data.current
+           params.total = res.data.total
+          _this.table_loading = false
                this.$message.success(res.msg)
             }
       })
     },
     changeDate() {
-      let date = this.pagingParams.date,
-          _p = this.pagingParams
+      let date = this.pagingQuery.date,
+          _p = this.pagingQuery
       date && date.length
         ? ((_p.createTimeFrom = moment(date[0]).format("YYYY-MM-DD")),
           (_p.createTimeTo = moment(date[1]).format("YYYY-MM-DD")))
@@ -579,11 +583,11 @@ export default {
 
     },
     handleSizeChange(val) {
-      this.pagingParams.size = val
+      this.pagingQuery.size = val
       this.getDeviceList()
     },
     handleCurrentChange(val) {
-      this.pagingParams.size = val
+      this.pagingQuery.size = val
       this.getDeviceList()
     },
     handleSelectionChange(val) {

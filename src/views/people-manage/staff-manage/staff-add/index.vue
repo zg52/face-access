@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-02 19:29:43
+ * @LastEditTime: 2021-02-03 11:56:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -74,7 +74,7 @@ position: absolute;
      <el-form :model="addStaffForm" label-width="auto" :rules="addStaffRule" ref="addStaffFormRule" class="addStaffForm" :inline="true">
        <el-form-item label="创建人："><el-input v-model="username" class="w160" disabled></el-input></el-form-item>
        <el-form-item label="员工姓名：" prop="name"><el-input v-model="addStaffForm.name" class="w160" clearable></el-input></el-form-item>
-       <el-form-item label="性别："><el-select class="w160" v-model="addStaffForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :value="gender.value"></el-option></el-select></el-form-item>
+       <el-form-item label="性别："><el-select class="w160" v-model="addStaffForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model="addStaffForm.phone" clearable></el-input></el-form-item>
        <el-form-item label="职务："  prop="position"><el-input v-model="addStaffForm.position" class="w160" clearable></el-input></el-form-item>
       <el-form-item label="入职时间：">
@@ -157,7 +157,7 @@ export default {
       files: null,
       addStaffForm: {
            name: null,
-           gender: genders[0].value,
+           gender: genders[0].id,
            phone: null,
            address: null,
            idNum: null,
@@ -189,12 +189,13 @@ export default {
     
 // 提交员工信息
   async saveStaffHandle(el) {
+    console.log("🚀 ~ file: index.vue ~ line 192 ~ saveStaffHandle ~ el", this.addStaffForm)
     let _this = this
-       this.$refs[el].validate((valid) => {
-        if (valid) {
+      //  this.$refs[el].validate((valid) => {
+        // if (valid) {
         this.httpRequest()
-      }
-     })
+      // }
+    //  })
   },
   changeDate() {
    let a = this.addStaffForm
@@ -260,10 +261,10 @@ export default {
           formData = new FormData()
           formData.append('files', this.files)
           formData.append('rqParam', new Blob([JSON.stringify(this.addStaffForm)], { type:"application/json" }))
-           saveStaff(formData).then((res) => {
+           saveStaff(this.addStaffForm).then((res) => {
                 if(res.code === 0 && res.data[0].isSuccess) {
                       this.$message({
-                             message: content.file.name + ' 入库成功',
+                             message: content.file.name + '员工保存成功',
                               type: "success"
                         });
                      }

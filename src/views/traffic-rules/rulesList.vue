@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-02 15:59:10
+ * @LastEditTime: 2021-02-03 13:58:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -47,17 +47,17 @@ margin-left: 30px;
 </style>
 <template>
   <div class="app-container">
-    <el-form :model="pagingParams" :inline="true">
-      <el-form-item label="创建人"><el-input v-model.trim="pagingParams.userId"></el-input></el-form-item>
+    <el-form :model="pagingQuery" :inline="true">
+      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.userId"></el-input></el-form-item>
       <el-form-item label="选择设备名称">
-        <el-select v-model="pagingParams.deviceName" placeholder="请选择">
+        <el-select v-model="pagingQuery.deviceName" placeholder="请选择">
          <el-option v-for="(deviceName, index) of deviceNames" :key="index" :deviceIds="deviceName.deviceIds" :value="deviceName.name"></el-option>
         </el-select>
       </el-form-item>
-       <el-form-item label="通行规则名称"><el-select v-model="pagingParams.ruleName" placeholder="请选择"><el-option v-for="(ruleName, index) of ruleNames" :key="index" :value="ruleName"></el-option></el-select></el-form-item>
+       <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.ruleName" placeholder="请选择"><el-option v-for="(ruleName, index) of ruleNames" :key="index" :value="ruleName"></el-option></el-select></el-form-item>
        <el-form-item label="选择通行方式">
         <div class="block">
-             <el-cascader class="w250" v-model="pagingParams.verificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode"></el-cascader>
+             <el-cascader class="w250" v-model="pagingQuery.verificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode"></el-cascader>
          </div>
       </el-form-item>
      <el-form-item label="通行人员类型">
@@ -67,7 +67,7 @@ margin-left: 30px;
       </el-form-item>
       <el-form-item label="通行时间-星期制">
         <div class="block">
-             <el-cascader class="w250" v-model="pagingParams.queryWeek" :options="queryWeek" :props="queryWeeksProps" clearable @change="changeRuleNode1"></el-cascader>
+             <el-cascader class="w250" v-model="pagingQuery.queryWeek" :options="queryWeek" :props="queryWeeksProps" clearable @change="changeRuleNode1"></el-cascader>
          </div>
       </el-form-item>
       <el-form-item label="通行时间-日期制">
@@ -97,7 +97,7 @@ margin-left: 30px;
       </el-form-item>
  
       <el-form-item label="状态">
-        <el-select v-model="pagingParams.status" class="w120" disabled>
+        <el-select v-model="pagingQuery.status" class="w120" disabled>
             <el-option v-for="(ruleState, index) of ruleStates" :key="index" :value="ruleState.state"></el-option>
         </el-select>
       </el-form-item>
@@ -110,7 +110,7 @@ margin-left: 30px;
       
     <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <el-table-column width="50" type="selection" fixed></el-table-column>
-      <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingParams.size * (pagingParams.current - 1)) + 1 }}</template></el-table-column>
+      <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="ID" width="80"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="120"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="通行方式" width="80"><template v-slot="scope">{{ scope.row.verificationModes }}</template></el-table-column>
@@ -140,11 +140,11 @@ margin-left: 30px;
     <el-pagination
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
-         :current-page="pagingParams['current']"
+         :current-page="pagingQuery['current']"
          :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
-         :page-size="pagingParams['size']"
+         :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
-         :total="pagingParams['total']"
+         :total="pagingQuery['total']"
     ></el-pagination>
   </div>
 </template>
@@ -295,7 +295,7 @@ export default {
 
         },
       ],
-     pagingParams: {
+     pagingQuery: {
        userId: null,
        deviceName: null,
        name: '',
@@ -341,12 +341,12 @@ export default {
         this.verificationModes.map((x) => {
          x.forEach(() => newArr.push(x[x.length - 1]))
         })
-      this.pagingParams['verificationModes'] =  this.pagingParams['verificationModes'] ?? Array.from(new Set(newArr))
+      this.pagingQuery['verificationModes'] =  this.pagingQuery['verificationModes'] ?? Array.from(new Set(newArr))
     },
 
  // 获取通行星期参数
     changeRuleNode1() {
-      let queryWeek = this.pagingParams,
+      let queryWeek = this.pagingQuery,
           querWeekStr = []
           if(queryWeek['queryWeek'].length !== 0) {
                 queryWeek['queryWeek'].forEach((item, index) => {
@@ -359,7 +359,7 @@ export default {
 
  // 获取通行日期时间参数
     changeRuleNode1() {
-      let queryWeek = this.pagingParams,
+      let queryWeek = this.pagingQuery,
           querWeekStr = []
           if(queryWeek['queryWeek'].length !== 0) {
                 queryWeek['queryWeek'].forEach((item, index) => {
@@ -373,19 +373,19 @@ export default {
 // 获取通行人员类型参数
     personTypeHandle() {
       let _p = this.personTypes,
-          param = this.pagingParams
+          param = this.pagingQuery
           this.personType === _p[0]['name'] ? param.value = _p[0]['value'] : param.value = _p[1]['value']
     },
     
 // 查设备列表
     onSearch(){
-      this.pagingParams.current = 1
+      this.pagingQuery.current = 1
       this.getRuleList()
     },
     getRuleList() {
       let _this = this
       this.table_loading = true
-      getRules(this.pagingParams).then((res) => {
+      getRules(this.pagingQuery).then((res) => {
          if(res.code === 0 && res.data.rescords.length !== 0) {
                _this.table_loading = false
                this.ruleList = res.data.rescords
@@ -444,7 +444,7 @@ export default {
     
 // 获取默认设备名称
     getDeviceName() {
-      searchDevice(this.pagingParams).then((res) => {
+      searchDevice(this.pagingQuery).then((res) => {
         let data = res.data.rescords
        if(res.code === 0 && data.length !== 0) {
             data.map((x,y) => {
@@ -454,18 +454,18 @@ export default {
               })
             })
             // this.deviceName = this.deviceNames[0].name
-            // this.pagingParams.id = this.deviceNames[0].id
+            // this.pagingQuery.id = this.deviceNames[0].id
           } else {
              this.$message.warning('无可用设备，请先添加设备')
           }
       })
     },
     handleSizeChange(val) {
-      this.pagingParams.size = val
+      this.pagingQuery.size = val
       this.getRuleList()
     },
     handleCurrentChange(val) {
-      this.pagingParams.size = val
+      this.pagingQuery.size = val
       this.getRuleList()
     },
     handleSelectionChange(val) {
@@ -475,7 +475,7 @@ export default {
 // 转换通行时间
     changeDate1() {
       let _this = this,
-          date = this.pagingParams,
+          date = this.pagingQuery,
           dateItem = ['startDate', 'endDate', 'startTime', 'endTime']
           getDate()
           function getDate() {
@@ -485,7 +485,7 @@ export default {
           }
     },
     changeDate() {
-      this.pagingParams.createTime = moment(this.createTime).format('YYYY-MM-DD hh:mm')
+      this.pagingQuery.createTime = moment(this.createTime).format('YYYY-MM-DD hh:mm')
     },
   },
   created() {
