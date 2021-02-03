@@ -32,8 +32,8 @@
         </el-date-picker>
       </el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
-      <el-button type="warning" @click="onDeleteUserList" disabled="true"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
-      <el-button type="primary" @click="onExport"> <i class="el-icon-download"></i><span>导出</span></el-button>
+      <el-button type="warning" @click="onDeleteUserList"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
+      <el-button type="primary" @click="onExport" disabled="true"> <i class="el-icon-download"></i><span>导出</span></el-button>
       <el-button type="primary" @click="showAddUser"><svg-icon icon-class="edit" /> 新增用户</el-button>
     </el-form>
 
