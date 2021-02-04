@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-03 19:43:20
+ * @LastEditTime: 2021-02-04 19:25:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -105,7 +105,7 @@
       >
       <el-button type="primary"><router-link to="/people-manage/staff-manage/staff-add"><svg-icon icon-class="edit" /> 新增员工</router-link></el-button>
     </el-form>
-    <el-table :data="pagingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading">
+    <el-table :data="tableData" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column
         width="50"
@@ -128,9 +128,9 @@
           <img src="../../../../assets/image/1.png" alt="" width="140" />
         </template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="100">
+     <el-table-column align="center" label="性别" width="50">
         <template v-slot="scope">
-          {{ scope.row.gender }}
+          {{ scope.row.gender === 'MALE' ? '男' : '女' }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="部门" width="100">
@@ -138,12 +138,12 @@
           {{ scope.row.description }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="身份证号" width="80">
+      <el-table-column align="center" label="身份证号" width="170">
         <template v-slot="scope">
           {{ scope.row.idNum }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="工号" width="80">
+      <el-table-column align="center" label="工号" width="100">
         <template v-slot="scope">
           {{ scope.row.dfs }}
         </template>
@@ -153,7 +153,7 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-         <el-table-column align="center" label="住址" width="108">
+         <el-table-column align="center" label="住址" width="170">
         <template v-slot="scope">
           {{ scope.row.address }}
         </template>
@@ -198,7 +198,7 @@
           {{ scope.row.updataTime }}
         </template>
       </el-table-column>
-       <el-table-column align="center" label="状态" width="140">
+       <el-table-column align="center" label="状态" width="60">
         <template>          
             在职 </template>
       </el-table-column>
@@ -305,7 +305,7 @@ export default {
         total: 0,
       },
 
-      pagingQueryList: [
+      tableData: [
         {
           name: "阿娃",
           description: "算法应用院",
@@ -431,9 +431,10 @@ export default {
     },
   },
   created() {
+    this.onSearch()
   },
   mounted() {
-    console.log()
+    console.log(getStaffList())
   },
 };
 </script>
