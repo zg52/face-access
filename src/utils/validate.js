@@ -94,3 +94,20 @@ export function isArray(arg) {
   }
   return Array.isArray(arg)
 }
+
+/**
+ * @param {string} str 
+ * @returns {Boolean}
+ */
+export function validateIdCard(idCard){
+  return /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idCard) ? true : false
+}
+
+/**
+ * @param {string} str 
+ * @returns {Boolean}
+ * @description 不能输入中文和特殊字符
+ */
+export function validateChinese(str){
+  return /[^\w]/.test(str) ? true : false
+}
