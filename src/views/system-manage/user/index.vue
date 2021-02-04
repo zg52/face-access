@@ -6,6 +6,52 @@
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
 -->
+<style lang="scss" scoped>
+	.switchStyle{
+      ::v-deep.el-switch__label {
+            position: absolute;
+            display: none;
+            font-weight:normal;
+        }
+      ::v-deep.el-switch__label *{
+            font-size:12px;
+        }
+       ::v-deep.el-switch__label--left {
+            z-index: 9;
+            left:22px;
+            color: #fff;
+        }
+       ::v-deep.el-switch__label--right {
+            z-index: 9;
+            color: #fff;
+        }
+       ::v-deep.el-switch__label.is-active {
+            display: block;
+            height:30px;
+            line-height:30px;
+        }
+    }
+   ::v-deep.switchStyle.el-switch .el-switch__core,.el-switch .el-switch__label {
+        width:60px !important;
+    }
+    .el-switch,.el-switch__core{
+        height:30px;
+        line-height:30px;
+    }
+    .el-switch__core{
+        border-radius:15px;
+        &:after{
+            width:20px;
+            height:20px;
+            top:4px;
+            left:3px;
+            z-index:10;
+        }
+    }
+    .el-switch.is-checked .el-switch__core::after{
+        margin-left:-23px;
+    }
+</style>
 
 <template>
     <div class="app-container">
@@ -77,7 +123,7 @@
       </el-table-column>
        <el-table-column align="center" label="状态"  width="160">
         <template v-slot="scope">
-         <el-switch v-model="scope.row.status" disabled="false" active-value="VALID" inactive-value="INVALID" active-text="激活" inactive-text="禁用"></el-switch>
+         <el-switch class="switchStyle" v-model="scope.row.status" disabled="false" active-value="VALID" inactive-value="INVALID" active-text="激活" inactive-text="禁用" active-color="#00A854" inactive-color="#F04134"></el-switch>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">

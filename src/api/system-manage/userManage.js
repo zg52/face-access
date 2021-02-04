@@ -27,7 +27,7 @@ export function searchUser(params) {
  */
 export function editUser(params) {
   return request({
-     url: `_api/user/${params.id}`,
+     url: `_api/user/user/${params.id}`,
      method: 'POST',
      data: params
    })
@@ -39,7 +39,7 @@ export function editUser(params) {
  */
 export function addUser(params) {
   return request({
-     url: '_api/user/',
+     url: '_api/user/user/',
      method: 'POST',
      data: params
    })
@@ -51,7 +51,7 @@ export function addUser(params) {
  */
 export function deleteUser(id) {
   return request({
-     url: `_api/user/${id}`,
+     url: `_api/user/user/${id}`,
      method: 'DELETE'
    })
  }
