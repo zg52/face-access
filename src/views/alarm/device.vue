@@ -98,15 +98,23 @@ margin-left: 30px;
 <template>
   <div class="app-container">
     <el-form :model="pagingParams" :inline="true">
-      <el-form-item label="设备ID" >
+      <el-form-item label="设备ID">
         <el-select multiple collapse-tags v-model="pagingParams.selectedDevices" @change='changeSelect' clearable="true">
         <el-checkbox v-model="checked" @change='selectAll'>全选</el-checkbox>
-        <el-option v-for='(item, index) in deviceList' :key='index' :label='item' :value='item'></el-option>
+        <el-option v-for='(item, index) in deviceList' :key='index' :label='item' :value='item'>
+        </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="告警类型">
         <el-select v-model="pagingParams.category" clearable="true">
-          <el-option v-for='(item, index) in categoryType' :key='index' :label='item.label' :value='item.value'></el-option>
+          <el-option v-for='(item, index) in categoryType' :key='index' :label='item.label' :value='item.value'>
+            <span style="float: right;color:yello;">
+              <i class="el-icon-check"></i>
+            </span>
+            <span style="float: left; color: #8492a6; font-size: 13px">
+              {{ item.label }}
+            </span>
+          </el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="设备位置">
