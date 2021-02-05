@@ -136,7 +136,7 @@ margin-left: 30px;
     </el-button>
   </el-form>
 
-  <el-table :data="recordList" class="record_list" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
+  <el-table :data="recordList" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
     <el-table-column width="50" type="selection" fixed>
     </el-table-column>
     <el-table-column label="序列" width="60" align="center">
@@ -228,7 +228,6 @@ import moment from "moment"
 export default {
   data() {
     return {
-      userFormVisible:true,
       checked: false,
       pickerOptions: pickerOptions(),
       queryDate: "",
