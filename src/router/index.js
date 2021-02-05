@@ -274,14 +274,14 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/blacklist',
+    path: '/blocklist',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/blacklist'),
-        name: 'blacklist',
-        meta: { title: '黑名单管理', icon: 'blacklist' },
+        component: () => import('@/views/blocklist'),
+        name: 'blocklist',
+        meta: { title: '黑名单管理', icon: 'blocklist' },
       }
     ]
   },
