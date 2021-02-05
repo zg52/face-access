@@ -59,8 +59,14 @@
       <el-form-item label="用户名"> <el-input v-model.trim="pagingParams.name" placeholder="输入用户名搜索"></el-input> </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="pagingParams.status" clearable="true">
-          <el-option label="激活" value="VALID"></el-option>
-          <el-option label="禁用" value="INVALID"></el-option>
+          <el-option v-for='(item, index) in statusType' :key='index' :label='item.label' :value='item.value'>
+            <span style="float: right;color:yello;">
+              <i class="el-icon-check"></i>
+            </span>
+            <span style="float: left; color: #8492a6; font-size: 13px">
+              {{ item.label }}
+            </span>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="时间节点">
@@ -278,6 +284,10 @@ export default {
       },
       roles: [
         {roleName: '超级管理员'}, {roleName: '管理员'}
+      ],
+      statusType: [
+        {label: "激活", value: "VALID"},
+        {label: "禁用", value: "INVALID"}
       ],
     
     //用户列表

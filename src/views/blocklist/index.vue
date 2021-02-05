@@ -53,7 +53,12 @@ margin-left: 30px;
       </el-form-item>
       <el-form-item label="头像类型">
         <el-select v-model="pagingParams.faceType" clearable="true">
-          <el-option v-for='(item, index) in faceTypes' :key='index' :label='item.label' :value='item.value'></el-option>
+          <el-option v-for='(item, index) in faceTypes' :key='index' :label='item.label' :value='item.value'>
+            <span style="float: right;color:yello;">
+            <i class="el-icon-check"></i>
+            </span>
+            <span style="float: left; color: #8492a6; font-size: 13px">{{ item.label }}</span>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="禁止通行原因">
