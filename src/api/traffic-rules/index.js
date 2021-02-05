@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-29 17:49:54
- * @LastEditTime: 2021-02-01 16:41:03
+ * @LastEditTime: 2021-02-05 19:06:59
  * @LastEditors: Please set LastEditors
  * @Description: 通行规则
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\traffic-rules\index.js
@@ -14,7 +14,7 @@ import request from '@/utils/request'
  */
 export function addRules(params) {
   return request({
-    url: '_api/device/rule',
+    url: '_api/passing/rule',
     method: 'POST',
     data: params
   })
