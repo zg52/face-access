@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-07 15:42:38
+ * @LastEditTime: 2021-02-07 19:52:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -125,7 +125,7 @@ margin-left: 30px;
     <el-form :model="pagingQuery" :inline="true">
       <!-- <el-form-item label="创建人"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索"></el-input></el-form-item> -->
       <el-form-item label="设备名称"><el-input v-model.trim="pagingQuery.name"></el-input></el-form-item>
-      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type" @change="deviceTypeChange"><el-option v-for="(type, index) of pagingQuery.typeValue" :key="index" :value="type.value"></el-option></el-select></el-form-item>
+      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type" @change="deviceTypeChange"><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
       <el-form-item label="设备型号"><el-input v-model.trim="pagingQuery.model"></el-input ></el-form-item>
       <el-form-item label="设备厂商"><el-input v-model="pagingQuery.manufacturer"></el-input></el-form-item>
       <el-form-item label="设备SN"><el-input v-model.trim="pagingQuery.sn"></el-input></el-form-item>
@@ -239,9 +239,7 @@ margin-left: 30px;
       <el-form :model="addDeviceData" :inline="true" :rules="addDeviceDataRule" ref="addDeviceData">
         <!-- <el-form-item label="创建人："><el-input v-model.trim="addDeviceData.username" disabled></el-input></el-form-item> -->
         <el-form-item label="设备名称：" prop="name"><el-input v-model.trim="addDeviceData.name" placeholder="输入设备名称"></el-input></el-form-item>
-        <el-form-item label="设备类型：">
-          <el-select v-model="addDeviceData.type" @change="deviceTypeChange"><el-option v-for="(type, index) of addDeviceData.typeValue" :key="index" :value="type.value"></el-option></el-select>
-        </el-form-item>
+         <el-form-item label="设备类型"><el-select v-model="addDeviceData.type" @change="deviceTypeChange"><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
         <el-form-item label="设备型号：" prop="model"><el-input v-model.trim="addDeviceData.model" placeholder="输入设备型号"></el-input></el-form-item>
         <el-form-item label="设备厂商：" prop="manufacturer"><el-input v-model.trim="addDeviceData.manufacturer" placeholder="输入设备厂商"></el-input></el-form-item>
         <el-form-item label="设备SN：" prop="sn"><el-input v-model.trim="addDeviceData.sn" placeholder="输入设备SN"></el-input></el-form-item>
@@ -293,52 +291,59 @@ import {
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import moment from "moment"
+const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
+const deviceTypes = [
+       {
+        id: 'entrance',
+        value: '门禁' 
+       },
+       {
+         id: 'brake',
+         value: '闸机'
+       }
+   ],
+  deviceISOnline = [
+    { value: '在线' },
+    { value: '离线' }
+   ],
+  deviceStatus = [
+      {
+        command: 'removed',
+        value: '已删除'
+      },
+      {
+        command: 'out_of_order',
+        value: '故障'
+      },
+      {
+       command: 'close',
+       value: '关门'
+     },
+     {
+       command: 'open',
+       value: '开门'
+     },
+      {
+       command: 'always_open',
+       value: '常开门'
+     },
+      {
+       command: 'always_close',
+       value: '常关门'
+     },
+     {
+       command: 'restart',
+       value: '重启'
+     },
+     {
+       command: 'shutdown',
+       value: '关机'
+     },
+  ]
 export default {
   name: "deviceList",
   data() {
-    const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
-    let deviceType = [
-         { value: '门禁' },
-         { value: '闸机' }
-       ],
-      deviceISOnline = [
-        { value: '在线' },
-        { value: '离线' }
-       ],
-      deviceStatus = [
-          {
-            command: 'removed',
-            value: '已删除'
-          },
-          {
-            command: 'out_of_order',
-            value: '故障'
-          },
-          {
-           command: 'close',
-           value: '关门'
-         },
-         {
-           command: 'open',
-           value: '开门'
-         },
-          {
-           command: 'always_open',
-           value: '常开门'
-         },
-          {
-           command: 'always_close',
-           value: '常关门'
-         },
-         {
-           command: 'restart',
-           value: '重启'
-         },
-         {
-           command: 'shutdown',
-           value: '关机'
-         },
-      ]
+
     return {
       table_loading: false,
       addSave_loading: false,
@@ -347,19 +352,20 @@ export default {
       editDeviceVisible: false,
       value: 1,
       pickerOptions: pickerOptions(),
+      deviceTypes: deviceTypes,
       multipleSelection: [], //多选删除
 
 // 新增设备
       addDeviceData: {
        username: '',
        name: '',
-       type: deviceType[0].value,
+       type: deviceTypes[0].id,
        model: '',
        manufacturer: '',
        sn: '',
        location: '',
        description: '',
-       typeValue: deviceType
+      //  typeValue: deviceType
        },
        
  // 编辑设备
@@ -378,9 +384,9 @@ export default {
      pagingQuery: {
       //  username: '艾米',
        name: '门禁主机1',
-       type: deviceType[0].value,
-       typeValue: deviceType,
-       isOnline: deviceISOnline[0].value,
+      //  type: deviceTypes[0].value,
+      //  typeValue: deviceTypes,
+      //  isOnline: deviceISOnline[0].value,
        online: deviceISOnline,
       //  deviceStatus: deviceStatus[0].value,
        statusValue: deviceStatus,
@@ -581,9 +587,9 @@ export default {
       })
       },
     deviceTypeChange() {
-      let deviceType = this.addDeviceData.type,
-          typeValue = this.addDeviceData.typeValue
-          deviceType = deviceType == typeValue[0] ? typeValue[0] : typeValue[1]
+      // let deviceType = this.addDeviceData.type,
+          // typeValue = this.addDeviceData.typeValue
+          // deviceType = deviceType == typeValue[0] ? typeValue[0] : typeValue[1]
     },
     onExport() {
 
@@ -607,8 +613,8 @@ export default {
    
   },
   created() {
-    this.onSearch()
-    console.log(searchDevice())
+    // this.onSearch()
+    // console.log(searchDevice())
   },
   mounted() {
   },

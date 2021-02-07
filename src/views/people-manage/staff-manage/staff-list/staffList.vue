@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-07 15:28:40
+ * @LastEditTime: 2021-02-07 19:12:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -259,13 +259,13 @@ export default {
         gateCardId: null,
         enrollTime: null,
         expiredTime: null,
-        createTimeFrom: null,
-        createTimeTo: null,
+        createTimeFrom: '2020-12-29', //初始查询默认参数，必填
+        createTimeTo: '6060-12-29', //初始查询默认参数，必填
         isDelete: null,
         
-        current: 1, 
-        size: 20,
-        total: 0,
+        // current: 1, 
+        // size: 20,
+        // total: 0,
       },
       tableData: [],
 
@@ -427,7 +427,6 @@ export default {
     this.onSearch()
   },
   mounted() {
-    console.log(this.getStaffList)
   },
 };
 </script>
