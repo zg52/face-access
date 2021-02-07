@@ -150,20 +150,20 @@ export const asyncRoutes = [
       {
         path: 'staff-manage',
         component: () => import('@/views/people-manage'),
-        redirect: '/people-manage/staff-manage/staff-list',
+        redirect: '/people-manage/staff-manage/staff-list/staffList',
         alwaysShow: true,
         meta: { title: '员工管理', icon: 'staff' },
         children: [
           {
-            path: 'staff-list',
-            component: () => import('@/views/people-manage/staff-manage/staff-list'),
-            name: 'staff-list',
+            path: 'staff-list/staffList',
+            component: () => import('@/views/people-manage/staff-manage/staff-list/staffList'),
+            name: 'staffList',
             meta: { title: '员工列表' },
           },
           {
-            path: 'staff-add',
-            component: () => import('@/views/people-manage/staff-manage/staff-add'),
-            name: 'staff-add',
+            path: 'staff-add/staffAdd',
+            component: () => import('@/views/people-manage/staff-manage/staff-add/staffAdd'),
+            name: 'staffAdd',
             meta: { title: '新增员工' }
          },
         ]
@@ -171,20 +171,20 @@ export const asyncRoutes = [
       {
         path: 'visitor-manage',
         component: () => import('@/views/people-manage'),
-        redirect: '/people-manage/visitor-manage/visitor-list',
+        redirect: '/people-manage/visitor-manage/visitor-list/visitorlist',
         alwaysShow: true,
         meta: { title: '访客管理', icon: 'visitor' },
         children: [
           {
-            path: 'visitor-list',
-            component: () => import('@/views/people-manage/visitor-manage/visitor-list'),
-            name: 'visitor-list',
+            path: 'visitor-list/visitorlist',
+            component: () => import('@/views/people-manage/visitor-manage/visitor-list/visitorList'),
+            name: 'visitorlist',
             meta: { title: '访客列表' },
           },
           {
-            path: 'visitor-add',
-            component: () => import('@/views/people-manage/visitor-manage/visitor-add'),
-            name: 'visitor-add',
+            path: 'visitor-add/visitorAdd',
+            component: () => import('@/views/people-manage/visitor-manage/visitor-add/visitorAdd'),
+            name: 'visitorAdd',
             meta: { title: '新增访客' }
          },
         ]
@@ -245,9 +245,9 @@ export const asyncRoutes = [
         meta: { title: '设备列表', icon: 'door' },
       },
       {
-        path: 'personnel',
-        name: 'personnel',
-        component: () => import('@/views/device-manage/personnel'),
+        path: 'person-issued',
+        name: 'person-issued',
+        component: () => import('@/views/device-manage/person-issued'),
         meta: { title: '人员下发', icon: 'guide' },
       },
     ]

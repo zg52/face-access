@@ -48,9 +48,9 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        const { data } = response
+        const { data, msg } = response
         if (!data) {
-          reject('验证失败，请重新登录！')
+          reject(msg)  // '验证失败，请重新登录！'
         }
 
         const { roles, username, avatar, introduction } = data
