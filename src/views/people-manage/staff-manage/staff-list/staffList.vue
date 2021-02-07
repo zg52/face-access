@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-05 19:26:52
+ * @LastEditTime: 2021-02-07 15:28:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -203,22 +203,21 @@
            :visible.sync="dialogVisible1"
            width="80%"
           >
-            <FromHandle :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEdit" />
+            <StaffFromHandle :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEdit" />
            <!-- <span slot="footer" class="dialog-footer">
              <el-button @click="dialogVisible1 = false">取 消</el-button>
              <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
            </span> -->
-      </el-dialog>      
-
+      </el-dialog>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getStaffList, deleteStaff } from '@/api/people-manage/staffManage'
+import { getStaffList, deleteStaff, StaffState } from '@/api/people-manage/staffManage'
 import { imgUrl } from '@/api/public'
 import { pickerOptions } from '@/utils'
 import { getGender, getFaceType} from '../components/index'
-import FromHandle from '../components/FromHandle'
+import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
  const faceTypes = [
    { id: 'zj', name: '证件照' }, 
@@ -230,7 +229,7 @@ import moment from 'moment'
  ]
 export default {
   name: 'staff-list',
-   components: { FromHandle },
+   components: { StaffFromHandle },
   data() {
     return {
       table_loading:false,
@@ -260,7 +259,7 @@ export default {
         gateCardId: null,
         enrollTime: null,
         expiredTime: null,
-        createTime: null,
+        createTimeFrom: null,
         createTimeTo: null,
         isDelete: null,
         
@@ -272,6 +271,7 @@ export default {
 
 // 编辑参数
       addStaffForm: {
+           id: null,
            operator: this.$store.getters.username,
            name: 'null',
            gender: '1',
@@ -377,7 +377,12 @@ export default {
       function state() {
         return y.state == 0 ? 1 : 0
       }
-    deleteStaff(y.id).then((res) => {
+      StaffState(
+          y.id,
+          {
+            status:state()
+          }
+      ).then((res) => {
         if (res.code == 0 && res.data === null) {
           this.$message.success({message: res.msg})
           this.getStaffList()
@@ -399,9 +404,9 @@ export default {
   changeDate3() {
     let _p = this.pagingQuery
       this.date && this.date.length
-        ? ((_p.createTime = moment( this.date[0]).format("YYYY-MM-DD")),
+        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD")),
           (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
-        :  _p.createTime = _p.createTimeTo = null
+        :  _p.createTimeFrom = _p.createTimeTo = null
     },
     cacelEdit() {
       this.dialogVisible1 = false
@@ -422,6 +427,7 @@ export default {
     this.onSearch()
   },
   mounted() {
+    console.log(this.getStaffList)
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-15 17:56:08
- * @LastEditTime: 2021-01-29 17:00:53
+ * @LastEditTime: 2021-02-07 17:11:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\device-manage\personnel\index.vue
@@ -64,7 +64,6 @@ import Visitor from './components/Visitor';
         this.$router.push(`${ this.$route.path }?tab=${ getTabIndex }`)
     },
     mounted() {
-
     }
   };
 </script>

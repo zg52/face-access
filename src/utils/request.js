@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-02-03 11:18:12
+ * @LastEditTime: 2021-02-07 17:27:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\utils\request.js
@@ -25,7 +25,7 @@ service.interceptors.request.use(
   config => {
     const conType = config.headers.post['Content-Type']
     if (store.getters.token) {
-    config.headers['token'] = getToken()
+    config.headers['Authorization'] = getToken()
     }
 
 // 凡是post发送的请求一律序列化为formdata格式
@@ -37,7 +37,6 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    console.log(error)
     return Promise.reject(error)
   }
 )

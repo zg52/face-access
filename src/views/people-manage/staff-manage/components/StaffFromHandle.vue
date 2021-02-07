@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-05 17:14:02
+ * @LastEditTime: 2021-02-07 11:47:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -128,11 +128,11 @@ position: absolute;
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveStaff } from '@/api/people-manage/staffManage'
+import { saveStaff, editStaff } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
-import { getGender, getFaceType} from '../components/index'
+import { getGender, getFaceType} from './index'
 // import { pickerOptions } from '@/utils'
 
 
@@ -289,19 +289,41 @@ export default {
              a = this.addStaffForm,
           formData = new FormData()
           for(let item in a) { formData.append(item, a[item]) }
-           saveStaff(formData).then((res) => {
+          if(!this.btn_el.includes('edit')) {
+              add()
+          } else {
+              edit()
+          }
+           function add() {
+               saveStaff(formData).then((res) => {
                 if(res.code === 0 && res.data) {
-                   this.save_loading = false
-                   this.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
-                   this.resetAddStaffForm()
+                   _this.save_loading = false
+                   _this.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
+                   _this.resetAddStaffForm()
                      } else {
-                       this.$message.warning(res.msg, 4000)
-                       this.save_loading = false
+                       _this.$message.warning(res.msg, 4000)
+                       _this.save_loading = false
                      }
                 },(err) => {
-                   this.save_loading = false
-                   this.$message.error('保存失败，请重试！')
+                   _this.save_loading = false
+                   _this.$message.error('保存失败，请重试！')
                   })
+           }
+           function edit() {
+               editStaff(_this.addStaffForm.id, formData).then((res) => {
+                if(res.code === 0 && res.data) {
+                   _this.save_loading = false
+                   _this.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
+                   _this.resetAddStaffForm()
+                     } else {
+                       _this.$message.warning(res.msg, 4000)
+                       _this.save_loading = false
+                     }
+                },(err) => {
+                   _this.save_loading = false
+                   _this.$message.error('保存失败，请重试！')
+                  })
+           }
             },
     async submitImg() {
       this.$refs.upload.submit()
@@ -321,11 +343,11 @@ export default {
 
 // 取消编辑传给列表页
     cancelEdit() {
-        this.$emit('cacelEdit')
+        this.$emit('cacel')
     }
   },
   created() {
-      console.log(this.edit)
+
   },
   mounted() {
   },

@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-03 19:40:18
+ * @LastEditTime: 2021-02-07 17:19:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'
 
+const passing = '_api/passing/'
 // 设备管理
 
 /**
@@ -16,7 +17,7 @@ import request from '@/utils/request'
  */
 export function addDevice(params) {
  return request({
-    url: '_api/device',
+    url: `${ passing }device`,
     method: 'POST',
     data: params
   })
@@ -36,11 +37,11 @@ export function editDevice() {
 /**
  * @description: 查设备列表
  */
-export function searchDevice(data) {
+export function searchDevice(params) {
   return request({
-     url: '_api/device',
+     url: `${ passing }device`,
      method: 'GET',
-     data
+     params
    })
  }
 
@@ -75,5 +76,3 @@ export function instructDevice(type, params) {
      data: params
    })
  }
-
- 
