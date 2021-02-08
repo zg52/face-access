@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-07 19:52:24
+ * @LastEditTime: 2021-02-08 09:46:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -475,7 +475,7 @@ export default {
        this.$refs[el].validate((valid) => {
           if (valid) {
             addDevice(this.addDeviceData).then((res) => {
-             if(res.code === 0 && res.data) {
+             if(res.code === 0 && res.data && res.data != 0) {
                this.$message.success(res.msg)
              } else {
                this.$message.error(res.msg)
