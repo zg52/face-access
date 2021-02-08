@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-05 19:06:09
+ * @LastEditTime: 2021-02-08 19:31:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -17,8 +17,8 @@
     <el-form :model="addRules" label-width="120px" ref="el_addRules">
       
        <el-form-item label="选择设备名称：">
-        <el-select v-model="deviceName" placeholder="请选择">
-         <el-option v-for="(deviceName, index) of deviceNames" :key="index" :deviceIds="deviceName.deviceIds" :value="deviceName.name"></el-option>
+        <el-select v-model="deviceName" placeholder="请选择" multiple filterable>
+         <el-option v-for="(deviceName, index) of deviceNames" :key="index" :label="deviceName.name" :value="deviceName.deviceIds"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="选择通行方式：" prop="verificationModes">
@@ -263,20 +263,11 @@ export default {
         //  [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
 
 //  设备名称
-        deviceName: '',
-        deviceNames: [
-           {
-             name: '设备1',
-             deviceIds: 1
-           },
-            {
-             name: '设备2',
-             deviceIds: 1
-           }
-         ], 
+        deviceName: [],
+        deviceNames: [], 
          verificationModes: [['face']],
          addRules: {
-           deviceIds: '',
+           deviceIds: [1],
            verificationModes: ['face'],
            name: null,
            description: null,
@@ -284,7 +275,7 @@ export default {
            personType: 'employee', // 指定人员或全部人员的类别
            personIds: null, //  指定人员（员工）的id
            visitorIds: null,  //  指定人员（访客）的id
-           week: [1,2,3,4,5],
+           week: '[1,2,3,4,5]',
            startDate: null,
            endDate: null,
            startTime: null,
@@ -371,18 +362,9 @@ export default {
           switch: 1,
         },
       ],
-     pagingParams: {
-        username: "",
-        email: "",
-        // appkey: "",
-        // secret:"",
-        createDateFrom: "",
-        createDateTo: "",
-        current: 1, //默认当前页数为1
+     deiveParams: {
+        current: 1,
         size: 10,
-        total: 0,
-        status: "",
-        // type:'0',
       },
     }
   },
@@ -516,17 +498,17 @@ export default {
     },
 // 获取默认设备名称
     getDeviceName() {
-      searchDevice(this.pagingParams).then((res) => {
-        let data = res.data.rescords
-       if(res.code === 0 && data.length !== 0) {
+      searchDevice(this.deiveParams).then((res) => {
+        if(res.code === 0 && res.data) {
+         let data = res.data.records
             data.map((x,y) => {
               this.deviceNames.push({
                  name: x.name,
                  deviceIds: x.id
               })
             })
-            this.deviceName = this.deviceNames[0].name
-            this.addRules.deviceIds = this.deviceNames[0].id
+            this.deviceName.push(data[0].name)
+            this.addRules.deviceIds = data[0].id
           } else {
              this.$message.warning('无可用设备，请先添加设备')
           }
@@ -534,9 +516,7 @@ export default {
     }
   },
   created() {
-    // this.getDeviceName()
-    console.log(addRules())
-
+    this.getDeviceName()
   },
   mounted() {
 

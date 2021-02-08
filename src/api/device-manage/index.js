@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-07 17:19:38
+ * @LastEditTime: 2021-02-08 17:30:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -27,10 +27,11 @@ export function addDevice(params) {
  * @description: 修改设备
  * @param {id}
  */
-export function editDevice() {
+export function editDevice(id, params) {
   return request({
-     url: `_api/device/${ id }`,
-     method: 'PUT',
+     url: `${ passing }device/${ id }`,
+     method: 'POST',
+     data: params
    })
  }
 
@@ -50,7 +51,7 @@ export function searchDevice(params) {
  */
 export function getDeviceDetails() {
   return request({
-     url: `_api/device/${ id }`,
+     url: `${ passing }device/${ id }`,
      method: 'GET',
    })
  }
@@ -60,7 +61,7 @@ export function getDeviceDetails() {
  */
 export function deleteDevice(id) {
   return request({
-     url: `_api/device/${ id }`,
+     url: `${ passing }device/${ id }`,
      method: 'DELETE',
    })
  }
@@ -71,8 +72,21 @@ export function deleteDevice(id) {
  */
 export function instructDevice(type, params) {
   return request({
-     url: `_api /device/instruct/${ type }`,
+     url: `${ passing }device/instruct/${ type }`,
      method: 'POST',
-     data: params
+     params,
+    //  headers: {"Content-Type": "application/json"}
+   })
+ }
+
+   /**
+ * @description: 操作设备
+ * @param {deviceIds}
+ */
+export function instructDevice1(type, params) {
+  return request({
+     url: `${ passing }device/instruct/${ type }`,
+     method: 'PUT',
+     params,
    })
  }
