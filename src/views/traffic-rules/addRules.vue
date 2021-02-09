@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-08 19:31:31
+ * @LastEditTime: 2021-02-09 18:45:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -16,14 +16,14 @@
   <div class="app-container">
     <el-form :model="addRules" label-width="120px" ref="el_addRules">
       
-       <el-form-item label="选择设备名称：">
-        <el-select v-model="deviceName" placeholder="请选择" multiple filterable>
+       <el-form-item label="选择设备名称：" prop="deviceIds" :rules="{ required: true,message: '请选择设备名称', trigger: 'change' }">
+        <el-select v-model="deviceIds" placeholder="请选择" @change="changeDeviceIds" multiple filterable clearable>
          <el-option v-for="(deviceName, index) of deviceNames" :key="index" :label="deviceName.name" :value="deviceName.deviceIds"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="选择通行方式：" prop="verificationModes">
+      <el-form-item label="选择通行方式：" prop="getVerificationModes" :rules="{ required: true,message: '请选择通行方式', trigger: 'change' }">
        <div class="block">
-            <el-cascader class="w250" v-model="verificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode" @getCheckedNodes="getCheckedNodes"></el-cascader>
+            <el-cascader class="w250" v-model="addRules.getVerificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode" @getCheckedNodes="getCheckedNodes"></el-cascader>
         </div>
       </el-form-item>
       <el-form-item label="通行规则名称：" prop="name" :rules="{ required: true, message: '通行规则名称不能为空', trigger: 'blur' }"><el-input class="w200" v-model.trim="addRules.name" placeholder="通行规则名称"></el-input></el-form-item>
@@ -34,12 +34,14 @@
          <el-radio :label="personTypeList[1]" @click.native="staffHandle" border>指定员工
            <!-- <sub class="p_num"> 已选102人</sub> -->
             </el-radio>
-         <el-radio :label="personTypeList[2]" @click.native="visitorHandle" border>指定访客
+            <div class="mt10">
+             <el-radio :label="personTypeList[2]" border>全部访客</el-radio>
+             <el-radio :label="personTypeList[3]" @click.native="visitorHandle" border>指定访客
            <!-- <sub class="p_num"> 已选102人</sub> -->
             </el-radio>
-         <!-- <div class="mt10"> -->
+         <!--  -->
            <!-- <el-radio :label="'ruleType_personType'" border>全部访客</el-radio> -->
-         <!-- </div> -->
+         </div>
         </el-radio-group>
       </el-form-item>  
      <el-form-item label="选择通行时间：">
@@ -234,19 +236,28 @@
 import { addRules } from'@/api/traffic-rules'
 import { searchDevice } from '@/api/device-manage'
 import { getStaffLis } from '@/api/people-manage/staffManage'
+import { passWay, weekParams } from '@/utils/business'
 import moment from "moment"
- const optionsNum = ['一', '二', '三', '四', '五', '六', '日'] //  星期制
+
  var weekOptions = []
-     optionsNum.map((item, index) => {
+      weekParams().map((item, index) => {
          weekOptions.push({
-          id: item === '日' ? 0 : index + 1,
+          id: item.value === '日' ? 0 : index + 1,
           name: `星期${ item }`
        })
      })
-     
-const personTypeList = ['ruleType_personType_employee', 'ruleType_personIds_arr', 'ruleType_visitorIds_arr'] //  通行人员类型字段
+
+//  通行人员类型字段
+const personTypeList = [
+      'ruleType-by_personType-employee', //全部员工
+      'ruleType-personType-employeeIds', //指定员工
+      'ruleType-by_personType-visitor', //全部访客
+      'ruleType-personType-visitorIds'
+      ]
+const personTypeParam = ['by_personType', 'personType', 'employee', 'visitor']
+
 export default {
-  name: "",
+  name: "addRules",
   data() {
     return {
         checkAll: false,
@@ -257,82 +268,41 @@ export default {
         dialogVisible: false,
         activeName: 'week',
         multipleSelection: [],
-        personTypeRadio: personTypeList[0], //默认指定所有员工
+        personTypeRadio: personTypeList[0], //默认指定全员工
         personTypeList: personTypeList,
         dateTime: null,
         //  [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
 
 //  设备名称
-        deviceName: [],
+        deviceIds: [],
         deviceNames: [], 
-         verificationModes: [['face']],
+         verificationModes: [],
          addRules: {
-           deviceIds: [1],
-           verificationModes: ['face'],
+           deviceIds: [],
+           getVerificationModes: [],
+           verificationModes: [], // 发给后台转换后的参数
            name: null,
-           description: null,
-           ruleType: 'personType', // 指定人员（指定员工和指定访客）或全部人员（全员工和全访客）
-           personType: 'employee', // 指定人员或全部人员的类别
+           description: 'hh',
+          //  ruleType: 'personType', 
+
+// 指定员工id/或访客id
+           personType: 'employee', // 默认为全员工
+           
+// 指定全部人员（全部员工和全部访客————后台自动添加人员id）或手动指定人员（指定员工id和全访客id）=== by_person_type -> employee/visitor || person_type -> employee(指定id)/visitor(指定id)
+           ruleType: 'by_person_type', // 默认为人员类型
+
            personIds: null, //  指定人员（员工）的id
            visitorIds: null,  //  指定人员（访客）的id
-           week: '[1,2,3,4,5]',
+           week: '1,2,3,4,5', // 默认通行星期为周一到周五
            startDate: null,
            endDate: null,
            startTime: null,
            endTime: null
          },
+
 // 通行方式
        passWayProps: { multiple: true },
-       passWay: [
-          {
-            label: '刷脸',
-            value: 'face'
-          },
-          {
-            label: '指纹',
-            value: 'fingerprint'
-          },
-          {
-            label: '二维码',
-            value: 'qr_code'
-          },
-          {
-            label: '刷卡',
-            value: 'card',
-              children: [
-                {
-                 label: '门禁卡',
-                 value: 'wg_card'
-               },
-               {
-                label: 'IC卡',
-                value: 'ic_card'
-              },
-              {
-                label: '身份证',
-                value: 'identity_card'
-              }
-          ]
-       },
-       {
-           label: '刷脸 + 刷卡',
-           value: 'faceCard',
-            children: [
-              {
-                label: '刷脸 + 门禁卡',
-                value: 'face,wg_card'
-              },
-              {
-                label: '刷脸 + IC卡',
-                value: 'face,ic_card'
-              },
-              {
-                label: '刷脸 + 身份证',
-                value: 'face,identity_card'
-              }
-            ]
-       }
-       ],
+       passWay: passWay(),
       userFormVisible:true,
       value: 1,
       pickerOptions: [],
@@ -370,13 +340,20 @@ export default {
   },
   methods: {
 
+// 获取设备id参数
+    changeDeviceIds() {
+       this.addRules.deviceIds = this.deviceIds
+    },
+
 // 获取通行方式参数
     changeRuleNode() {
-        let newArr = []
-        this.verificationModes.map((x) => {
-         x.forEach(() => newArr.push(x[x.length - 1]))
-        })
-      this.addRules['verificationModes'] =  this.addRules['verificationModes'] ?? Array.from(new Set(newArr))
+        let newArr = [],
+            a = this.addRules
+            a['getVerificationModes'].map((x) => {
+              x.forEach(() => newArr.push(x[x.length - 1]))
+            })
+           a['verificationModes'] = Array.from(new Set(newArr))
+
     },
 
 // 获取通行人员类型参数
@@ -384,12 +361,13 @@ export default {
      let p = this.personTypeRadio,
          pLis =  this.personTypeList,
          a = this.addRules
-         function employee() { return (a['ruleType'] = 'personType', a['personType'] = 'employee') }
+         function personType(TYPE, PERSONID) { return (a['ruleType'] = TYPE, a['personType'] = PERSONID) }
            switch(p) {
-             case pLis[0] : employee();break
-             case pLis[1] : (a['ruleType'] = 'personIds');break
-             case pLis[2] : (a['ruleType'] = 'visitorIds');break
-             default : employee()
+             case pLis[0] : personType(personTypeParam[0], personTypeParam[2]);break
+             case pLis[1] : personType(personTypeParam[1], personTypeParam[2]);break
+             case pLis[2] : personType(personTypeParam[0],personTypeParam[3]);break
+             case pLis[3] : personType(personTypeParam[1],personTypeParam[3]);break
+             default : personType(personTypeParam[0], personTypeParam[2])
            }
     },
 
@@ -430,32 +408,36 @@ export default {
        this.isIndeterminate = false
     },
     handleWeekChange(value) {
-        let checkedCount = value.length,
-            weekId = []
+        let [checkedCount, weekId] = [value.length, []]
         this.checkAll = checkedCount === this.weeks.length
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.weeks.length
         value.map(item =>  weekId.push(item.id))
-        this.addRules.week = weekId.sort()
-
-
+        let weekSort = weekId.sort()
+        this.addRules.week = weekSort.join(',')
       },
     getCheckedNodes(leafOnly) {
     },
+
+// 发起新增通行规则
     handleAddRule() {
+      let [_this, getVerificationModes] = [this, this.addRules.getVerificationModes]
+      function setVerificationModes () {return _this.$set(_this.addRules, 'getVerificationModes', getVerificationModes)}
       this.$refs['el_addRules'].validate((valid) => {
           if (valid) {
+            // this.addRules.getVerificationModes = 'null'
             addRules(this.addRules).then((res) => {
-              if(res.code === 0 && res.data.length !==0) {
+              // setVerificationModes()
+              if(res.code === 0) {
                 this.$message.success(res.msg)
+                
+              } else {
+                this.$message.error(res.msg)
               }
-            }).catch(() => {
-
-        })
+            })
           } else {
             return false
           }
         })
-        this.$message.success('张三 已下发至设备SHFFJEF')  
     },
     onSearch(){
     },
@@ -480,10 +462,6 @@ export default {
          addDate[d[i]] = dataTimeHandle(d[i], 'hh:mm', i)
        }
     }
-    console.log(_this.addRules)
-
-
-
     },
     handleSizeChange(val) {
       this.pagingParams.size = val
@@ -496,7 +474,8 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-// 获取默认设备名称
+
+// 获取默认设备名称（第一项）
     getDeviceName() {
       searchDevice(this.deiveParams).then((res) => {
         if(res.code === 0 && res.data) {
@@ -507,8 +486,8 @@ export default {
                  deviceIds: x.id
               })
             })
-            this.deviceName.push(data[0].name)
-            this.addRules.deviceIds = data[0].id
+            // this.deviceName.push(data[0].name)
+            // this.addRules.deviceIds = JSON.stringify([data[0].id])
           } else {
              this.$message.warning('无可用设备，请先添加设备')
           }
@@ -519,7 +498,6 @@ export default {
     this.getDeviceName()
   },
   mounted() {
-
   },
-};
+}
 </script>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-02-08 17:36:12
+ * @LastEditTime: 2021-02-09 14:00:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\user.js
@@ -21,7 +21,7 @@ export function login(params) {
 export function getInfo(token) {
   return request({
     url: `${ user }info`,
-    method: 'GET',
+    method: 'POST',
     params: { token }
   })
 }

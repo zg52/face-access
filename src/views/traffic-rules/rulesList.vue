@@ -1,49 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-03 13:58:48
+ * @LastEditTime: 2021-02-09 19:31:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
- .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8a16ff;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-    border:1px #8a16ff dashed;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-  .camera {
-margin-left: 30px;
-    margin-top: 44px;
-    i {
-      font-size: 20px;
-    }
-  }
-  .des {
-   color: #999;
-    font-size: 12px;
-    padding-left: 30px;
-    line-height: 16px;
-  }
+
 </style>
 <template>
   <div class="app-container">
@@ -113,11 +77,11 @@ margin-left: 30px;
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="ID" width="80"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="120"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
-      <el-table-column align="center" label="通行方式" width="80"><template v-slot="scope">{{ scope.row.verificationModes }}</template></el-table-column>
-      <el-table-column align="center" label="通行人员类型" width="120"> <template v-slot="scope">{{ scope.row.value === 'employee' ? '员工' : '访客' }}</template></el-table-column>
-      <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
+      <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationModes | verificationModes_hadnle }}</template></el-table-column>
+      <el-table-column align="center" label="通行人员类型" width="120"> <template v-slot="scope">{{ scope.row.personType === 'employee' ? '员工' : '访客' }}</template></el-table-column>
+      <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
-      <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput(scope.row.week) }}</template></el-table-column>
+      <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
       <el-table-column align="center" label="通行日期+时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.endTime } ~ ${ scope.row.startDate } ${ scope.row.endTime }` }}</template></el-table-column>
       <el-table-column align="center" label="规则描述"><template v-slot="scope">{{ scope.row.description }}</template> </el-table-column> 
       <el-table-column align="center" label="创建人"><template v-slot="scope">{{ scope.row.userId }}</template></el-table-column>
@@ -149,19 +113,11 @@ margin-left: 30px;
   </div>
 </template>
 <script>
-import { getRules, deleteRules } from'@/api/traffic-rules'
+import { getRules, deleteRules } from '@/api/traffic-rules'
 import { pickerOptions } from '@/utils'
+import { passWay, weekParams, passWayArrHandle } from '@/utils/business'
 import moment from 'moment'
 
-const optionsWeek = [
-  { id: 1, value: '一' },
-  { id: 2, value: '二' },
-  { id: 3, value: '三' },
-  { id: 4, value: '四' },
-  { id: 5, value: '五' },
-  { id: 6, value: '六' },
-  { id: 0, value: '日' }
-]
 export default {
   name: 'rulesList',
   data() {
@@ -217,38 +173,7 @@ export default {
 //  通行方式
        verificationModes: [],
        passWayProps: { multiple: true },
-       passWay: [
-          {
-            label: '刷脸',
-            value: 'face'
-          },
-          {
-            label: '指纹',
-            value: 'fingerprint'
-          },
-          {
-            label: '二维码',
-            value: 'qr_code'
-          },
-          {
-            label: '刷卡',
-            value: 'card',
-              children: [
-                {
-                 label: '门禁卡',
-                 value: 'wg_card'
-               },
-               {
-                label: 'IC卡',
-                value: 'ic_card'
-              },
-              {
-                label: '身份证',
-                value: 'identity_card'
-              }
-          ]
-       }
-       ],
+       passWay: passWay(),
 
 // 通行人员类型
       personType: null,
@@ -274,28 +199,8 @@ export default {
   // 通行时间
       queryWeeksProps: { multiple: true },
       queryWeek: [],
-      ruleList: [
-        {
-          name: "阿娃",
-          description: "算法应用院",
-          createTime: "2020 01.12",
-          updataTime: "2020 02.13",
-          switch: 1,
-          value:'employee',
-          dfs: 9988983,
-          phone: 15652655412,
-          job: "打杂专员",
-          sex: "女",
-          entryTime: "2023-12-12",
-            startDate: '2021-12-21',
-       endDate: '2021-09-32',
-       startTime: '06:00:00',
-       endTime: '06:00:00',
-       week: '56'
-
-        },
-      ],
-     pagingQuery: {
+      ruleList: [],
+      pagingQuery: {
        userId: null,
        deviceName: null,
        name: '',
@@ -321,13 +226,22 @@ export default {
    
   },
   filters: {
+    verificationModes_hadnle(value) {
+      let txt = []
+      passWayArrHandle().map((item, index) => {
+        item.value == value[index] ? txt.push(item.label) : null
+      })
+      return txt.join('+')
+    },
     weekComput(value) {
           let weekStr = []
-          optionsWeek.forEach((item, index) => {
+          weekParams().forEach((item, index) => {
             value.includes(item?.id) ? weekStr.push(`周${ item?.value }`) : ''
             })
          if(value.length === 7) {
            return '周一至周日'
+         } else if(value.includes('1,2,3,4,5,6')) {
+            return '周一 至 周六'
          } else {
             return weekStr.join('，')
          }
@@ -386,10 +300,12 @@ export default {
       let _this = this
       this.table_loading = true
       getRules(this.pagingQuery).then((res) => {
-         if(res.code === 0 && res.data.rescords.length !== 0) {
-               _this.table_loading = false
-               this.ruleList = res.data.rescords
-               this.$message.success(res.msg)
+         if(res.code === 0) {
+               this.table_loading = false
+               this.ruleList = res.data.records
+            } else {
+               this.$message.error(res.msg)
+               this.table_loading = false
             }
       })
     },
@@ -489,9 +405,9 @@ export default {
     },
   },
   created() {
-    // this.getDeviceName()
+    this.onSearch()
     {
-     optionsWeek.map((item, index) => {
+     weekParams().map((item, index) => {
          this.queryWeek.push({
           value: item.value === '日' ? 0 : index + 1,
           label: `周${ item.value }`
@@ -499,6 +415,7 @@ export default {
      })
     }
   },
-  mounted() {},
+  mounted() {
+  },
 };
 </script>
