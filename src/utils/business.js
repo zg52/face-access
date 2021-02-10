@@ -1,11 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-02-09 19:08:54
+ * @LastEditTime: 2021-02-10 10:56:10
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
  */
+import { 
+    searchDevice,  // 查设备列表
+   } from '@/api/device-manage'
+ 
+
 const passWayArr = [
     {
       label: '刷脸',
@@ -97,3 +102,28 @@ export function passWayArrHandle() {
         { id: 0, value: '日' }
       ]
  }
+
+/**
+ * @description: 根据设备id获取默认设备名称
+ */
+ export async function getDeviceNames() {
+    let deviceName = []
+    return searchDevice({current: 1}).then((res) => {
+      if(res.code === 0) {
+       return searchDevice({size: res.data.total}).then((res) => {
+          let data = res.data.records
+           data.map((x,y) => {
+            deviceName.push({
+               name: x.name,
+               id: x.id
+            })
+          })
+          return deviceName
+        
+        })
+     } else {
+           this.$message.warning('无可用设备，请添加设备')
+        }
+    }
+    )
+  }

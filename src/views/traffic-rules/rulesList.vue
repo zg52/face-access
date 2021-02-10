@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-09 19:31:45
+ * @LastEditTime: 2021-02-10 11:50:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -75,16 +75,19 @@
     <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-      <el-table-column align="center" label="ID" width="80"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
+      <el-table-column align="center" label="ID" width="40"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="120"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
+      <el-table-column align="center" label="设备名称" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationModes | verificationModes_hadnle }}</template></el-table-column>
       <el-table-column align="center" label="通行人员类型" width="120"> <template v-slot="scope">{{ scope.row.personType === 'employee' ? '员工' : '访客' }}</template></el-table-column>
-      <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
       <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
-      <el-table-column align="center" label="通行日期+时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.endTime } ~ ${ scope.row.startDate } ${ scope.row.endTime }` }}</template></el-table-column>
+      <el-table-column align="center" label="通行日期+时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.startTime } ~ ${ scope.row.endDate } ${ scope.row.endTime }` | dateTime }}</template></el-table-column>
       <el-table-column align="center" label="规则描述"><template v-slot="scope">{{ scope.row.description }}</template> </el-table-column> 
-      <el-table-column align="center" label="创建人"><template v-slot="scope">{{ scope.row.userId }}</template></el-table-column>
+      <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
+      <el-table-column align="center" label="修改时间" width="108"><template v-slot="scope">{{ scope.row.lastUpdateTime | filterDate }}</template></el-table-column>
+
+      <!-- <el-table-column align="center" label="创建人"><template v-slot="scope">{{ scope.row.userId }}</template></el-table-column> -->
       
       <el-table-column align="left" label="操作" width="220" fixed="right">
         <template v-slot="scope">
@@ -113,9 +116,11 @@
   </div>
 </template>
 <script>
+let vm
 import { getRules, deleteRules } from '@/api/traffic-rules'
+// import { searchDevice } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
-import { passWay, weekParams, passWayArrHandle } from '@/utils/business'
+import { passWay, weekParams, passWayArrHandle, getDeviceNames } from '@/utils/business'
 import moment from 'moment'
 
 export default {
@@ -152,6 +157,7 @@ export default {
         date: null,
         props: { multiple: true },
         createTime: null,
+        getDeviceNames: [],
 
 //  设备名称
         // deviceName: null,
@@ -245,7 +251,18 @@ export default {
          } else {
             return weekStr.join('，')
          }
+  },
+  dateTime(value) {
+    return value.replace(new RegExp('null', 'img'), '')
+  },
+  getDeviceId_name(value) {
+    let txt = null
+      vm.getDeviceNames.map((item, index) => {
+         item.id == value ? txt = item.name : null
+      })
+      return txt
   }
+ 
   },
   methods: {
     
@@ -259,19 +276,6 @@ export default {
     },
 
  // 获取通行星期参数
-    changeRuleNode1() {
-      let queryWeek = this.pagingQuery,
-          querWeekStr = []
-          if(queryWeek['queryWeek'].length !== 0) {
-                queryWeek['queryWeek'].forEach((item, index) => {
-                 querWeekStr.push(item[0])
-              })
-              querWeekStr = querWeekStr.join()
-               queryWeek['queryWeek'] = querWeekStr
-          }
-    },
-
- // 获取通行日期时间参数
     changeRuleNode1() {
       let queryWeek = this.pagingQuery,
           querWeekStr = []
@@ -310,16 +314,14 @@ export default {
       })
     },
 
-// 单删设备
     handleDelete(x, y) {
-      deleteRules(y.id).then((res) => {
+      deleteRules({ids: y.id}).then((res) => {
         if (res.code == 0 && res.data) {
           this.$message.success({message: res.msg})
           this.onSearch()
         } else {
-          this.$message.warning({message: res.msg})
+          this.$message.error({message: res.msg})
         }
-      }).catch(() => {
       })
     },
 
@@ -332,7 +334,7 @@ export default {
           type: "warning",
         }).then(() => {
             for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteRules(this.multipleSelection[i].id).then((res) => {
+              deleteRules({ids:this.multipleSelection[i].id}).then((res) => {
                 if (res.code == 0 && res.data) {
                   if(i + 1 >= this.multipleSelection.length) {
                   this.onSearch()
@@ -358,24 +360,6 @@ export default {
       
     },
     
-// 获取默认设备名称
-    getDeviceName() {
-      searchDevice(this.pagingQuery).then((res) => {
-        let data = res.data.rescords
-       if(res.code === 0 && data.length !== 0) {
-            data.map((x,y) => {
-              this.deviceNames.push({
-                 name: x.name,
-                 id: x.id
-              })
-            })
-            // this.deviceName = this.deviceNames[0].name
-            // this.pagingQuery.id = this.deviceNames[0].id
-          } else {
-             this.$message.warning('无可用设备，请先添加设备')
-          }
-      })
-    },
     handleSizeChange(val) {
       this.pagingQuery.size = val
       this.getRuleList()
@@ -404,7 +388,13 @@ export default {
       this.pagingQuery.createTime = moment(this.createTime).format('YYYY-MM-DD hh:mm')
     },
   },
+  beforeCreate() {
+    vm = this
+  },
   created() {
+    getDeviceNames().then((res) => {
+       this.getDeviceNames = res
+    })
     this.onSearch()
     {
      weekParams().map((item, index) => {
