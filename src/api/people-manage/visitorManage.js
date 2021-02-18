@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-02-07 13:16:32
+ * @LastEditTime: 2021-02-18 16:51:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\people-manage\visitorManage.js
@@ -27,7 +27,7 @@ export function saveVisitor(params) {
 /**
  * @description: 访客-列表
  */
-export function getVisitorList(params) {
+export function visitorList(params) {
   return request({
      url: person,
      method: 'GET',

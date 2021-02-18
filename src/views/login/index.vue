@@ -131,7 +131,7 @@ $light_gray:#eee;
 </style>
 <template>
   <div class="login-container">
-    <div class="container_tit"><img src="../../assets/image/home-logo.png"><span>智能安防 · 监控门禁系统<svg-icon class="ml4" icon-class="sys-tit"/></span></div>
+    <div class="container_tit"><img src="../../assets/image/home-logo.png"><span>智能安防 · 监控门禁系统 <svg-icon class="ml4" icon-class="sys-tit"/></span></div>
     <div class="main"><div class="banner"> <img src="../../assets/image/banner.png" width="490"></div><div>
 
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">

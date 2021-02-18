@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-07 11:47:48
+ * @LastEditTime: 2021-02-18 15:35:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -120,7 +120,7 @@ position: absolute;
         <el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button>
         <el-button @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveStaffHandle('addStaffFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
-        <el-button v-show="!btn_el.includes('edit')"><router-link to="/people-manage/staff-manage/staff-list"><i class="el-icon-view"></i> 查看员工列表</router-link></el-button>
+        <el-button v-show="!btn_el.includes('edit')"><router-link to="/people-manage/staff-manage/staff-list/staffList"><i class="el-icon-view"></i> 查看员工列表</router-link></el-button>
         <el-button @click="cancelEdit" v-show="!btn_el.includes('add')"><span>取 消</span></el-button>
      </el-form-item>
      </el-form>

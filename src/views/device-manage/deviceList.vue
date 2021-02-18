@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-08 17:28:09
+ * @LastEditTime: 2021-02-18 14:25:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -153,7 +153,7 @@ margin-left: 30px;
       <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="onExport"><svg-icon icon-class="excel"/> <span>导出</span></el-button>
       <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
-      <el-button type="primary"><svg-icon icon-class="guide"/> <span><router-link to="/device-manage/personnel">下发人员</router-link></span></el-button>
+      <el-button type="primary"><svg-icon icon-class="guide"/> <span><router-link to="/device-manage/person-issued?tab=0">下发人员</router-link></span></el-button>
     </el-form>
     
     <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">

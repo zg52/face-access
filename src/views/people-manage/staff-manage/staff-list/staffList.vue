@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-07 19:12:14
+ * @LastEditTime: 2021-02-18 16:01:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -67,25 +67,25 @@
 <template>
   <div class="app-container">
   <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator"></el-input></el-form-item>
-      <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name"></el-input></el-form-item>
+      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator" clearable></el-input></el-form-item>
+      <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-      <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employee_num"></el-input></el-form-item>
-      <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone"></el-input></el-form-item>
-      <el-form-item label="住址"><el-input v-model.trim="pagingQuery.address"></el-input></el-form-item>
-      <el-form-item label="邮箱"><el-input v-model.trim="pagingQuery.mail"></el-input></el-form-item>
-      <el-form-item label="部门"> <el-select disabled v-model="value"></el-select></el-form-item> 
-      <el-form-item label="职务" ><el-input v-model.trim="pagingQuery.position"></el-input></el-form-item>
+      <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employee_num" clearable></el-input></el-form-item>
+      <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone" clearable></el-input></el-form-item>
+      <el-form-item label="住址"><el-input v-model.trim="pagingQuery.address" clearable></el-input></el-form-item>
+      <el-form-item label="邮箱"><el-input v-model.trim="pagingQuery.mail" clearable></el-input></el-form-item>
+      <el-form-item label="部门"> <el-select disabled v-model="value" clearable></el-select></el-form-item> 
+      <el-form-item label="职务" ><el-input v-model.trim="pagingQuery.position" clearable></el-input></el-form-item>
       <el-form-item label="入职时间：">
         <el-date-picker class="w300" v-model="pagingQuery.enrollTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate1"></el-date-picker>
       </el-form-item>
       <el-form-item label="离职时间">
         <el-date-picker class="w300" v-model="pagingQuery.expiredTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate2"></el-date-picker>
       </el-form-item>
-      <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId"></el-input></el-form-item>
-      <el-form-item label="IC卡号" ><el-input v-model.trim="pagingQuery.icCardId" ></el-input></el-form-item>
+      <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
+      <el-form-item label="IC卡号" ><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="pagingQuery.isDelete" class="w100">
+        <el-select v-model="pagingQuery.isDelete" class="w100" clearable>
          <el-option v-for="(state, index) of states" :key="index" :label="state.value" :value="state.id"></el-option>
         </el-select>
       </el-form-item>
@@ -100,7 +100,9 @@
           end-placeholder="更新日期"
           :picker-options="pickerOptions"
           :default-time="['00:00:00', '23:59:59']"
-          @change="changeDate3">
+          @change="changeDate3"
+          clearable
+          >
         </el-date-picker>
       </el-form-item>
       <!-- <el-form-item label="有无人脸">
@@ -125,8 +127,8 @@
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
                <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
-               <el-form-item label="头像："><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item>
-               <el-form-item label="员工姓名："><span>{{ props.row.name }}</span></el-form-item>
+               <el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item>
+               <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
                 <el-form-item label="性别："><span>{{ props.row.gender === 'MALE' ? '男' : '女' }} </span></el-form-item>
                <el-form-item label="头像类型："><span>{{ props.row.img_type == 1 ? '生活照' : '证件照' }} </span></span></el-form-item>
                  <el-form-item label="部门："> <span>华捷艾米 </span></el-form-item>
@@ -233,7 +235,7 @@ export default {
   data() {
     return {
       table_loading:false,
-      dialogVisible1: true,
+      dialogVisible1: false,
       value: '华捷艾米',
       genders: getGender(),
       isDeletes: [],
@@ -336,7 +338,7 @@ export default {
       deleteStaff(y.id).then((res) => {
         if (res.code == 0 && res.data === null) {
           this.$message.success({message: res.msg})
-          this.getDeviceList()
+          this.getStaffList()
         } else {
           this.$message.warning({message: res.msg})
         }
@@ -375,12 +377,13 @@ export default {
     changeStaffStatus(x ,y) {
       let _this = this
       function state() {
-        return y.state == 0 ? 1 : 0
+        return y.status == 0 ? 1 : 0
       }
       StaffState(
           y.id,
           {
-            status:state()
+            status:state(),
+            id: y.id
           }
       ).then((res) => {
         if (res.code == 0 && res.data === null) {

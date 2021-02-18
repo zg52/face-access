@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-09 18:45:55
+ * @LastEditTime: 2021-02-18 11:01:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -243,7 +243,7 @@ import moment from "moment"
       weekParams().map((item, index) => {
          weekOptions.push({
           id: item.value === '日' ? 0 : index + 1,
-          name: `星期${ item }`
+          name: `星期${ item.value }`
        })
      })
 

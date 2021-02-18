@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-10 11:50:09
+ * @LastEditTime: 2021-02-18 14:22:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -14,19 +14,21 @@
     <el-form :model="pagingQuery" :inline="true">
       <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.userId"></el-input></el-form-item>
       <el-form-item label="选择设备名称">
-        <el-select v-model="pagingQuery.deviceName" placeholder="请选择">
-         <el-option v-for="(deviceName, index) of deviceNames" :key="index" :deviceIds="deviceName.deviceIds" :value="deviceName.name"></el-option>
+        <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
-       <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.ruleName" placeholder="请选择"><el-option v-for="(ruleName, index) of ruleNames" :key="index" :value="ruleName"></el-option></el-select></el-form-item>
+       <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.name" placeholder="请选择" clearable>
+         <el-option v-for="(ruleName, index) of getRulesName" :key="index" :label="ruleName.name" :value="ruleName.name"></el-option>
+       </el-select></el-form-item>
        <el-form-item label="选择通行方式">
         <div class="block">
              <el-cascader class="w250" v-model="pagingQuery.verificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode"></el-cascader>
          </div>
       </el-form-item>
      <el-form-item label="通行人员类型">
-        <el-select v-model="personType" class="w130" @change="personTypeHandle">
-        <el-option v-for="(personType, index) of personTypes" :key="index" :value="personType.name"></el-option>
+        <el-select v-model="pagingQuery.personType" class="w130" @change="personTypeHandle">
+        <el-option v-for="(personType, index) of personTypes" :key="index" :label="personType.name" :value="personType.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="通行时间-星期制">
@@ -91,7 +93,7 @@
       
       <el-table-column align="left" label="操作" width="220" fixed="right">
         <template v-slot="scope">
-          <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
+          <el-button class="radius_45" disabled type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-button class="radius_45 mt10" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
           <el-popconfirm
             confirmButtonText="确认"
@@ -158,19 +160,7 @@ export default {
         props: { multiple: true },
         createTime: null,
         getDeviceNames: [],
-
-//  设备名称
-        // deviceName: null,
-        deviceNames: [
-           {
-             name: '设备1',
-             id: 1
-           },
-            {
-             name: '设备2',
-             id: 1
-           }
-         ],
+        getRulesName: [],
          
 // 规则名称
     // ruleName: '常客',
@@ -186,11 +176,11 @@ export default {
       personTypes: [
         {
           name: '员工',
-          value: 'employee'
+          id: 'employee'
         },
         {
           name: '访客',
-          value: 'vistor'
+          id: 'vistor'
         }
       ],
       ruleStates: [
@@ -202,18 +192,17 @@ export default {
         }
        ],
        
-  // 通行时间
       queryWeeksProps: { multiple: true },
       queryWeek: [],
       ruleList: [],
       pagingQuery: {
        userId: null,
-       deviceName: null,
-       name: '',
-       ruleName: null,
+       deviceId: null,
+       name: null,
        verificationModes: null,
-       ruleType: 'personType',
-       value: null,
+       ruleType: 'by_person_type',
+       personType: null,
+      //  value: null,
        createTime: null,
        queryWeek: null,
        startDate: null,
@@ -248,6 +237,8 @@ export default {
            return '周一至周日'
          } else if(value.includes('1,2,3,4,5,6')) {
             return '周一 至 周六'
+         } else if(value.includes('1,2,3,4,5')) {
+            return '周一 至 周五'
          } else {
             return weekStr.join('，')
          }
@@ -295,18 +286,28 @@ export default {
           this.personType === _p[0]['name'] ? param.value = _p[0]['value'] : param.value = _p[1]['value']
     },
     
-// 查设备列表
+// 查规则列表
     onSearch(){
       this.pagingQuery.current = 1
       this.getRuleList()
     },
     getRuleList() {
-      let _this = this
       this.table_loading = true
       getRules(this.pagingQuery).then((res) => {
          if(res.code === 0) {
                this.table_loading = false
                this.ruleList = res.data.records
+               
+// 获取查询所需规则名称
+               new Promise((resolved) => {
+                 if(this.ruleList.length !== 0) resolved()
+               }).then((res1) => {
+                 this.ruleList.map((item) => {
+                   this.getRulesName.push({
+                     name: item.name
+                   })
+                 })
+               })
             } else {
                this.$message.error(res.msg)
                this.table_loading = false
@@ -385,7 +386,8 @@ export default {
           }
     },
     changeDate() {
-      this.pagingQuery.createTime = moment(this.createTime).format('YYYY-MM-DD hh:mm')
+      this.pagingQuery.createTime = moment(this.createTime).format('YYYY-MM-DD+hh:mm')
+      //  this.pagingQuery.createTime = this.pagingQuery.createTime.replace('+', ' ')
     },
   },
   beforeCreate() {
@@ -406,6 +408,7 @@ export default {
     }
   },
   mounted() {
+    
   },
 };
 </script>

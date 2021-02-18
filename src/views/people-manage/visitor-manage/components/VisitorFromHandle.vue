@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-07 14:50:10
+ * @LastEditTime: 2021-02-18 17:26:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -69,18 +69,18 @@ position: absolute;
   }
 </style>
 <template>
-  <div class="app-container">
+  <div class="app-container pl0">
      <el-form :model="addVisitorForm" label-width="auto" :rules="addVisitorRule" ref="addVisitorFormRule" class="addVisitorForm" :inline="true">
        <el-form-item label="创建人："><el-input v-model="addVisitorForm.operator" class="w100" disabled></el-input></el-form-item>
-       <el-form-item label="访客姓名：" prop="visitorName"><el-input v-model.trim="addVisitorForm.visitorName" class="w120" clearable></el-input></el-form-item>
+       <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.visitorName" class="w120" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w100" v-model.trim="addVisitorForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.visitorPhone" clearable></el-input></el-form-item>
-       <el-form-item label="访客所在公司："  prop="position"><el-input v-model.trim="addVisitorForm.position" class="w160" clearable></el-input></el-form-item>
+       <el-form-item label="访客所在公司："  prop="position"><el-input v-model.trim="addVisitorForm.visitorCompany" class="w160" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w200" v-model.trim="addVisitorForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addVisitorForm.address" clearable></el-input></el-form-item>
-       <el-form-item label="被访人姓名：" prop="name"><el-input class="w160" v-model.trim.trim="addVisitorForm.name" maxlength="30" clearable></el-input> </el-form-item>
-       <el-form-item label="被访人公司："  prop="position"><el-input v-model.trim="addVisitorForm.position" class="w160" clearable></el-input></el-form-item>
-      <el-form-item label="被访人电话：" prop="phone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
+       <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim.trim="addVisitorForm.visitorName" maxlength="30" clearable></el-input> </el-form-item>
+       <el-form-item label="被访人公司："  prop="position"><el-input v-model.trim="addVisitorForm.orgId" class="w160" clearable></el-input></el-form-item>
+      <el-form-item label="被访人电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.visitorPhone" clearable></el-input></el-form-item>
       <el-form-item label="访问事由：" prop="reason"><el-input class="w300" v-model.trim.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
       <el-form-item label="来访时间">
         <el-date-picker
@@ -96,7 +96,7 @@ position: absolute;
       </el-form-item>
       <el-form-item label="备注：" prop="remark"><el-input class="w360" v-model.trim="addVisitorForm.remark" type="textarea" :rows="2" placeholder="请输入内容"> </el-input></el-form-item>
       <el-form-item label="头像类型：">
-        <el-radio-group v-model="img_type" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
+        <el-radio-group v-model="faceType" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
       </el-form-item><br>
       <el-form-item label="头像采集：" prop="files">
           <el-upload
@@ -123,7 +123,7 @@ position: absolute;
         <el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button>
         <el-button @click="resetAddVisitorForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveVisitorHandle('addVisitorFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
-        <el-button v-show="!btn_el.includes('edit')"><router-link to="/people-manage/visitor-manage/visitor-list"><i class="el-icon-view"></i> 查看访客列表</router-link></el-button>
+        <el-button v-show="!btn_el.includes('edit')"><router-link to="/people-manage/visitor-manage/visitor-list/visitorlist"><i class="el-icon-view"></i> 查看访客列表</router-link></el-button>
         <el-button @click="cancelEdit" v-show="!btn_el.includes('add')"><span>取 消</span></el-button>
      </el-form-item>
      </el-form>
@@ -173,7 +173,7 @@ export default {
       genders: getGender(),
       faceTypes: getFaceType(),
       imageUrl: '',
-      img_type: getFaceType()[0].name,
+      faceType: getFaceType()[0].name,
     //   addVisitorForm: formHadleParam,
       addVisitorRule: {
           name: notNull('被访人姓名'),
@@ -221,7 +221,7 @@ export default {
         :  a.visitStartTime = a.visitEndTime = null
   },
   changeImgType() {
-    this.addVisitorForm.img_type = this.img_type == 0 ? 0 : 1
+    this.addVisitorForm.faceType = this.faceType == 0 ? 0 : 1
   },
    resetAddVisitorForm() { 
     this.$refs['addVisitorFormRule'].resetFields()

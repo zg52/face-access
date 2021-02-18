@@ -1,52 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-25 14:14:54
+ * @LastEditTime: 2021-02-18 15:25:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-.people_list {
-  // margin-top: 24px;
-}
- .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8a16ff;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-    border:1px #8a16ff dashed;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-  .camera {
-margin-left: 30px;
-    margin-top: 44px;
-    i {
-      font-size: 20px;
-    }
-  }
-  .des {
-   color: #999;
-    font-size: 12px;
-    padding-left: 30px;
-    line-height: 16px;
-  }
+
 </style>
 <template>
   <div class="app-container">
@@ -164,8 +125,9 @@ margin-left: 30px;
   </div>
 </template>
 <script>
+import { logList } from'@/api/system-manage/ulog'
 export default {
-  name: "",
+  name: 'ulog',
   data() {
     return {
       value: 1,
@@ -253,7 +215,8 @@ export default {
     }
   },
   created() {
-    addList({ username: "yang", password: "12345678" }).then(() => {});
+    console.log(logList())
+   
   },
   mounted() {},
 };
