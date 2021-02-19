@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-18 16:01:45
+ * @LastEditTime: 2021-02-19 17:54:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -85,7 +85,7 @@
       <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
       <el-form-item label="IC卡号" ><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="pagingQuery.isDelete" class="w100" clearable>
+        <el-select v-model="pagingQuery.status" class="w100" clearable>
          <el-option v-for="(state, index) of states" :key="index" :label="state.value" :value="state.id"></el-option>
         </el-select>
       </el-form-item>
@@ -139,12 +139,12 @@
                  <el-form-item label="邮箱："><span>{{ props.row.mail }} </span></el-form-item>
                  <el-form-item label="职务："><span>{{ props.row.position }} </span></el-form-item>
                  <el-form-item label="门禁卡："><span>{{ props.row.gateCardId }} </span></el-form-item>
-                 <el-form-item label="IC卡："><span>{{ props.row.IcCardId }} </span></el-form-item>
-                 <el-form-item label="入职时间："><span>{{ props.row.entryTime }} </span></el-form-item>
+                 <el-form-item label="IC卡："><span>{{ props.row.icCardId }} </span></el-form-item>
+                 <el-form-item label="入职时间："><span>{{ props.row.enrollTime }} </span></el-form-item>
                  <el-form-item label="离职时间："><span>{{ props.row.expiredTime }} </span></el-form-item>
                  <el-form-item label="创建时间："><span>{{ props.row.createTime | splice_t }} </span></el-form-item>
-                 <el-form-item label="修改时间："><span>{{ props.row.updataTime }} </span></el-form-item>
-                  <el-form-item label="状态："><span>{{ props.row.isDelete == 0 ? '在职' : '离职' }}</span> </el-form-item>
+                 <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | splice_t }} </span></el-form-item>
+                  <el-form-item label="状态："><span>{{ props.row.status == 0 ? '在职' : '离职' }}</span> </el-form-item>
                  <el-form-item label="备注："><span></span></el-form-item>
                 <el-form-item label="创建人："><span>{{ props.row.operator }}</span></el-form-item>
            </el-form>
@@ -152,33 +152,23 @@
      </el-table-column>
 
       
-      <!-- <el-table-column align="center" label="ID" width="30"> <template v-slot="scope"> {{ scope.row.id }} </template></el-table-column> -->
       <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
       <el-table-column align="center" label="已注册人脸" width="140">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
       </el-table-column>
-       <!-- <el-table-column align="center" label="头像类型" width="80"> <template v-slot="scope"> {{ scope.row.img_type == 1 ? '生活照' : '证件照' }} </template></el-table-column> -->
      <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'MALE' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"> <template> 华捷艾米 </template></el-table-column>
-      <!-- <el-table-column align="center" label="身份证号" width="170"> <template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column> -->
       <el-table-column align="center" label="工号" width="180"> <template v-slot="scope"> {{ scope.row.employee_num }} </template></el-table-column>
       <el-table-column align="center" label="电话" width="108"> <template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
-      <!-- <el-table-column align="center" label="住址" width="170"> <template v-slot="scope"> {{ scope.row.address }} </template></el-table-column> -->
       <el-table-column align="center" label="邮箱" width="180"> <template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"> <template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
       <el-table-column align="center" label="门禁卡" width="230"> <template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
-      <el-table-column align="center" label="IC卡" width="230"> <template v-slot="scope"> {{ scope.row.IcCardId }} </template></el-table-column>
-      <!-- <el-table-column align="center" label="入职时间" width="108"> <template v-slot="scope"> {{ scope.row.entryTime }} </template></el-table-column>
-      <el-table-column align="center" label="离职时间" width="108"> <template v-slot="scope"> {{ scope.row.expiredTime }} </template></el-table-column>
-      <el-table-column align="center" label="创建时间" width="140"> <template v-slot="scope"> {{ scope.row.createTime | splice_t }} </template></el-table-column>
-      <el-table-column align="center" label="修改时间" width="120"> <template v-slot="scope"> {{ scope.row.updataTime }} </template></el-table-column> -->
-       <el-table-column align="center" label="状态" width="60"> <template v-slot="scope">{{ scope.row.isDelete == 0 ? '在职' : '离职' }}</template> </el-table-column>
-      <!-- <el-table-column align="center" label="备注"> <template> fff </template></el-table-column> -->
-     <!-- <el-table-column align="center" label="创建人"> <template v-slot="scope">{{ scope.row.operator }}</template></el-table-column> -->
+      <el-table-column align="center" label="IC卡" width="230"> <template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
+       <el-table-column align="center" label="状态" width="60"><template v-slot="scope">{{ scope.row.status == 0 ? '在职' : '离职' }}</template> </el-table-column>
      
       <el-table-column align="left" label="操作" width="190" fixed="right">
         <template v-slot="scope">
-          <el-switch class="mll5" size="mini" active-text="在职" inactive-text="离职" v-model="isDeletes[scope.$index].state" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
+          <el-switch class="mll5" size="mini" active-text="在职" inactive-text="离职" v-model="status[scope.$index].status" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
           <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"
@@ -238,7 +228,7 @@ export default {
       dialogVisible1: false,
       value: '华捷艾米',
       genders: getGender(),
-      isDeletes: [],
+      status: [],
       states: states,
       faceTypes: faceTypes,
       pickerOptions: pickerOptions(),
@@ -263,11 +253,11 @@ export default {
         expiredTime: null,
         createTimeFrom: '2020-12-29', //初始查询默认参数，必填
         createTimeTo: '6060-12-29', //初始查询默认参数，必填
-        isDelete: null,
+        status: null,
         
-        // current: 1, 
-        // size: 20,
-        // total: 0,
+        current: 1, 
+        size: 20,
+        total: null,
       },
       tableData: [],
 
@@ -318,10 +308,10 @@ export default {
         let satatusArr = []
         this.tableData.map((x, index) => {
           satatusArr.push({
-            state: x.isDelete == 1 ? false : true
+            status: x.status == 1 ? false : true
           })
         })
-        this.isDeletes = satatusArr
+        this.status = satatusArr
       })
       this.tableData = this.tableData.reverse()
     },

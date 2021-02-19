@@ -1,15 +1,15 @@
 /*
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-02-18 16:51:14
+ * @LastEditTime: 2021-02-19 14:29:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\people-manage\visitorManage.js
  */
 
 import request from '@/utils/request'
-const person = '_api/person/person/visitor/'
-// 人员管理-访客-
+const person = '_api/person/visitor/'
+// 人员管理-访客
 
 /**
  * @description: 访客-新增
@@ -48,8 +48,8 @@ export function editVisitor(id, params) {
  }
 
   /**
- * @description: 访客-状态（在职/离职）
- * @param {0/1} 0在职，1离职
+ * @description: 访客-状态（正常/删除）
+ * @param {0/1} 0正常，1删除
  */
 export function visitorState(id, params) {
   return request({
@@ -60,7 +60,7 @@ export function visitorState(id, params) {
  }
 
  /**
- * @description: 删除访客-
+ * @description: 删除访客
  * @param {*}
  */
 export function deleteVisitor(id) {

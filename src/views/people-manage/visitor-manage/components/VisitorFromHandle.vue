@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-18 17:26:22
+ * @LastEditTime: 2021-02-19 16:16:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -72,19 +72,19 @@ position: absolute;
   <div class="app-container pl0">
      <el-form :model="addVisitorForm" label-width="auto" :rules="addVisitorRule" ref="addVisitorFormRule" class="addVisitorForm" :inline="true">
        <el-form-item label="创建人："><el-input v-model="addVisitorForm.operator" class="w100" disabled></el-input></el-form-item>
-       <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.visitorName" class="w120" clearable></el-input></el-form-item>
+       <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.name" class="w120" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w100" v-model.trim="addVisitorForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-       <el-form-item label="电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.visitorPhone" clearable></el-input></el-form-item>
+       <el-form-item label="电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
        <el-form-item label="访客所在公司："  prop="position"><el-input v-model.trim="addVisitorForm.visitorCompany" class="w160" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w200" v-model.trim="addVisitorForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addVisitorForm.address" clearable></el-input></el-form-item>
        <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim.trim="addVisitorForm.visitorName" maxlength="30" clearable></el-input> </el-form-item>
-       <el-form-item label="被访人公司："  prop="position"><el-input v-model.trim="addVisitorForm.orgId" class="w160" clearable></el-input></el-form-item>
+       <el-form-item label="被访人公司："  prop="position"><el-input v-model.trim="addVisitorForm.orgId" class="w160" clearable disabled></el-input></el-form-item>
       <el-form-item label="被访人电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.visitorPhone" clearable></el-input></el-form-item>
-      <el-form-item label="访问事由：" prop="reason"><el-input class="w300" v-model.trim.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
-      <el-form-item label="来访时间">
+      <el-form-item label="来访事由：" prop="reason"><el-input class="w300" v-model.trim.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
+      <el-form-item label="来访时间" prop="date">
         <el-date-picker
-          v-model="date"
+          v-model="addVisitorForm.date"
           type="datetimerange"
           align="right"
           unlink-panels
@@ -202,10 +202,9 @@ export default {
   },
   methods: {
     
-// 提交员工信息
+// 提交访客信息
   async saveVisitorHandle(el) {
-    let _this = this,
-        a = this.addVisitorForm
+    let a = this.addVisitorForm
        this.$refs[el].validate((valid) => {
         if (valid) {
           a['files'] === null ? this.$message.warning('请上传访客头像！') : this.httpRequest()
@@ -214,11 +213,11 @@ export default {
   },
   changeDate() {
    let a = this.addVisitorForm,
-       date = this.date
+       date = a['date']
        date && date.length
-        ? ((a.visitStartTime = moment(date[0]).format("YYYY-MM-DD hh:mm:ss")),
-          (a.createTimeTo = moment(date[1]).format("YYYY-MM-DD hh:mm:ss")))
-        :  a.visitStartTime = a.visitEndTime = null
+        ? ((a['visitStartTime'] = moment(a.date[0]).format("YYYY-MM-DD hh:mm:ss")),
+          (a['visitEndTime'] = moment(a.date[1]).format("YYYY-MM-DD hh:mm:ss")))
+        :  (a['visitStartTime'] = a['visitEndTime'] = null)
   },
   changeImgType() {
     this.addVisitorForm.faceType = this.faceType == 0 ? 0 : 1
@@ -275,6 +274,7 @@ export default {
            }, 700)
       },
    async httpRequest(content){
+    //  delete this.addVisitorForm.date
         this.save_loading = true
          let _this = this,
              a = this.addVisitorForm,
@@ -289,7 +289,7 @@ export default {
                saveVisitor(formData).then((res) => {
                 if(res.code === 0 && res.data) {
                    _this.save_loading = false
-                   _this.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
+                   _this.$message.success(`${ a?.['name'] } 保存成功！可在访客列表页面查看`, 4000)
                    _this.resetAddVisitorForm()
                      } else {
                        _this.$message.warning(res.msg, 4000)
@@ -304,7 +304,7 @@ export default {
                editVisitor(_this.addVisitorForm.id, formData).then((res) => {
                 if(res.code === 0 && res.data) {
                    _this.save_loading = false
-                   _this.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
+                   _this.$message.success(`${ a?.['name'] } 保存成功！可在访客列表页面查看`, 4000)
                    _this.resetAddVisitorForm()
                      } else {
                        _this.$message.warning(res.msg, 4000)
