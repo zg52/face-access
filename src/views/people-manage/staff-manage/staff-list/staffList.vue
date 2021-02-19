@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-19 17:54:07
+ * @LastEditTime: 2021-02-19 19:38:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -85,7 +85,7 @@
       <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
       <el-form-item label="IC卡号" ><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="pagingQuery.status" class="w100" clearable>
+        <el-select v-model="pagingQuery.status" class="w100" @change="changeStatus" clearable>
          <el-option v-for="(state, index) of states" :key="index" :label="state.value" :value="state.id"></el-option>
         </el-select>
       </el-form-item>
@@ -166,7 +166,7 @@
       <el-table-column align="center" label="IC卡" width="230"> <template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
        <el-table-column align="center" label="状态" width="60"><template v-slot="scope">{{ scope.row.status == 0 ? '在职' : '离职' }}</template> </el-table-column>
      
-      <el-table-column align="left" label="操作" width="190" fixed="right">
+      <el-table-column align="left" label="操作" width="190" fixed="right" v-if="pagingQuery.isDelete == 1 ? false : true">
         <template v-slot="scope">
           <el-switch class="mll5" size="mini" active-text="在职" inactive-text="离职" v-model="status[scope.$index].status" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
           <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
@@ -213,11 +213,12 @@ import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
  const faceTypes = [
    { id: 'zj', name: '证件照' }, 
-   { id: 'sh', name: '生活照' } 
+   { id: 'sh', name: '生活照' }
 ],
  states = [
    { value: '在职', id: 0 }, 
-   { value: '离职', id: 1 }
+   { value: '离职', id: 1 },
+   { value: '已删除', id: 'isDelete' }
  ]
 export default {
   name: 'staff-list',
@@ -254,6 +255,7 @@ export default {
         createTimeFrom: '2020-12-29', //初始查询默认参数，必填
         createTimeTo: '6060-12-29', //初始查询默认参数，必填
         status: null,
+        isDelete: null, /// 0为正常1为已删除
         
         current: 1, 
         size: 20,
@@ -294,14 +296,25 @@ export default {
     ])
   },
   methods: {
+    changeStatus() {
+      let p = this.pagingQuery
+          p['isDelete'] = p['status'] === 'isDelete' ? 1 : null
+    },
     getStaffList() {
-      let params = this.pagingQuery
+      let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
       this.table_loading = true
       getStaffList(this.pagingQuery).then((res) => {
         params.size = res.data.size
         params.current = res.data.current
+         res.data.records.map((item, index) => {
+           if(item.isDelete != 1) {
+              filterData.push(item)
+              this.tableData = filterData.reverse()
+           } else {
+             isDeleteNum.push(item.isDelete)
+           }
+         })
         params.total = res.data.total
-        this.tableData = res.data.records
         this.table_loading = false
       
 //  转换state为Boolean
@@ -313,7 +326,6 @@ export default {
         })
         this.status = satatusArr
       })
-      this.tableData = this.tableData.reverse()
     },
     onSearch() {
       let params = this.pagingQuery
@@ -343,7 +355,7 @@ export default {
         }).then(() => {
             for (let i = 0; i < this.multipleSelection.length; i++) {
               deleteStaff(this.multipleSelection[i].id).then((res) => {
-                if (res.code == 0 && res.data) {
+                if (res.code == 0) {
                   if(i + 1 >= this.multipleSelection.length) {
                   this.onSearch()
                   this.$message.success({message: res.msg})

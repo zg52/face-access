@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-18 15:35:57
+ * @LastEditTime: 2021-02-19 19:49:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -133,6 +133,7 @@ import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
 import { getGender, getFaceType} from './index'
+import { imgUrl } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
 
@@ -347,6 +348,7 @@ export default {
     }
   },
   created() {
+   this.imageUrl = this.btn_el.includes('edit') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
 
   },
   mounted() {
