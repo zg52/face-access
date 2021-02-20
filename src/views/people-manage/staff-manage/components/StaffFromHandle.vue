@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-19 19:49:44
+ * @LastEditTime: 2021-02-20 17:03:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -76,7 +76,7 @@ position: absolute;
        <el-form-item label="性别："><el-select class="w160" v-model.trim="addStaffForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model.trim="addStaffForm.phone" clearable></el-input></el-form-item>
        <el-form-item label="职务："  prop="position"><el-input v-model.trim="addStaffForm.position" class="w160" clearable></el-input></el-form-item>
-      <el-form-item label="入职时间：" prop="enrollTime">
+       <el-form-item label="入职时间：" prop="enrollTime">
         <el-date-picker class="w300" v-model.trim="addStaffForm.enrollTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate"></el-date-picker>
         </el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addStaffForm.address" clearable></el-input></el-form-item>
@@ -120,7 +120,7 @@ position: absolute;
         <el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button>
         <el-button @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveStaffHandle('addStaffFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
-        <el-button v-show="!btn_el.includes('edit')"><router-link to="/people-manage/staff-manage/staff-list/staffList"><i class="el-icon-view"></i> 查看员工列表</router-link></el-button>
+        <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
         <el-button @click="cancelEdit" v-show="!btn_el.includes('add')"><span>取 消</span></el-button>
      </el-form-item>
      </el-form>
@@ -218,8 +218,7 @@ export default {
     
 // 提交员工信息
   async saveStaffHandle(el) {
-    let _this = this,
-        a = this.addStaffForm
+    let a = this.addStaffForm
        this.$refs[el].validate((valid) => {
         if (valid) {
           a['files'] === null ? this.$message.warning('请上传员工头像！') : this.httpRequest()
@@ -264,7 +263,6 @@ export default {
 
 // 上传图片前
     imgBeforeHandle(file, fileList) {
-      let _this = this
         function imageType () { return ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type) }
         const isLt2M = file.size / 1024 / 1024 < 2;
               if (!imageType()) { 
@@ -286,8 +284,7 @@ export default {
       },
    async httpRequest(content){
         this.save_loading = true
-         let _this = this,
-             a = this.addStaffForm,
+         let a = this.addStaffForm,
           formData = new FormData()
           for(let item in a) { formData.append(item, a[item]) }
           if(!this.btn_el.includes('edit')) {
@@ -298,31 +295,32 @@ export default {
            function add() {
                saveStaff(formData).then((res) => {
                 if(res.code === 0 && res.data) {
-                   _this.save_loading = false
-                   _this.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
-                   _this.resetAddStaffForm()
+                   vm.save_loading = false
+                   vm.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
+                   vm.resetAddStaffForm()
                      } else {
-                       _this.$message.warning(res.msg, 4000)
-                       _this.save_loading = false
+                       vm.$message.warning(res.msg, 4000)
+                       vm.save_loading = false
                      }
                 },(err) => {
-                   _this.save_loading = false
-                   _this.$message.error('保存失败，请重试！')
+                   vm.save_loading = false
+                   vm.$message.error('保存失败，请重试！')
                   })
            }
            function edit() {
-               editStaff(_this.addStaffForm.id, formData).then((res) => {
-                if(res.code === 0 && res.data) {
-                   _this.save_loading = false
-                   _this.$message.success(`${ a?.['name'] } 保存成功！可在员工列表页面查看`, 4000)
-                   _this.resetAddStaffForm()
+               editStaff(vm.addStaffForm.id, formData).then((res) => {
+                if(res.code === 0) {
+                   vm.save_loading = false
+                   vm.$message.success(`${ a?.['name'] } 修改成功！`, 4000)
+                   vm.resetAddStaffForm()
+                   vm.cancelEdit()
                      } else {
-                       _this.$message.warning(res.msg, 4000)
-                       _this.save_loading = false
+                       vm.$message.warning(res.msg, 4000)
+                       vm.save_loading = false
                      }
                 },(err) => {
-                   _this.save_loading = false
-                   _this.$message.error('保存失败，请重试！')
+                   vm.save_loading = false
+                   vm.$message.error('保存失败，请重试！')
                   })
            }
             },
@@ -344,10 +342,12 @@ export default {
 
 // 取消编辑传给列表页
     cancelEdit() {
-        this.$emit('cacel')
+        this.$emit('cacelEdit')
     }
   },
   created() {
+    vm = this
+   this.imageUrl = ''
    this.imageUrl = this.btn_el.includes('edit') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
 
   },

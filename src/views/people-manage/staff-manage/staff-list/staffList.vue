@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-19 19:38:16
+ * @LastEditTime: 2021-02-20 19:12:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -66,10 +66,10 @@
 </style>
 <template>
   <div class="app-container">
-  <el-form :model="pagingQuery" :inline="true">
+  <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
       <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator" clearable></el-input></el-form-item>
       <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
-       <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
+       <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
       <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employee_num" clearable></el-input></el-form-item>
       <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone" clearable></el-input></el-form-item>
       <el-form-item label="住址"><el-input v-model.trim="pagingQuery.address" clearable></el-input></el-form-item>
@@ -82,13 +82,13 @@
       <el-form-item label="离职时间">
         <el-date-picker class="w300" v-model="pagingQuery.expiredTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate2"></el-date-picker>
       </el-form-item>
-      <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
-      <el-form-item label="IC卡号" ><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
       <el-form-item label="状态">
         <el-select v-model="pagingQuery.status" class="w100" @change="changeStatus" clearable>
          <el-option v-for="(state, index) of states" :key="index" :label="state.value" :value="state.id"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
+      <el-form-item label="IC卡号" ><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
       <el-form-item label="创建日期">
         <el-date-picker
           v-model="date"
@@ -113,11 +113,12 @@
 
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
+       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
-      <el-button type="primary"><router-link to="/people-manage/staff-manage/staff-add"><svg-icon icon-class="edit" /> 新增员工</router-link></el-button>
+      <router-link to="/people-manage/staff-manage/staff-add/staffAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增员工</el-button></router-link>
     </el-form>
     
-    <el-table :data="tableData" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading">
+    <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -169,6 +170,26 @@
       <el-table-column align="left" label="操作" width="190" fixed="right" v-if="pagingQuery.isDelete == 1 ? false : true">
         <template v-slot="scope">
           <el-switch class="mll5" size="mini" active-text="在职" inactive-text="离职" v-model="status[scope.$index].status" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
+          <el-popover
+  placement="top"
+  width="160"
+  v-model="ops">
+  <p>这是一段内容这是一段内容确定删除吗？</p>
+  <div style="text-align: right; margin: 0">
+    <el-button size="mini" type="text" @click="ops = false">取消</el-button>
+    <el-button type="primary" size="mini" @click="ops = false">确定</el-button>
+  </div>
+  <el-button slot="reference">删除</el-button>
+</el-popover>
+<el-popover
+    v-if="ops"
+    placement="bottom"
+    title="标题"
+    width="200"
+    trigger="click"
+    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+    <el-button slot="reference" @click.native="ops = true">click 激活</el-button>
+  </el-popover>
           <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"
@@ -188,19 +209,21 @@
          :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingQuery['total']"
-          ></el-pagination>     
+          ></el-pagination>
 
           <el-dialog
            title="修改员工信息"
            :visible.sync="dialogVisible1"
            width="80%"
+           top="0"
           >
-            <StaffFromHandle :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEdit" />
+            <StaffFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEditHandle" />
            <!-- <span slot="footer" class="dialog-footer">
              <el-button @click="dialogVisible1 = false">取 消</el-button>
              <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
            </span> -->
       </el-dialog>
+
   </div>
 </template>
 <script>
@@ -225,6 +248,7 @@ export default {
    components: { StaffFromHandle },
   data() {
     return {
+        ops: false,
       table_loading:false,
       dialogVisible1: false,
       value: '华捷艾米',
@@ -304,8 +328,10 @@ export default {
       let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
       this.table_loading = true
       getStaffList(this.pagingQuery).then((res) => {
+        this.tableData = []
         params.size = res.data.size
         params.current = res.data.current
+        params.total = res.data.total
          res.data.records.map((item, index) => {
            if(item.isDelete != 1) {
               filterData.push(item)
@@ -314,7 +340,6 @@ export default {
              isDeleteNum.push(item.isDelete)
            }
          })
-        params.total = res.data.total
         this.table_loading = false
       
 //  转换state为Boolean
@@ -335,6 +360,12 @@ export default {
     handleEdit(x, y) {
       this.dialogVisible1 = true
       this.addStaffForm = y
+
+// 去除编辑无需字段
+      let delEditParam = ['departmentId', 'img_height', 'img_width']
+          delEditParam.forEach((item, index) => {
+            delete this.addStaffForm[item]
+          })
     },
      handleDelete(x, y) {
       deleteStaff(y.id).then((res) => {
@@ -364,7 +395,7 @@ export default {
               })
             }
           }).catch(() => {
-             this.$message.success.info({message: '已取消删除'})
+             this.$message.info('已取消删除')
              this.$refs.multipleTable.clearSelection()
           })
       } else {
@@ -377,14 +408,13 @@ export default {
     
 // 切换员工状态(在职/离职)
     changeStaffStatus(x ,y) {
-      let _this = this
       function state() {
         return y.status == 0 ? 1 : 0
       }
       StaffState(
           y.id,
           {
-            status:state(),
+            status: state(),
             id: y.id
           }
       ).then((res) => {
@@ -413,7 +443,8 @@ export default {
           (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
         :  _p.createTimeFrom = _p.createTimeTo = null
     },
-    cacelEdit() {
+    cacelEditHandle() {
+      this.getStaffList()
       this.dialogVisible1 = false
     },
     handleSizeChange(val) {
@@ -427,6 +458,10 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    refreshPagingQuery() {
+      this.pagingQuery = {}
+      this.onSearch()
+    }
   },
   created() {
     this.onSearch()

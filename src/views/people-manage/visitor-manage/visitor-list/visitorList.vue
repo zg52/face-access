@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-19 16:49:11
+ * @LastEditTime: 2021-02-20 17:05:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -121,11 +121,12 @@
 
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
+       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
       <el-button type="primary"><router-link to="/people-manage/visitor-manage/visitor-add/visitorAdd"><svg-icon icon-class="edit" /> 新增访客</router-link></el-button>
     </el-form>
     
-    <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading">
+    <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -199,12 +200,9 @@
            title="修改访客信息"
            :visible.sync="dialogVisible1"
            width="80%"
+           top="0"
           >
-          <VisitorFromHandle :btn_el="btn_el" :addVisitorForm="addVisitorForm" @cacelEdit="cacelEdit" />
-           <!-- <span slot="footer" class="dialog-footer">
-             <el-button @click="dialogVisible1 = false">取 消</el-button>
-             <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
-           </span> -->
+          <VisitorFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addVisitorForm="addVisitorForm" @cacelEdit="cacelEditHandle" />
       </el-dialog>
   </div>
 </template>
@@ -270,17 +268,17 @@ export default {
 
 // 编辑参数
       addVisitorForm: {
-           id: null,
+          //  id: null,
            operator: this.$store.getters.username,
-           name: 'null',
-           gender: '1',
-           phone: '15652970356',
-           address: 'w',
-           idNum: '622826199811192711',
-           mail: '2@163.com',
-           employee_num: '32',
-           companyId: '1',
-           img_type: '1',
+          //  name: 'null',
+          //  gender: '1',
+          //  phone: '15652970356',
+          //  address: 'w',
+          //  idNum: '622826199811192711',
+          //  mail: '2@163.com',
+          //  employee_num: '32',
+          //  companyId: '1',
+          //  img_type: '1',
            files: null
          },
          btn_el: ['edit']
@@ -302,6 +300,7 @@ export default {
       this.table_loading = true
       visitorList(this.pagingQuery).then((res) => {
        if(res.code === 0) {
+         this.tableData = []
          this.table_loading = false
         params.size = res.data.size
         params.current = res.data.current
@@ -327,7 +326,11 @@ export default {
     },
     handleEdit(x, y) {
       this.dialogVisible1 = true
-      this.addStaffForm = y
+      this.addVisitorForm = y
+
+// 新增访客字段和列表字段不一所以：
+      this.addVisitorForm.visitorName = y.intervieweeName
+      this.addVisitorForm.visitorPhone = y.intervieweePhone
     },
      handleDelete(x, y) {
       deleteVisitor(y.id).then((res) => {
@@ -350,18 +353,18 @@ export default {
               deleteVisitor(this.multipleSelection[i].id).then((res) => {
                 if (res.code == 0 && res.data) {
                   if(i + 1 >= this.multipleSelection.length) {
-                    this.$message.success({message: res.msg})
+                    this.$message.success(res.msg)
                     this.onSearch()
                   }
                 }
               })
             }
           }).catch(() => {
-             this.$message.success.info({message: '已取消删除'})
+             this.$message.info('已取消删除')
              this.$refs.multipleTable.clearSelection()
           })
       } else {
-        this.$message.warning('请在列表中勾选要删除的员工')
+        this.$message.warning('请在列表中勾选要删除的访客')
       }
     },
     onExport() {
@@ -400,7 +403,8 @@ export default {
   changeDate2() {
     this.changeDate('date2', 'createStartTime', 'createEndTime', 'YYYY-MM-DD')
   },
-  cacelEdit() {
+   cacelEditHandle() {
+      this.getVisitorList()
       this.dialogVisible1 = false
     },
     handleSizeChange(val) {
@@ -414,6 +418,10 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    refreshPagingQuery() {
+      this.pagingQuery = {}
+      this.onSearch()
+    }
   },
   created() {
     this.onSearch()

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-02-19 14:29:56
+ * @LastEditTime: 2021-02-20 15:58:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\people-manage\visitorManage.js
@@ -41,7 +41,7 @@ export function visitorList(params) {
  */
 export function editVisitor(id, params) {
   return request({
-     url: `${ person }/${ id }`,
+     url: `${ person }${ id }`,
      method: 'POST',
      data: params
    })
@@ -53,7 +53,7 @@ export function editVisitor(id, params) {
  */
 export function visitorState(id, params) {
   return request({
-     url: `${ person }/valid/${ id }`,
+     url: `${ person }valid/${ id }`,
      method: 'POST',
      data: params
    })
@@ -65,7 +65,7 @@ export function visitorState(id, params) {
  */
 export function deleteVisitor(id) {
   return request({
-     url: `${ person }/${ id }`,
+     url: `${ person }${ id }`,
      method: 'DELETE',
    })
  }

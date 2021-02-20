@@ -139,7 +139,7 @@ export const asyncRoutes = [
     component: Layout,
     name: 'people-manage',
     meta: { title: '人员管理', icon: 'peoples' },
-    redirect: '/people-manage/staff-manage/staff-list',
+    redirect: '/people-manage/staff-manage/staff-list/staffList',
     children: [
       // {
       //   path: 'section',
@@ -241,14 +241,29 @@ export const asyncRoutes = [
       {
         path: 'deviceList',
         name: 'deviceList',
-        component: () => import('@/views/device-manage/deviceList'),
+        component: () => import('@/views/device-manage/device-list/deviceList'),
         meta: { title: '设备列表', icon: 'door' },
       },
       {
         path: 'person-issued',
-        name: 'person-issued',
         component: () => import('@/views/device-manage/person-issued'),
+        redirect: '/device-manage/person-issued/issued-list',
+        alwaysShow: true,
         meta: { title: '人员下发', icon: 'guide' },
+        children: [
+          {
+            path: 'issued-add/issuedAdd',
+            name: 'issuedAdd',
+            component: () => import('@/views/device-manage/person-issued/issued-add/issuedAdd'),
+            meta: { title: '选择人员下发' },
+          },
+          {
+            path: 'issued-list/issuedList',
+            name: 'issuedList',
+            component: () => import('@/views/device-manage/person-issued/issued-list/issuedList'),
+            meta: { title: '已下发人员' },
+          },
+        ]
       },
     ]
   },

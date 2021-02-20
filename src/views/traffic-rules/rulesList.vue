@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-18 14:22:57
+ * @LastEditTime: 2021-02-20 14:18:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -293,10 +293,15 @@ export default {
     },
     getRuleList() {
       this.table_loading = true
+      let params = this.pagingQuery
       getRules(this.pagingQuery).then((res) => {
          if(res.code === 0) {
-               this.table_loading = false
-               this.ruleList = res.data.records
+           this.ruleList = []
+           this.table_loading = false
+           params.size = res.data.size
+           params.current = res.data.current
+           params.total = res.data.total
+           this.ruleList = res.data.records
                
 // 获取查询所需规则名称
                new Promise((resolved) => {
@@ -366,7 +371,7 @@ export default {
       this.getRuleList()
     },
     handleCurrentChange(val) {
-      this.pagingQuery.size = val
+      this.pagingQuery.current = val
       this.getRuleList()
     },
     handleSelectionChange(val) {

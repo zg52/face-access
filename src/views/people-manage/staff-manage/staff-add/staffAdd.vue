@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-02-07 18:19:07
+ * @LastEditTime: 2021-02-20 14:21:51
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\people-manage\staff-manage\staff-add\staffAdd.vue
+-->
 
 <template>
   <div>
@@ -26,7 +34,7 @@ export default {
            position: 'fwe',
            icCardId: '32',
            gateCardId: '32',
-           enrollTime: '2012-03-03',
+           enrollTime: '2021-03-03',
            files: null
          },
          btn_el: ['add']

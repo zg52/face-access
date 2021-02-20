@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-07 10:59:27
+ * @LastEditTime: 2021-02-20 18:40:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -48,7 +48,7 @@ export function editStaff(id, params) {
 
   /**
  * @description: 员工状态（在职/离职）
- * @param {0/1} 0在职，1离职
+ * @param {0/1} 0在职，1离职(需要传离职时间)
  */
 export function StaffState(id, params) {
   return request({

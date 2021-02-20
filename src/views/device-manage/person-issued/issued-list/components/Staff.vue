@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-25 14:21:47
+ * @LastEditTime: 2021-02-20 17:40:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -176,7 +176,7 @@ margin-left: 30px;
       </el-table-column>
       <el-table-column align="center" label="已注册人脸" width="140">
         <template>
-          <img src="../../../../assets/image/1.png" alt="" width="140" />
+          <img src="" alt="" width="140" />
         </template>
       </el-table-column>
        <el-table-column align="center" label="所在设备" width="100">
