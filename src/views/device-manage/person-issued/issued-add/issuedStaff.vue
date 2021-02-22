@@ -1,49 +1,12 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-20 19:30:54
+ * @LastEditTime: 2021-02-22 17:21:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
- .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8a16ff;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-    border:1px #8a16ff dashed;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-  .camera {
-margin-left: 30px;
-    margin-top: 44px;
-    i {
-      font-size: 20px;
-    }
-  }
-  .des {
-   color: #999;
-    font-size: 12px;
-    padding-left: 30px;
-    line-height: 16px;
-  }
    .app-container1 {
        padding-top: 6px;
    }
@@ -51,87 +14,238 @@ margin-left: 30px;
 <template>
   <div class="app-container1">
     <div class="lis_tit"><i></i> <span>选择设备</span></div>
-    <el-form :model="roles" :inline="true">
-        <el-form-item label="设备名称">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option>
-          </el-option> </el-select></el-form-item>
-
-    </el-form>
+    <!-- <el-form :model="deviceForm" :inline="true" ref="deviceFormRule">
+     <el-form-item label="选择设备名称" prop="deviceIds" :rules="{ required: true,message: '请选择设备名称', trigger: 'change' }">
+        <el-select v-model="deviceForm.deviceIds" placeholder="请选择" multiple filterable clearable>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="device3Name.id"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form><br> -->
+    <!-- <device-names></device-names> -->
+    <DeviceNames @getDeviceIds="getDeviceIds1"/>
+    
     <div class="lis_tit"><i></i> <span>选择要下发的员工</span></div>
+      <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
+      <el-form-item label="员工姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
+      <el-form-item label="性别："><el-select class="w100" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
+      <el-form-item label="部门"> <el-select disabled v-model="value" clearable></el-select></el-form-item> 
+      <el-form-item label="职务" ><el-input v-model.trim="pagingQuery.position" clearable></el-input></el-form-item>
+      <el-form-item label="入职时间：">
+        <el-date-picker class="w300" v-model="pagingQuery.enrollTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate1"></el-date-picker>
+      </el-form-item>
+      <el-form-item label="创建日期">
+        <el-date-picker
+          v-model="date"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="创建日期"
+          end-placeholder="更新日期"
+          :picker-options="pickerOptions"
+          :default-time="['00:00:00', '23:59:59']"
+          @change="changeDate3"
+          clearable
+          >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="下发状态："><el-select class="w100" v-model.trim="pagingQuery.gender" disabled><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
+
+      <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
+       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
+       <router-link to="/device-manage/person-issued/issued-list/issuedList?tab=0" class="ml10"><el-button type="primary"><i class="el-icon-view"></i> 已下发员工</el-button></router-link>
+       <el-button class="ml10" type="primary" :disabled="table_loading" @click="handleIssuedPerson"><svg-icon icon-class="guide" />  一键下发</el-button>
+    </el-form>
+    
+    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable" border>
+      <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
+      <el-table-column width="50" type="selection" fixed ></el-table-column>
+      <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
+      <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
+      <el-table-column align="center" label="已注册人脸" width="140">
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
+      </el-table-column>
+     <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender === 'MALE' ? '男' : '女' }} </template></el-table-column>
+      <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
+      <el-table-column align="center" label="职务" width="108"><template v-slot="scope">{{ scope.row.position }}</template></el-table-column>
+      <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employee_num }} </template></el-table-column>
+      <el-table-column align="center" label="下发状态" width="160"><template v-slot="scope">{{ scope.row.status == 0 ? '已下发' : '未下发' }}</template> </el-table-column>
+      <el-table-column align="center" label="入职时间"><template v-slot="scope">{{ scope.row.enrollTime }}</template></el-table-column>
+      <el-table-column align="center" label="创建时间"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
+    </el-table> 
+    
+      <el-pagination
+         @size-change="handleSizeChange"
+         @current-change="handleCurrentChange"
+         :current-page="pagingQuery['current']"
+         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
+         :page-size="pagingQuery['size']"
+         layout="total, sizes, prev, pager, next, jumper"
+         :total="pagingQuery['total']"
+          ></el-pagination>
   </div>
 </template>
 <script>
-import { addStaff } from '@/api/people-manage/staffManage'
+import DeviceNames from '@/components/Business/DeviceNames'
+import { getDeviceNames, getGender } from '@/utils/business'
+import { getStaffList } from '@/api/people-manage/staffManage'
+import { imgUrl } from '@/api/public'
+import { pickerOptions } from '@/utils'
+import { issuedEmployee } from '@/api/person-issued'
+import moment from 'moment'
+
+let vm
+
 export default {
-  name: "",
+  name: 'issuedStaff',
+  components: {
+    DeviceNames
+  },
   data() {
     return {
-      userFormVisible:true,
-      value: 1,
-      pickerOptions: [],
-      roles: [
-        {
-          roleName: "",
-        },
-      ],
-      addUserForm: [
+      getDeviceNames: [],
+      deviceIds: null,
+      pickerOptions: pickerOptions(),
+      date: null,
+      multipleSelection: [],
+      getImgUrl: imgUrl(),
+      genders: getGender(),
+      value: '华捷艾米',
+      table_loading: true,
+
+      pagingQuery: {
+        name: null,
+        gender: null,
+        position: null,
+        icCardId: null,
+        gateCardId: null,
+        enrollTime: null,
+        expiredTime: null,
+        createTimeFrom: null, //初始查询默认参数，必填
+        createTimeTo: null, //初始查询默认参数，必填
+        status: null,
+        isDelete: null, /// 0为正常1为已删除
         
-      ],
-      rolesList: [
-        {
-          name: "阿娃",
-          description: "算法应用院",
-          createTime: "2020 01.12",
-          updataTime: "2020 02.13",
-          switch: 1,
-          dfs: 9988983,
-          phone: 15652655412,
-          job: "打杂专员",
-          sex: "女",
-          entryTime: "2023-12-12",
-        },
-        {
-          name: "阿龙",
-          description: "超管",
-          createTime: "2020 01.12",
-          updataTime: "2020 02.13",
-          switch: 1,
-        },
-      ],
-     pagingParams: {
-        username: "",
-        email: "",
-        // appkey: "",
-        // secret:"",
-        createDateFrom: "",
-        createDateTo: "",
-        current: 1, //默认当前页数为1
-        size: 10,
-        total: 0,
-        status: "",
-        // type:'0',
+        current: 1, 
+        size: 20,
+        total: null,
       },
-    };
-  },
-  methods: {
-    handleAddRole() {
-        this.$message.success('张三 已下发至设备SHFFJEF')  
-    },
-    onSearch(){
-
-    },
-    onDelete() {
-
-    },
-    onExport() {
-
+      tableData: [],
     }
   },
+  methods: {
+    getDeviceIds1(deviceIds) {
+    this.deviceIds = deviceIds
+    },
+     getStaffList() {
+      let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
+      this.table_loading = true
+      getStaffList(this.pagingQuery).then((res) => {
+        this.tableData = []
+        params.size = res.data.size
+        params.current = res.data.current
+        params.total = res.data.total
+         res.data.records.map((item, index) => {
+           if(item.isDelete != 1) {
+              filterData.push(item)
+              this.tableData = filterData.reverse()
+           } else {
+             isDeleteNum.push(item.isDelete)
+           }
+         })
+        this.table_loading = false
+      
+//  转换state为Boolean
+        let satatusArr = []
+        this.tableData.map((x, index) => {
+          satatusArr.push({
+            status: x.status == 1 ? false : true
+          })
+        })
+        this.status = satatusArr
+      })
+    },
+    onSearch() {
+      let params = this.pagingQuery
+      params.current = 1
+      this.getStaffList()
+    },
+    handleIssuedPerson() {
+      let _this = this
+     return Array.isArray(this.deviceIds) && this.deviceIds !== null ? HandleIssued() : this.$message.warning('请先选择设备！')
+     function HandleIssued() {
+      if (_this.multipleSelection.length !== 0) {
+          _this.$confirm("此操作将下发已选员工至设备, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          _this.table_loading = true
+          let personIds = []
+          for (let i = 0; i < _this.multipleSelection.length; i++) {
+            personIds.push(_this.multipleSelection[i].id)
+          }
+          if(personIds.length !== 0) {
+             issuedEmployee(_this.deviceIds, personIds).then((res) => {
+                if (res.code == 0) {
+                  _this.table_loading = true
+                  _this.onSearch()
+                  _this.$message.success(res.msg +' 可在已下发人员页面查看', 4000)
+                }
+              },(err) => {
+                _this.table_loading = false
+                _this.$refs.multipleTable.clearSelection()
+              })         
+          }
+          }).catch(() => {
+             _this.$message.info('已取消下发')
+             _this.$refs.multipleTable.clearSelection()
+          })
+      } else {
+        _this.$message.warning('请在列表中勾选要下发的员工！')
+      }
+    }
+    
+    },
+  changeDate(item) {
+     let a = this.pagingQuery
+         a[item] =  moment(a[item]).format('YYYY-MM-DD')
+  },
+  changeDate1() {
+    this.changeDate('enrollTime')
+  },
+  changeDate3() {
+    let _p = this.pagingQuery
+      this.date && this.date.length
+        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD")),
+          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
+        :  _p.createTimeFrom = _p.createTimeTo = null
+    },
+    handleSizeChange(val) {
+      this.pagingQuery.size = val
+      this.getStaffList()
+    },
+    handleCurrentChange(val) {
+      this.pagingQuery.current = val
+      this.getStaffList()
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    refreshPagingQuery() {
+      this.pagingQuery = {}
+      this.onSearch()
+    },
+  },
   created() {
-
+    vm = this
+  this.onSearch()
+  getDeviceNames().then((res) => {
+       this.getDeviceNames = res
+    })
   },
   mounted() {
+    // console.log(this.multipleSelection)
   },
 };
 </script>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-02-10 10:56:10
+ * @LastEditTime: 2021-02-22 17:57:25
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -41,8 +41,8 @@ const passWayArr = [
           value: 'identity_card'
         }
     ]
- },
- {
+  },
+  {
      label: '刷脸 + 刷卡',
      value: 'faceCard',
       children: [
@@ -59,8 +59,16 @@ const passWayArr = [
           value: 'face,identity_card'
         }
       ]
- }
- ]
+    }
+    ],
+    genders = [
+      { id: 'male' , value: '男' },
+      { id: 'female', value: '女'  }
+    ],
+   faceTypes = [
+      { id: 'id', name: '证件照' },
+      { id: 'life', name: '生活照' }
+   ]
  
 /**
  * @description: 通行方式
@@ -126,4 +134,14 @@ export function passWayArrHandle() {
         }
     }
     )
+  }
+
+  /**
+ * @description: 性别、头像类型
+ */
+  export function getGender() {
+    return genders
+  }
+  export function getFaceType() {
+    return faceTypes
   }

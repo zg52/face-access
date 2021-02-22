@@ -1,53 +1,12 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-20 17:40:40
+ * @LastEditTime: 2021-02-22 11:00:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-.people_list {
-  // margin-top: 24px;
-}
- .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8a16ff;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-    border:1px #8a16ff dashed;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-  .camera {
-margin-left: 30px;
-    margin-top: 44px;
-    i {
-      font-size: 20px;
-    }
-  }
-  .des {
-   color: #999;
-    font-size: 12px;
-    padding-left: 30px;
-    line-height: 16px;
-  }
-
   
 </style>
 <template>
@@ -60,7 +19,7 @@ margin-left: 30px;
           placeholder="输入姓名搜索"
         ></el-input
       ></el-form-item>
- <el-form-item label="设备ID">
+    <el-form-item label="设备ID">
         <el-select v-model="value" placeholder="请选择">
           <el-option>
           </el-option> </el-select
@@ -373,7 +332,6 @@ export default {
     }
   },
   created() {
-    addList({ username: "yang", password: "12345678" }).then(() => {});
   },
   mounted() {},
 };

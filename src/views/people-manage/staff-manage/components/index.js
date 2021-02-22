@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-05 16:15:56
- * @LastEditTime: 2021-02-05 18:10:24
+ * @LastEditTime: 2021-02-22 10:43:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\views\people-manage\staff-manage\components\index.js
@@ -21,4 +21,3 @@ let genders = [
  export function getFaceType() {
     return faceTypes
  }
-

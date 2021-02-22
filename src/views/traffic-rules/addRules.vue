@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-18 11:01:48
+ * @LastEditTime: 2021-02-22 09:43:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -18,7 +18,7 @@
       
        <el-form-item label="选择设备名称：" prop="deviceIds" :rules="{ required: true,message: '请选择设备名称', trigger: 'change' }">
         <el-select v-model="deviceIds" placeholder="请选择" @change="changeDeviceIds" multiple filterable clearable>
-         <el-option v-for="(deviceName, index) of deviceNames" :key="index" :label="deviceName.name" :value="deviceName.deviceIds"></el-option>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="选择通行方式：" prop="getVerificationModes" :rules="{ required: true,message: '请选择通行方式', trigger: 'change' }">
@@ -236,7 +236,7 @@
 import { addRules } from'@/api/traffic-rules'
 import { searchDevice } from '@/api/device-manage'
 import { getStaffLis } from '@/api/people-manage/staffManage'
-import { passWay, weekParams } from '@/utils/business'
+import { passWay, weekParams, getDeviceNames } from '@/utils/business'
 import moment from "moment"
 
  var weekOptions = []
@@ -275,7 +275,7 @@ export default {
 
 //  设备名称
         deviceIds: [],
-        deviceNames: [], 
+        getDeviceNames: [],
          verificationModes: [],
          addRules: {
            deviceIds: [],
@@ -474,28 +474,11 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-
-// 获取默认设备名称（第一项）
-    getDeviceName() {
-      searchDevice(this.deiveParams).then((res) => {
-        if(res.code === 0 && res.data) {
-         let data = res.data.records
-            data.map((x,y) => {
-              this.deviceNames.push({
-                 name: x.name,
-                 deviceIds: x.id
-              })
-            })
-            // this.deviceName.push(data[0].name)
-            // this.addRules.deviceIds = JSON.stringify([data[0].id])
-          } else {
-             this.$message.warning('无可用设备，请先添加设备')
-          }
-      })
-    }
   },
   created() {
-    this.getDeviceName()
+   getDeviceNames().then((res) => {
+       this.getDeviceNames = res
+    })
   },
   mounted() {
   },

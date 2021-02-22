@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-20 16:26:34
+ * @LastEditTime: 2021-02-22 18:37:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -78,9 +78,9 @@ position: absolute;
        <el-form-item label="访客所在公司："  prop="position"><el-input v-model.trim="addVisitorForm.visitorCompany" class="w160" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w200" v-model.trim="addVisitorForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addVisitorForm.address" clearable></el-input></el-form-item>
-       <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim.trim="addVisitorForm.visitorName" maxlength="30" clearable></el-input> </el-form-item>
+       <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim.trim="addVisitorForm.intervieweeName" maxlength="30" clearable></el-input> </el-form-item>
        <el-form-item label="被访人公司："  prop="position"><el-input v-model.trim="addVisitorForm.orgId" class="w160" clearable disabled></el-input></el-form-item>
-      <el-form-item label="被访人电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.visitorPhone" clearable></el-input></el-form-item>
+      <el-form-item label="被访人电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.intervieweePhone" clearable></el-input></el-form-item>
       <el-form-item label="来访事由：" prop="reason"><el-input class="w300" v-model.trim.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
       <el-form-item label="来访时间" prop="date">
         <el-date-picker
@@ -135,10 +135,12 @@ import { saveVisitor, editVisitor } from '@/api/people-manage/visitorManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate'
-import { getGender, getFaceType} from './index'
+import { getGender, getFaceType} from '@/utils/business'
 import { imgUrl } from '@/api/public'
 // import { pickerOptions } from '@/utils'
+
 let vm
+
 export default {
   name: 'staff-add',
   props: {
@@ -181,8 +183,8 @@ export default {
             notNull('访客手机号')[0],
             { validator: validPhoneTarget, trigger: "blur" },
           ],
-          visitorName: notNull('访客姓名'),
-          visitorPhone: [
+          intervieweeName: notNull('访客姓名'),
+          intervieweePhone: [
             notNull('被访人手机号')[0],
             { validator: validPhoneTarget, trigger: "blur" },
           ],
@@ -339,8 +341,13 @@ export default {
   },
   created() {
     vm = this
+    let a = vm.addVisitorForm
     this.imageUrl = ''
-    this.imageUrl = this.btn_el.includes('edit') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
+    this.imageUrl = this.btn_el.includes('edit') ? `${ imgUrl() }${ this.addVisitorForm.imageId }` : ''
+
+    if(this.btn_el.includes('edit')) {
+     vm.$set(a,'date', [a['visitStartTime'], a['visitEndTime']])
+   }
   },
   mounted() {
   },

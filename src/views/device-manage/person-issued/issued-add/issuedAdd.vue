@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-15 17:56:08
- * @LastEditTime: 2021-02-20 18:23:30
+ * @LastEditTime: 2021-02-22 17:07:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\device-manage\personnel\index.vue
@@ -16,20 +16,24 @@
 <div class="app-container">
   <el-tabs v-model="activeName" :tab-position="tabPosition">
       <el-tab-pane v-for="(tab, index) of tabs" :label="tab.value" :key="index">
-         <Staff v-show="isShow1"/>
-         <Visitor v-show="isShow2"/>
+         <issuedStaff v-if="isShow1"/>
+         <issuedVisitor v-if="isShow2"/>
     </el-tab-pane>
     <!-- <el-tab-pane label="其他" disabled>其他</el-tab-pane> -->
   </el-tabs>
 </div>
 </template>
 <script>
-import Staff from './issuedStaff'
-import Visitor from './issuedStaff'
+
+import issuedStaff from './issuedStaff'
+import issuedVisitor from './issuedVisitor'
+
+let vm
+
   export default {
     components: {
-      Staff,
-      Visitor
+      issuedStaff,
+      issuedVisitor
     },
     data() {
       return {
@@ -55,6 +59,7 @@ import Visitor from './issuedStaff'
        }
     },
     created() {
+      vm = this
       const tab = this.$route.query.tab
        if (tab) {
          this.activeName = tab
@@ -64,6 +69,7 @@ import Visitor from './issuedStaff'
         this.$router.push(`${ this.$route.path }?tab=${ getTabIndex }`)
     },
     mounted() {
+
     }
   };
 </script>

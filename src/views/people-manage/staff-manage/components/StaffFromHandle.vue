@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-20 17:03:38
+ * @LastEditTime: 2021-02-22 15:28:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -136,6 +136,7 @@ import { getGender, getFaceType} from './index'
 import { imgUrl } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
+let vm
 
 export default {
   name: 'staff-add',
@@ -352,6 +353,7 @@ export default {
 
   },
   mounted() {
+    console.log(vm)
   },
 };
 </script>

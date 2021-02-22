@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-20 19:12:46
+ * @LastEditTime: 2021-02-22 19:07:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -69,7 +69,7 @@
   <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
       <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator" clearable></el-input></el-form-item>
       <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
-       <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
+      <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
       <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employee_num" clearable></el-input></el-form-item>
       <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone" clearable></el-input></el-form-item>
       <el-form-item label="住址"><el-input v-model.trim="pagingQuery.address" clearable></el-input></el-form-item>
@@ -128,7 +128,7 @@
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
                <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
-               <el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item>
+               <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
                 <el-form-item label="性别："><span>{{ props.row.gender === 'MALE' ? '男' : '女' }} </span></el-form-item>
                <el-form-item label="头像类型："><span>{{ props.row.img_type == 1 ? '生活照' : '证件照' }} </span></span></el-form-item>
@@ -143,8 +143,8 @@
                  <el-form-item label="IC卡："><span>{{ props.row.icCardId }} </span></el-form-item>
                  <el-form-item label="入职时间："><span>{{ props.row.enrollTime }} </span></el-form-item>
                  <el-form-item label="离职时间："><span>{{ props.row.expiredTime }} </span></el-form-item>
-                 <el-form-item label="创建时间："><span>{{ props.row.createTime | splice_t }} </span></el-form-item>
-                 <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | splice_t }} </span></el-form-item>
+                 <el-form-item label="创建时间："><span>{{ props.row.createTime | filterDate }} </span></el-form-item>
+                 <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | filterDate }} </span></el-form-item>
                   <el-form-item label="状态："><span>{{ props.row.status == 0 ? '在职' : '离职' }}</span> </el-form-item>
                  <el-form-item label="备注："><span></span></el-form-item>
                 <el-form-item label="创建人："><span>{{ props.row.operator }}</span></el-form-item>
@@ -218,10 +218,6 @@
            top="0"
           >
             <StaffFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEditHandle" />
-           <!-- <span slot="footer" class="dialog-footer">
-             <el-button @click="dialogVisible1 = false">取 消</el-button>
-             <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
-           </span> -->
       </el-dialog>
 
   </div>
@@ -231,9 +227,11 @@ import { mapGetters } from 'vuex'
 import { getStaffList, deleteStaff, StaffState } from '@/api/people-manage/staffManage'
 import { imgUrl } from '@/api/public'
 import { pickerOptions } from '@/utils'
-import { getGender, getFaceType} from '../components/index'
+import { getFaceType} from '../components/index'
+import { getGender } from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
+
  const faceTypes = [
    { id: 'zj', name: '证件照' }, 
    { id: 'sh', name: '生活照' }
@@ -243,6 +241,7 @@ import moment from 'moment'
    { value: '离职', id: 1 },
    { value: '已删除', id: 'isDelete' }
  ]
+
 export default {
   name: 'staff-list',
    components: { StaffFromHandle },
@@ -276,8 +275,8 @@ export default {
         gateCardId: null,
         enrollTime: null,
         expiredTime: null,
-        createTimeFrom: '2020-12-29', //初始查询默认参数，必填
-        createTimeTo: '6060-12-29', //初始查询默认参数，必填
+        createTimeFrom: null, //初始查询默认参数，必填
+        createTimeTo: null, //初始查询默认参数，必填
         status: null,
         isDelete: null, /// 0为正常1为已删除
         
@@ -309,11 +308,9 @@ export default {
          btn_el: ['edit']
     }
   },
-  filters: {
-    splice_t(value) {
-    return value.replace('T', ' ')
-    }
-  },
+  // filters: {
+ 
+  // },
   computed: {
     ...mapGetters([
       'username'

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-20 17:05:44
+ * @LastEditTime: 2021-02-22 19:08:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -63,6 +63,7 @@
     font-size: 12px!important;
         }
     }
+
 </style>
 <template>
   <div class="app-container">
@@ -135,11 +136,11 @@
        <el-table-column type="expand" label="详情" :width="60">
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
-               <el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item>
+              <div class="fl mr25 imgBox"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
-               <el-form-item label="性别："><span>{{ props.row.gender === 'MALE' ? '男' : '女' }} </span></el-form-item>
-                 <el-form-item label="授权状态："><span>{{ props.row.status === 'VALID' ? '已授权' : '已失效' }} </span></el-form-item>
-               <el-form-item label="头像类型："><span>{{ props.row.faceType == 'shenghuo' ? '生活照' : '证件照' }} </span></span></el-form-item>
+               <el-form-item label="性别："><span>{{ props.row.gender === 'male' ? '男' : '女' }} </span></el-form-item>
+                 <el-form-item label="授权状态："><span>{{ props.row.status === 'auth' ? '已授权' : '已失效' }} </span></el-form-item>
+               <el-form-item label="头像类型："><span>{{ props.row.faceType == 'life' ? '生活照' : '证件照' }} </span></span></el-form-item>
                  <el-form-item label="所在公司："> <span>{{ props.row.visitorCompany }} </span></el-form-item>
                  <el-form-item label="电话："><span>{{ props.row.phone }} </span></el-form-item>
                    <el-form-item label="住址："><span>{{ props.row.address }} </span></el-form-item>
@@ -150,7 +151,7 @@
                   <el-form-item label="被访人电话："><span>{{ props.row.intervieweePhone }} </span></el-form-item>
                  <el-form-item label="创建时间："><span>{{ props.row.createTime }} </span></el-form-item>
                  <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime }} </span></el-form-item>
-                  <el-form-item label="状态："><span>{{ props.row.isDelete == 0 ? '正常' : '已删除' }}</span> </el-form-item>
+                  <!-- <el-form-item label="状态："><span>{{ props.row.isDelete == 0 ? '正常' : '已删除' }}</span> </el-form-item> -->
                  <el-form-item label="备注："><span>{{ props.row.remark }}</span></el-form-item>
                 <el-form-item label="创建人："><span>{{ props.row.operator }}</span></el-form-item>
            </el-form>
@@ -161,16 +162,16 @@
       <el-table-column align="center" label="来访人头像" width="140">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope">{{ scope.row.gender === 'MALE' ? '男' : '女' }} </template></el-table-column>
-      <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'VALID' ? '已授权' : '已失效' }} </template></el-table-column>
+     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope">{{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
+      <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'auth' ? '已授权' : '已失效' }} </template></el-table-column>
       <el-table-column align="center" label="所在公司" width="100"> <template v-slot="scope">{{ scope.row.visitorCompany }}</template></el-table-column>
       <el-table-column align="center" label="电话" width="108"><template v-slot="scope">{{ scope.row.phone }} </template></el-table-column>
       <el-table-column align="center" label="身份证号" width="108"> <template v-slot="scope">{{ scope.row.idNum }} </template></el-table-column>
        <el-table-column align="center" label="被访人姓名" width="108"><template v-slot="scope">{{ scope.row.intervieweeName }} </template></el-table-column>
-      <el-table-column align="center" label="被访人电话" width="108"><template v-slot="scope">{{ scope.row.intervieweeName }} </template></el-table-column>
+      <el-table-column align="center" label="被访人电话" width="108"><template v-slot="scope">{{ scope.row.intervieweePhone }} </template></el-table-column>
        <el-table-column align="center" label="来访事由" width="120"><template v-slot="scope">{{ scope.row.reason }} </template></el-table-column>
          <el-table-column align="center" label="来访时间" width="120"> <template v-slot="scope">{{ scope.row.visitStartTime }} ~ {{ scope.row.visitEndTime }}</template></el-table-column>
-       <el-table-column align="center" label="状态" width="60"> <template v-slot="scope">{{ scope.row.isDelete == 0 ? '正常' : '已删除' }}</template> </el-table-column>
+       <!-- <el-table-column align="center" label="状态" width="60"> <template v-slot="scope">{{ scope.row.isDelete == 0 ? '正常' : '已删除' }}</template> </el-table-column> -->
       <el-table-column align="left" label="操作" width="190" fixed="right">
         <template v-slot="scope">
           <el-switch class="mll5" size="mini" active-text="授权" inactive-text="拒绝" v-model="isDeletes[scope.$index].state" @change="changeStaffStatus(scope.$index, scope.row)" disabled></el-switch>
@@ -208,22 +209,14 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { visitorList, editVisitor, deleteVisitor } from '@/api/people-manage/visitorManage'
+import { visitorList, deleteVisitor } from '@/api/people-manage/visitorManage'
 import { imgUrl } from '@/api/public'
 import { pickerOptions } from '@/utils'
-import { getGender, getFaceType} from '../components/index'
+import { getGender, getFaceType} from '@/utils/business'
 import VisitorFromHandle from '../components/VisitorFromHandle'
 import moment from 'moment'
 
-let [vm] = [this]
-const faceTypes = [
-   { id: 'zhengjian', name: '证件照' }, 
-   { id: 'shenghuo', name: '生活照' }
-],
- states = [
-   { value: '在职', id: 0 }, 
-   { value: '离职', id: 1 }
- ]
+let vm
 
 export default {
   name: 'visitorList',
@@ -235,8 +228,7 @@ export default {
       value: '华捷艾米',
       genders: getGender(),
       isDeletes: [],
-      states: states,
-      faceTypes: faceTypes,
+      faceTypes: getFaceType(),
       pickerOptions: pickerOptions(true),
       pickerOptions1: pickerOptions(),
       date1: null,
@@ -424,6 +416,7 @@ export default {
     }
   },
   created() {
+    vm = this
     this.onSearch()
   },
   mounted() {
