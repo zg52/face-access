@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-15 17:56:08
- * @LastEditTime: 2021-02-20 17:28:07
+ * @LastEditTime: 2021-02-23 14:35:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\device-manage\personnel\index.vue
@@ -16,20 +16,20 @@
 <div class="app-container">
   <el-tabs v-model="activeName" :tab-position="tabPosition">
       <el-tab-pane v-for="(tab, index) of tabs" :label="tab.value" :key="index">
-         <Staff v-show="isShow1"/>
-         <Visitor v-show="isShow2"/>
+         <issuedStaffLIst v-if="isShow1"/>
+         <issuedVisitorList v-if="isShow2"/>
     </el-tab-pane>
     <!-- <el-tab-pane label="其他" disabled>其他</el-tab-pane> -->
   </el-tabs>
 </div>
 </template>
 <script>
-import Staff from './components/Staff'
-import Visitor from './components/Visitor';
+import issuedStaffLIst from './issuedStaffLIst'
+import issuedVisitorList from './issuedVisitorList'
   export default {
     components: {
-      Staff,
-      Visitor
+      issuedStaffLIst,
+      issuedVisitorList
     },
     data() {
       return {

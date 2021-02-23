@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-20 14:18:09
+ * @LastEditTime: 2021-02-23 16:49:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -12,7 +12,7 @@
 <template>
   <div class="app-container">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.userId"></el-input></el-form-item>
+      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator"></el-input></el-form-item>
       <el-form-item label="选择设备名称">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
@@ -79,7 +79,7 @@
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="ID" width="40"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="120"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
-      <el-table-column align="center" label="设备名称" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
+      <el-table-column align="center" label="所在设备" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationModes | verificationModes_hadnle }}</template></el-table-column>
       <el-table-column align="center" label="通行人员类型" width="120"> <template v-slot="scope">{{ scope.row.personType === 'employee' ? '员工' : '访客' }}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
@@ -196,7 +196,7 @@ export default {
       queryWeek: [],
       ruleList: [],
       pagingQuery: {
-       userId: null,
+       operator: this.$store.getters.username,
        deviceId: null,
        name: null,
        verificationModes: null,

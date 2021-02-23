@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 19:38:30
+ * @LastEditTime: 2021-02-23 19:52:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -13,15 +13,16 @@
 </style>
 <template>
   <div class="app-container1">
-    <div class="lis_tit"><i></i> <span>选择设备</span></div>
-    <DeviceNames @getDeviceIds="getDeviceIds1"/>
-    <div class="lis_tit"><i></i> <span>选择要下发的访客</span></div>
+    <div class="lis_tit"><i></i> <span>选择要下发的员工</span></div>
       <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
-      <el-form-item label="访客姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
+      <el-form-item label="员工姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
       <el-form-item label="性别："><el-select class="w100" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-       <el-form-item label="被访人姓名"><el-input class="w100" v-model.trim="pagingQuery.intervieweeName" clearable></el-input></el-form-item>
-       <el-form-item label="来访事由"><el-input v-model.trim="pagingQuery.reason" clearable></el-input></el-form-item>
-      <el-form-item label="创建时间">
+      <el-form-item label="部门"> <el-select disabled v-model="value" clearable></el-select></el-form-item> 
+      <el-form-item label="职务" ><el-input v-model.trim="pagingQuery.position" clearable></el-input></el-form-item>
+      <el-form-item label="入职时间：">
+        <el-date-picker class="w300" v-model="pagingQuery.enrollTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate1"></el-date-picker>
+      </el-form-item>
+      <el-form-item label="创建日期">
         <el-date-picker
           v-model="date"
           type="daterange"
@@ -29,7 +30,7 @@
           unlink-panels
           range-separator="至"
           start-placeholder="创建日期"
-          end-placeholder="结束日期"
+          end-placeholder="更新日期"
           :picker-options="pickerOptions"
           :default-time="['00:00:00', '23:59:59']"
           @change="changeDate3"
@@ -38,32 +39,10 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="下发状态："><el-select class="w100" v-model.trim="pagingQuery.gender" disabled><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-       <el-form-item label="授权状态">
-        <el-select v-model="pagingQuery.status" disabled>
-          <!-- <el-option>已授权</el-option>
-           <el-option>未授权</el-option>
-          <el-option>已过期</el-option>
-          <el-option>已拒绝</el-option> -->
-        </el-select>
-      </el-form-item>
-      <el-form-item label="来访日期">
-        <el-date-picker
-          v-model="date1"
-          type="datetimerange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="来访日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions1"
-          :default-time="['00:00:00', '23:59:59']"
-          @change="changeDate1">
-        </el-date-picker>
-      </el-form-item>
 
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-       <router-link to="/device-manage/person-issued/issued-list/issuedList?tab=1" class="ml10"><el-button type="primary"><i class="el-icon-view"></i> 已下发访客</el-button></router-link>
+       <router-link to="/device-manage/person-issued/issued-list/issuedList?tab=0" class="ml10"><el-button type="primary"><i class="el-icon-view"></i> 已下发员工</el-button></router-link>
        <el-button class="ml10" type="primary" :disabled="table_loading" @click="handleIssuedPerson"><svg-icon icon-class="guide" />  一键下发</el-button>
     </el-form>
     
@@ -71,16 +50,16 @@
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-      <el-table-column align="center" label="访客姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
+      <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
       <el-table-column align="center" label="已注册人脸" width="140">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
-       <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'auth' ? '已授权' : '已失效' }} </template></el-table-column>
-      <el-table-column align="center" label="被访人姓名" width="100"> <template v-slot="scope"> {{ scope.row.intervieweeName }} </template></el-table-column>
+      <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
+      <el-table-column align="center" label="职务" width="108"><template v-slot="scope">{{ scope.row.position }}</template></el-table-column>
+      <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employee_num }} </template></el-table-column>
       <el-table-column align="center" label="下发状态" width="160"><template v-slot="scope">{{ scope.row.status == 0 ? '已下发' : '未下发' }}</template> </el-table-column>
-       <el-table-column align="center" label="来访时间"><template v-slot="scope">{{ scope.row.visitStartTime }} ~ {{ scope.row.visitEndTime }}</template></el-table-column>
-      <el-table-column align="center" label="来访事由"><template v-slot="scope">{{ scope.row.reason }}</template></el-table-column>
+      <el-table-column align="center" label="入职时间"><template v-slot="scope">{{ scope.row.enrollTime }}</template></el-table-column>
       <el-table-column align="center" label="创建时间"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
     </el-table> 
     
@@ -96,12 +75,9 @@
   </div>
 </template>
 <script>
-import DeviceNames from '@/components/Business/DeviceNames'
-import { getDeviceNames, getGender } from '@/utils/business'
-import { visitorList } from '@/api/people-manage/visitorManage'
+import { getStaffList } from '@/api/people-manage/staffManage'
 import { imgUrl } from '@/api/public'
 import { pickerOptions } from '@/utils'
-import { issuedVisitor } from '@/api/person-issued'
 import moment from 'moment'
 
 let vm
@@ -116,9 +92,7 @@ export default {
       getDeviceNames: [],
       deviceIds: null,
       pickerOptions: pickerOptions(),
-      pickerOptions1: pickerOptions(true),
       date: null,
-      date1: null,
       multipleSelection: [],
       getImgUrl: imgUrl(),
       genders: getGender(),
@@ -128,8 +102,10 @@ export default {
       pagingQuery: {
         name: null,
         gender: null,
-        intervieweeName: null,
-        reason: null,
+        position: null,
+        icCardId: null,
+        gateCardId: null,
+        enrollTime: null,
         createTimeFrom: null, //初始查询默认参数，必填
         createTimeTo: null, //初始查询默认参数，必填
         status: null,
@@ -145,10 +121,10 @@ export default {
     getDeviceIds1(deviceIds) {
     this.deviceIds = deviceIds
     },
-     getVisitorList() {
+     getStaffList() {
       let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
       this.table_loading = true
-      visitorList(this.pagingQuery).then((res) => {
+      getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
         params.size = res.data.size
         params.current = res.data.current
@@ -176,14 +152,14 @@ export default {
     onSearch() {
       let params = this.pagingQuery
       params.current = 1
-      this.getVisitorList()
+      this.getStaffList()
     },
     handleIssuedPerson() {
       let _this = this
      return Array.isArray(this.deviceIds) && this.deviceIds !== null ? HandleIssued() : this.$message.warning('请先选择设备！')
      function HandleIssued() {
       if (_this.multipleSelection.length !== 0) {
-          _this.$confirm("此操作将下发已选访客至设备, 是否继续?", "提示", {
+          _this.$confirm("此操作将下发已选员工至设备, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
@@ -194,7 +170,7 @@ export default {
             personIds.push(_this.multipleSelection[i].id)
           }
           if(personIds.length !== 0) {
-             issuedVisitor(_this.deviceIds, personIds).then((res) => {
+             issuedEmployee(_this.deviceIds, personIds).then((res) => {
                 if (res.code == 0) {
                   _this.table_loading = true
                   _this.onSearch()
@@ -210,20 +186,17 @@ export default {
              _this.$refs.multipleTable.clearSelection()
           })
       } else {
-        _this.$message.warning('请在列表中勾选要下发的访客！')
+        _this.$message.warning('请在列表中勾选要下发的员工！')
       }
     }
     
     },
-changeDate(x, y, z, m) {
-     let _p = this.pagingQuery
-      this[x] && this[x].length
-      ? ((_p[y] = moment(this[x][0]).format(m)),
-        (_p[z] = moment(this[x][1]).format(m)))
-      :  _p[y] = _p[z] = null
+  changeDate(item) {
+     let a = this.pagingQuery
+         a[item] =  moment(a[item]).format('YYYY-MM-DD')
   },
   changeDate1() {
-    this.changeDate('date1', 'visitStartTime', 'visitEndTime', 'YYYY-MM-DD HH:mm:ss')
+    this.changeDate('enrollTime')
   },
   changeDate3() {
     let _p = this.pagingQuery
@@ -234,18 +207,18 @@ changeDate(x, y, z, m) {
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val
-      this.getVisitorList()
+      this.getStaffList()
     },
     handleCurrentChange(val) {
       this.pagingQuery.current = val
-      this.getVisitorList()
+      this.getStaffList()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
-      this.date = null, this.date1 = null
+      this.date = null
       this.onSearch()
     },
   },
@@ -257,6 +230,7 @@ changeDate(x, y, z, m) {
     })
   },
   mounted() {
+    // console.log(this.multipleSelection)
   },
 };
 </script>

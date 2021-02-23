@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-07 18:19:07
- * @LastEditTime: 2021-02-20 14:21:51
- * @LastEditors: your name
+ * @LastEditTime: 2021-02-23 14:14:00
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\people-manage\staff-manage\staff-add\staffAdd.vue
 -->
@@ -22,8 +22,8 @@ export default {
       addStaffForm: {
            operator: this.$store.getters.username,
            name: '艾米',
-           gender: 'MALE', // 默认性别男
-           img_type: '0', // 默认证件照
+           gender: 'male', // 默认性别男
+           faceType: 'id', // 默认证件照
 
            phone: '15652970356',
            address: 'w',

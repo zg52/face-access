@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-22 15:28:19
+ * @LastEditTime: 2021-02-23 14:13:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -93,7 +93,7 @@ position: absolute;
       <el-form-item label="门禁卡号：" prop="gateCardId"><el-input class="w300" v-model.trim.trim="addStaffForm.gateCardId" maxlength="30" clearable></el-input></el-form-item>
       <el-form-item label="备注：" prop="description"><el-input class="w360" v-model.trim="addStaffForm.description" type="textarea" :rows="2" placeholder="请输入内容"> </el-input></el-form-item>
       <el-form-item label="头像类型：">
-        <el-radio-group v-model="img_type" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
+        <el-radio-group v-model="faceType" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
       </el-form-item><br>
       <el-form-item label="头像采集：" prop="files">
           <el-upload
@@ -132,7 +132,7 @@ import { saveStaff, editStaff } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
-import { getGender, getFaceType} from './index'
+import { getGender, getFaceType} from '@/utils/business'
 import { imgUrl } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
@@ -172,7 +172,7 @@ export default {
       genders: getGender(),
       faceTypes: getFaceType(),
       imageUrl: '',
-      img_type: getFaceType()[0].name,
+      faceType: getFaceType()[0].name,
     //   addStaffForm: formHadleParam,
       addStaffRule: {
           name: notNull('姓名'),
@@ -231,7 +231,7 @@ export default {
        a['enrollTime'] =  moment(a['enrollTime']).format('YYYY-MM-DD')
   },
   changeImgType() {
-    this.addStaffForm.img_type = this.img_type == 0 ? 0 : 1
+    this.addStaffForm.faceType = this.faceType == 'id' ? 'id' : 'life'
   },
    resetAddStaffForm() { 
     this.$refs['addStaffFormRule'].resetFields()

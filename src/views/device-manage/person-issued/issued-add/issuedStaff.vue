@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-22 17:21:11
+ * @LastEditTime: 2021-02-23 19:38:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -14,16 +14,7 @@
 <template>
   <div class="app-container1">
     <div class="lis_tit"><i></i> <span>选择设备</span></div>
-    <!-- <el-form :model="deviceForm" :inline="true" ref="deviceFormRule">
-     <el-form-item label="选择设备名称" prop="deviceIds" :rules="{ required: true,message: '请选择设备名称', trigger: 'change' }">
-        <el-select v-model="deviceForm.deviceIds" placeholder="请选择" multiple filterable clearable>
-         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="device3Name.id"></el-option>
-        </el-select>
-      </el-form-item>
-    </el-form><br> -->
-    <!-- <device-names></device-names> -->
     <DeviceNames @getDeviceIds="getDeviceIds1"/>
-    
     <div class="lis_tit"><i></i> <span>选择要下发的员工</span></div>
       <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
       <el-form-item label="员工姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
@@ -65,7 +56,7 @@
       <el-table-column align="center" label="已注册人脸" width="140">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender === 'MALE' ? '男' : '女' }} </template></el-table-column>
+     <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"><template v-slot="scope">{{ scope.row.position }}</template></el-table-column>
       <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employee_num }} </template></el-table-column>
@@ -120,11 +111,9 @@ export default {
         icCardId: null,
         gateCardId: null,
         enrollTime: null,
-        expiredTime: null,
         createTimeFrom: null, //初始查询默认参数，必填
         createTimeTo: null, //初始查询默认参数，必填
         status: null,
-        isDelete: null, /// 0为正常1为已删除
         
         current: 1, 
         size: 20,
@@ -234,6 +223,7 @@ export default {
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
+      this.date = null
       this.onSearch()
     },
   },

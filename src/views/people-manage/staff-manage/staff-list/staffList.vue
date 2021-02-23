@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-22 19:07:12
+ * @LastEditTime: 2021-02-23 15:44:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -63,6 +63,32 @@
     font-size: 12px!important;
         }
     }
+    .change_staff_status {
+      position: relative;
+      span {
+        position: absolute;
+        display: inline-block;
+        width: 100%;
+        height: 30px;
+        z-index: 999;
+        cursor: pointer;
+      }
+    }
+    .change_staff_btn {
+      text-align: right;
+    }
+    .expireDateTip{
+      color: #ff4949;
+    font-size: 12px;
+    line-height: 1;
+    position: relative;
+    top: -21px;
+    background: #fff;
+    padding-top: 5px;
+    width: 100%;
+    display: block;
+    height: 20px;
+    }
 </style>
 <template>
   <div class="app-container">
@@ -76,10 +102,10 @@
       <el-form-item label="邮箱"><el-input v-model.trim="pagingQuery.mail" clearable></el-input></el-form-item>
       <el-form-item label="部门"> <el-select disabled v-model="value" clearable></el-select></el-form-item> 
       <el-form-item label="职务" ><el-input v-model.trim="pagingQuery.position" clearable></el-input></el-form-item>
-      <el-form-item label="入职时间：">
+      <el-form-item label="入职日期：">
         <el-date-picker class="w300" v-model="pagingQuery.enrollTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate1"></el-date-picker>
       </el-form-item>
-      <el-form-item label="离职时间">
+      <el-form-item label="离职日期">
         <el-date-picker class="w300" v-model="pagingQuery.expiredTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate2"></el-date-picker>
       </el-form-item>
       <el-form-item label="状态">
@@ -97,7 +123,7 @@
           unlink-panels
           range-separator="至"
           start-placeholder="创建日期"
-          end-placeholder="更新日期"
+          end-placeholder="截止日期"
           :picker-options="pickerOptions"
           :default-time="['00:00:00', '23:59:59']"
           @change="changeDate3"
@@ -130,8 +156,8 @@
                <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
                <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
-                <el-form-item label="性别："><span>{{ props.row.gender === 'MALE' ? '男' : '女' }} </span></el-form-item>
-               <el-form-item label="头像类型："><span>{{ props.row.img_type == 1 ? '生活照' : '证件照' }} </span></span></el-form-item>
+                <el-form-item label="性别："><span>{{ props.row.gender === 'male' ? '男' : '女' }} </span></el-form-item>
+               <el-form-item label="头像类型："><span>{{ props.row.faceType == 'life' ? '生活照' : '证件照' }} </span></el-form-item>
                  <el-form-item label="部门："> <span>华捷艾米 </span></el-form-item>
                  <el-form-item label="身份证号："><span>{{ props.row.idNum }} </span></el-form-item>
                  <el-form-item label="工号："><span>{{ props.row.employee_num }} </span></el-form-item>
@@ -141,8 +167,8 @@
                  <el-form-item label="职务："><span>{{ props.row.position }} </span></el-form-item>
                  <el-form-item label="门禁卡："><span>{{ props.row.gateCardId }} </span></el-form-item>
                  <el-form-item label="IC卡："><span>{{ props.row.icCardId }} </span></el-form-item>
-                 <el-form-item label="入职时间："><span>{{ props.row.enrollTime }} </span></el-form-item>
-                 <el-form-item label="离职时间："><span>{{ props.row.expiredTime }} </span></el-form-item>
+                 <el-form-item label="入职日期："><span>{{ props.row.enrollTime }} </span></el-form-item>
+                 <el-form-item label="离职日期："><span>{{ props.row.status == 1 ? props.row.expiredTime : null }} </span></el-form-item>
                  <el-form-item label="创建时间："><span>{{ props.row.createTime | filterDate }} </span></el-form-item>
                  <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | filterDate }} </span></el-form-item>
                   <el-form-item label="状态："><span>{{ props.row.status == 0 ? '在职' : '离职' }}</span> </el-form-item>
@@ -157,7 +183,7 @@
       <el-table-column align="center" label="已注册人脸" width="140">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'MALE' ? '男' : '女' }} </template></el-table-column>
+     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"> <template> 华捷艾米 </template></el-table-column>
       <el-table-column align="center" label="工号" width="180"> <template v-slot="scope"> {{ scope.row.employee_num }} </template></el-table-column>
       <el-table-column align="center" label="电话" width="108"> <template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
@@ -169,27 +195,25 @@
      
       <el-table-column align="left" label="操作" width="190" fixed="right" v-if="pagingQuery.isDelete == 1 ? false : true">
         <template v-slot="scope">
-          <el-switch class="mll5" size="mini" active-text="在职" inactive-text="离职" v-model="status[scope.$index].status" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
-          <el-popover
-  placement="top"
-  width="160"
-  v-model="ops">
-  <p>这是一段内容这是一段内容确定删除吗？</p>
-  <div style="text-align: right; margin: 0">
-    <el-button size="mini" type="text" @click="ops = false">取消</el-button>
-    <el-button type="primary" size="mini" @click="ops = false">确定</el-button>
-  </div>
-  <el-button slot="reference">删除</el-button>
-</el-popover>
-<el-popover
-    v-if="ops"
-    placement="bottom"
-    title="标题"
-    width="200"
-    trigger="click"
-    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-    <el-button slot="reference" @click.native="ops = true">click 激活</el-button>
-  </el-popover>
+          
+        <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible" >
+              <el-form ref="expiredDateFormRule" :model="expiredDateForm" :rules="expiredDateFormRule">
+                <el-form-item label="请选择离职日期：" prop="expiredDate">
+                  <el-date-picker class="w300" v-model="expiredDateForm.expiredDate" type="date" align="right" unlink-panels start-placeholder="离职日期" @change="changeExpiredDate"></el-date-picker>
+                </el-form-item>
+                <sup v-show="expiredDateTip" class="expireDateTip">请选择离职日期</sup>
+              </el-form>
+            <div class="change_staff_btn mt10">
+              <el-button v-show="scope.row.status == 1 ? true : false" size="mini" type="primary" @click="setStatusHadnle(scope.$index, scope.row)">设为在职</el-button>
+              <el-button type="primary" size="mini" @click="submitExpiredDate(scope.row, 'expiredDateFormRule')">确定</el-button>
+              <el-button size="mini" type="button" @click="cacelStatusHandle(scope.row.id)">取消</el-button>
+            </div>
+            <div class="change_staff_status" slot="reference">
+              <span @click="handleStatus"></span>
+              <el-switch class="mll5" size="mini" active-text="在职" inactive-text="离职" v-model="status[scope.$index].status" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
+            </div>
+        </el-popover>
+
           <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"
@@ -217,9 +241,8 @@
            width="80%"
            top="0"
           >
-            <StaffFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEditHandle" />
+          <StaffFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEditHandle" />
       </el-dialog>
-
   </div>
 </template>
 <script>
@@ -227,38 +250,41 @@ import { mapGetters } from 'vuex'
 import { getStaffList, deleteStaff, StaffState } from '@/api/people-manage/staffManage'
 import { imgUrl } from '@/api/public'
 import { pickerOptions } from '@/utils'
-import { getFaceType} from '../components/index'
-import { getGender } from '@/utils/business'
+import { getGender, getFaceType} from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
 
- const faceTypes = [
-   { id: 'zj', name: '证件照' }, 
-   { id: 'sh', name: '生活照' }
-],
- states = [
+ const states = [
    { value: '在职', id: 0 }, 
    { value: '离职', id: 1 },
    { value: '已删除', id: 'isDelete' }
  ]
+let vm
 
 export default {
   name: 'staff-list',
    components: { StaffFromHandle },
   data() {
     return {
-        ops: false,
+      expiredDateTip: false,
       table_loading:false,
       dialogVisible1: false,
       value: '华捷艾米',
       genders: getGender(),
       status: [],
       states: states,
-      faceTypes: faceTypes,
+      faceTypes: getFaceType(),
       pickerOptions: pickerOptions(),
       date: null,
       multipleSelection: [],
       getImgUrl: imgUrl(),
+      expiredDateForm: {
+        expiredDate: '',
+        expiredDate1: ''
+      },
+      expiredDateFormRule: {
+        expiredDate: [{type:'date', required: true, message: '请选择离职日期', trigger: ['blur', 'change'] }]
+      },
       
       pagingQuery: {
         operator: null,
@@ -302,7 +328,7 @@ export default {
            icCardId: '32',
            gateCardId: '32',
            enrollTime: '2021-12-20',
-           img_type: '1',
+           faceType: 'id',
            files: null
          },
          btn_el: ['edit']
@@ -329,10 +355,16 @@ export default {
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
+        
          res.data.records.map((item, index) => {
            if(item.isDelete != 1) {
               filterData.push(item)
               this.tableData = filterData.reverse()
+
+// 设置visible解决elemenui pover 弹出异常缺陷
+              this.tableData.forEach(function (item) {
+               item.visible = true
+              })
            } else {
              isDeleteNum.push(item.isDelete)
            }
@@ -347,6 +379,8 @@ export default {
           })
         })
         this.status = satatusArr
+
+
       })
     },
     onSearch() {
@@ -402,26 +436,78 @@ export default {
     onExport() {
 
     },
+    handleStatus(row) {
+      row.visible = true
+      if(row.status == 0) {
+      } else {
+        
+      }
+    },
     
-// 切换员工状态(在职/离职)
-    changeStaffStatus(x ,y) {
+// 切换员工状态(在职)
+    changeStaffStatus(index, row) {
       function state() {
-        return y.status == 0 ? 1 : 0
+        return row.status == 0 ? 1 : 0
       }
       StaffState(
-          y.id,
+          row.id,
           {
-            status: state(),
-            id: y.id
+            status: 0,
+            id: row.id
           }
       ).then((res) => {
         if (res.code == 0 && res.data === null) {
-          this.$message.success({message: res.msg})
+          this.$message.success(res.msg)
           this.getStaffList()
         } else {
-          this.$message.warning({message: res.msg})
+          this.$message.warning(res.msg)
         }
       })
+    },
+    setStatusHadnle(index, row) {
+      this.changeStaffStatus(index, row)
+      this.$refs[row.id].doClose()
+    },
+
+// 设置离职时间
+  submitExpiredDate (row, el) {
+    let e = this.expiredDateForm
+      this.$refs[el].validate((valid) => {
+        if (valid) {
+        valiExpiredDate()
+      } else {
+        this.expiredDateTip = true
+        return false
+      }
+     })
+      function valiExpiredDate() {
+      function state() {
+        return row.status == 0 ? 1 : 0
+      }
+      StaffState(
+          row.id,
+          {
+            id: row.id,
+            status: 1,
+            expiredDate: e['expiredDate1']
+          }
+      ).then((res) => {
+        if (res.code == 0 && res.data === null) {
+          e['expiredDate'] = null
+          vm.$message.success(res.msg)
+          vm.getStaffList()
+        } else {
+          vm.$message.warning(res.msg)
+        }
+      })
+     vm.$refs[row.id].doClose()
+      }
+    
+    },
+    cacelStatusHandle(id) {
+      this.$refs[id].doClose()
+      this.expiredDateTip = false
+      this.expiredDateForm['expiredDate'] = null
     },
    changeDate(item) {
      let a = this.pagingQuery
@@ -432,6 +518,9 @@ export default {
   },
   changeDate2() {
     this.changeDate('expiredTime')
+  },
+  changeExpiredDate() {
+     this.expiredDateForm.expiredDate1 =  moment(this.expiredDateForm.expiredDate).format('YYYY-MM-DD')
   },
   changeDate3() {
     let _p = this.pagingQuery
@@ -461,6 +550,7 @@ export default {
     }
   },
   created() {
+    vm = this
     this.onSearch()
   },
   mounted() {

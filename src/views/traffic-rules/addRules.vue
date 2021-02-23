@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-22 09:43:51
+ * @LastEditTime: 2021-02-23 16:47:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -66,7 +66,9 @@
           </el-tab-pane>
       </el-tabs>
     </el-form-item>
-    <el-button type="primary" @click="handleAddRule"><svg-icon icon-class="guide" />  一键下发</el-button></el-form>
+    <el-button type="primary" @click="handleAddRule"><svg-icon icon-class="guide" />  一键下发</el-button>
+    <router-link to="/traffic-rules/rules" class="ml10"><el-button><i class="el-icon-view"></i> 查看已下发规则</el-button></router-link>
+    </el-form>
 
      <el-dialog title="选择通行员工" :visible.sync="staff_dialogVisible" width="100%">
       <el-form :model="addRules" :inline="true">

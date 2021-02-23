@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-22 19:06:10
+ * @LastEditTime: 2021-02-23 17:38:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -38,3 +38,46 @@ export function issuedVisitor(params) {
        data: params
      })
    }
+
+    /**
+ * @description: 查已下发员工
+ */
+export function beenIssuedEmployee(params) {
+  return request({
+     url: `${ passing }?personType=employee`,
+     method: 'GET',
+     params
+   })
+ }
+
+     /**
+ * @description: 查已下发访客
+ */
+export function beenIssuedVisitor(params) {
+  return request({
+     url: `${ passing }?personType=visitor`,
+     method: 'GET',
+     params
+   })
+ }
+
+ /**
+ * @description: 查看某个设备的通行人员
+ */
+export function beenDevicePerson(id) {
+  return request({
+     url: `${ passing }/device/${ id }`,
+     method: 'GET'
+   })
+ }
+
+  /**
+ * @description: 移除设备通行人员
+ */
+export function deleteDevicePerson(params) {
+  return request({
+     url: passing,
+     method: 'DELETE',
+     data: params
+   })
+ }
