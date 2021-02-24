@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 15:44:32
+ * @LastEditTime: 2021-02-24 11:27:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -301,8 +301,8 @@ export default {
         gateCardId: null,
         enrollTime: null,
         expiredTime: null,
-        createTimeFrom: null, //初始查询默认参数，必填
-        createTimeTo: null, //初始查询默认参数，必填
+        createTimeFrom: null,
+        createTimeTo: null,
         status: null,
         isDelete: null, /// 0为正常1为已删除
         

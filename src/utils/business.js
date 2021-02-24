@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-02-22 17:57:25
+ * @LastEditTime: 2021-02-24 17:11:50
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -10,7 +10,11 @@ import {
     searchDevice,  // 查设备列表
    } from '@/api/device-manage'
  
-
+/**
+ * @description: 全局业务数据字典
+ */
+// 
+   
 const passWayArr = [
     {
       label: '刷脸',
@@ -71,7 +75,7 @@ const passWayArr = [
    ]
  
 /**
- * @description: 通行方式
+ * @description: 处理通行方式
  * @param {*}
  */
 export function passWay() {

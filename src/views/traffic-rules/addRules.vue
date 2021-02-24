@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 16:47:29
+ * @LastEditTime: 2021-02-24 18:06:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -11,6 +11,19 @@
   color: #999;
   font-size: 12px;
 }
+
+</style>
+<style lang="scss">
+.dialog__body {
+  .el-dialog__body {
+  padding-top: 0!important;
+ 
+}
+ .el-dialog__footer {
+    margin-top:-50px
+  }
+  }
+  
 </style>
 <template>
   <div class="app-container">
@@ -32,12 +45,12 @@
         <el-radio-group v-model="personTypeRadio" @change="personTypeHandle">
          <el-radio :label="personTypeList[0]" border>全部员工</el-radio>
          <el-radio :label="personTypeList[1]" @click.native="staffHandle" border>指定员工
-           <!-- <sub class="p_num"> 已选102人</sub> -->
+           <sub class="p_num" v-show="Array.isArray(addRules.employeeIds) && addRules.employeeIds.length > 0"> 已选 {{ Array.isArray(addRules.employeeIds) ? addRules.employeeIds.length : null }} 人</sub>
             </el-radio>
             <div class="mt10">
              <el-radio :label="personTypeList[2]" border>全部访客</el-radio>
              <el-radio :label="personTypeList[3]" @click.native="visitorHandle" border>指定访客
-           <!-- <sub class="p_num"> 已选102人</sub> -->
+           <sub class="p_num" v-show="Array.isArray(addRules.visitorIds) && addRules.visitorIds.length > 0"> 已选 {{ Array.isArray(addRules.visitorIds) ? addRules.visitorIds.length : null }} 人</sub>
             </el-radio>
          <!--  -->
            <!-- <el-radio :label="'ruleType_personType'" border>全部访客</el-radio> -->
@@ -53,7 +66,7 @@
             <el-checkbox v-for="(week, index) in weeks" :label="weeks[index]" :key="week.name">{{ week.name }}</el-checkbox>
           </el-checkbox-group>
           </el-tab-pane>
-          <el-tab-pane label="日期制" name="dateTime">
+          <el-tab-pane label="日期时间制" name="dateTime">
              <el-date-picker
                v-model="dateTime"
                type="datetimerange"
@@ -66,180 +79,34 @@
           </el-tab-pane>
       </el-tabs>
     </el-form-item>
-    <el-button type="primary" @click="handleAddRule"><svg-icon icon-class="guide" />  一键下发</el-button>
+    <el-button type="primary" @click="handleAddRule" v-loading="issueSateLoading"><svg-icon icon-class="guide" />  一键下发</el-button>
     <router-link to="/traffic-rules/rules" class="ml10"><el-button><i class="el-icon-view"></i> 查看已下发规则</el-button></router-link>
     </el-form>
 
-     <el-dialog title="选择通行员工" :visible.sync="staff_dialogVisible" width="100%">
-      <el-form :model="addRules" :inline="true">
-      <el-form-item label="员工姓名"
-        ><el-input
-          class="w100"
-          v-model.trim="addRules.roleName"
-          placeholder="输入姓名搜索"
-        ></el-input
-      ></el-form-item>
- 
-      <el-form-item label="工号"
-        ><el-input
-          v-model.trim="addRules.roleName"
-          placeholder="输入工号搜索"
-        ></el-input
-      ></el-form-item>
-      <el-form-item label="电话"
-        ><el-input
-        class="w130"
-          v-model.trim="addRules.roleName"
-          placeholder="输入手机号搜索"
-        ></el-input>
-      </el-form-item>
- 
-  
-     <el-form-item label="入职时间">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="结束日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
-      </el-form-item>
- 
-      <el-button type="success" @click="onSearch" class="search">
-        <i class="el-icon-search"></i><span>查询</span></el-button
-      >
-    </el-form>
+    <el-dialog title="选择通行员工" :visible.sync="staff_dialogVisible" top="0" width="68%" class="dialog__body">
+      <StaffList @employeeIds="getemployeeIds" :clearSelectionState1.sync="clearSelectionState1" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="staff_dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="staffHandleTo">确 定</el-button>
+      </span>
+    </el-dialog>
     
-     <el-table :data="staffLis" @selection-change="handleSelectionChange" border class="people_list" max-height="650">
-      <el-table-column
-        width="50"
-        type="selection"
-        fixed
-      ></el-table-column>
-      <el-table-column label="序列" width="60" align="center">
-        <template>1</template></el-table-column
-      >
-      <el-table-column align="center" label="ID" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="员工姓名" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="已注册人脸" width="140">
-        <template>
-          <img src="../../assets/image/1.png" alt="" width="140" />
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="通行规则" width="90">
-        <template>
-         默认规则
-        </template>
-      </el-table-column>
-     <el-table-column align="center" label="性别" width="90">
-        <template>
-         女
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="部门" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="身份证号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="工号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="电话" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-         <el-table-column align="center" label="住址" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="邮箱" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="职务" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
-        </template>
-      </el-table-column>
-     <el-table-column align="center" label="门禁卡" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="IC卡" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="入职时间" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.entryTime }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="创建时间" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.createTime }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="修改时间" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.updataTime }}
-        </template>
-      </el-table-column>
-       <el-table-column align="center" label="下发状态" width="140">
-        <template>          
-            已下发 </template>
-      </el-table-column>
-      <el-table-column align="center" label="备注">
-        <template> fff </template>
-      </el-table-column>
-     <el-table-column align="center" label="下发人">
-        <template> fff </template>
-      </el-table-column>
-    </el-table>
-      <!-- <el-pagination
-         @size-change="handleSizeChange"
-         @current-change="handleCurrentChange"
-         :current-page="pagingParams['current']"
-         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
-         :page-size="pagingParams['size']"
-         layout="total, sizes, prev, pager, next, jumper"
-         :total="pagingParams['total']"
-    ></el-pagination> -->
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="staffHandleTo">确 定</el-button>
-  </span>
-</el-dialog>
+    <el-dialog title="选择通行访客" :visible.sync="visitor_dialogVisible" top="0" width="72%" class="dialog__body">
+      <VisitorList @visitorIds="getVisitorIds" :clearSelectionState2.sync="clearSelectionState2" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="visitor_dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="visitorHandleTo">确 定</el-button>
+      </span>
+    </el-dialog>
  
   </div>
 </template>
 <script>
 import { addRules } from'@/api/traffic-rules'
-import { searchDevice } from '@/api/device-manage'
-import { getStaffLis } from '@/api/people-manage/staffManage'
 import { passWay, weekParams, getDeviceNames } from '@/utils/business'
-import moment from "moment"
+import StaffList from '@/components/Business/PersonList/StaffList'
+import VisitorList from '@/components/Business/PersonList/VisitorList'
+import moment from 'moment'
 
  var weekOptions = []
       weekParams().map((item, index) => {
@@ -251,19 +118,25 @@ import moment from "moment"
 
 //  通行人员类型字段
 const personTypeList = [
-      'ruleType-by_personType-employee', //全部员工
-      'ruleType-personType-employeeIds', //指定员工
-      'ruleType-by_personType-visitor', //全部访客
-      'ruleType-personType-visitorIds'
+      'ruleType-by_person_type-employee', //全部员工
+      'ruleType-by_person-employeeIds', //指定员工
+      'ruleType-by_person_type-visitor', //全部访客
+      'ruleType-by_person-visitorIds' ////指定访客
       ]
-const personTypeParam = ['by_personType', 'personType', 'employee', 'visitor']
+const personTypeParam = ['by_personType', 'by_person', 'employee', 'visitor']
 
 export default {
-  name: "addRules",
+  name: 'addRules',
+  components: {
+    StaffList,
+    VisitorList
+  },
   data() {
     return {
         checkAll: false,
+        issueSateLoading: false,
         staff_dialogVisible: false,
+        visitor_dialogVisible: false,
         checkedWeeks: weekOptions.slice(0, 5),
         weeks: weekOptions,
         isIndeterminate: true,
@@ -273,6 +146,8 @@ export default {
         personTypeRadio: personTypeList[0], //默认指定全员工
         personTypeList: personTypeList,
         dateTime: null,
+        clearSelectionState1: false,
+        clearSelectionState2: false,
         //  [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)]
 
 //  设备名称
@@ -293,7 +168,7 @@ export default {
 // 指定全部人员（全部员工和全部访客————后台自动添加人员id）或手动指定人员（指定员工id和全访客id）=== by_person_type -> employee/visitor || person_type -> employee(指定id)/visitor(指定id)
            ruleType: 'by_person_type', // 默认为人员类型
 
-           personIds: null, //  指定人员（员工）的id
+           employeeIds: null, //  指定人员（员工）的id
            visitorIds: null,  //  指定人员（访客）的id
            week: '1,2,3,4,5', // 默认通行星期为周一到周五
            startDate: null,
@@ -338,6 +213,8 @@ export default {
         current: 1,
         size: 10,
       },
+      employeeIdNum: null,
+      visitorIdNum: null
     }
   },
   methods: {
@@ -365,43 +242,44 @@ export default {
          a = this.addRules
          function personType(TYPE, PERSONID) { return (a['ruleType'] = TYPE, a['personType'] = PERSONID) }
            switch(p) {
-             case pLis[0] : personType(personTypeParam[0], personTypeParam[2]);break
-             case pLis[1] : personType(personTypeParam[1], personTypeParam[2]);break
-             case pLis[2] : personType(personTypeParam[0],personTypeParam[3]);break
-             case pLis[3] : personType(personTypeParam[1],personTypeParam[3]);break
+             case pLis[0] : (personType(personTypeParam[0], personTypeParam[2]), a['employeeIds'] = null); break
+             case pLis[1] :(personType(personTypeParam[1], personTypeParam[2]), a['visitorIds'] = null); break
+             case pLis[2] : (personType(personTypeParam[0],personTypeParam[3]), a['visitorIds'] = null); break
+             case pLis[3] : (personType(personTypeParam[1],personTypeParam[3]), a['employeeIds'] = null); break
              default : personType(personTypeParam[0], personTypeParam[2])
            }
     },
 
-// 指定员工下发规则
-    staffHandle() {
+// 指定人员工下发规则
+    personHandle(x, y) {
       let a = this.addRules
-          a['visitorIds'] = null
-          this.staff_dialogVisible = true
-
-// 获取员工列表
-          getStaffLis().then((res) => {
-            // this.staffLis = res.data
-          })
+          a[x] = null
+          this[y] = true
     },
+
+    staffHandle() {
+      this.personHandle('visitorIds', 'staff_dialogVisible')
+    },
+    visitorHandle() {
+      this.personHandle('employeeIds', 'visitor_dialogVisible')
+    },
+
+// 下发判断是否已有人员id
+    handleTo(x, y, z) {
+      let a = this.addRules
+         if (a[x] !== null) {
+           if(a[x].length !== 0) {
+             this[y] = false
+             }
+          } else {
+            this.$message.warning(z)
+          }
+       },
     staffHandleTo() {
-      let personIds = []
-        if (this.multipleSelection.length !== 0) {
-
-// 获取员工id
-        for (let i = 0; i < this.multipleSelection.length; i++) {
-           personIds.push(this.multipleSelection[i].id)
-        }
-            personIds.length !== 0 ? (this.addRules['personIds'] = personIds, this.staff_dialogVisible = false) : this.$message.warning('请勾选要通行的员工')
-         } else {
-           this.$message.warning('请勾选要通行的员工')
-         }
+        this.handleTo('employeeIds', 'staff_dialogVisible', '请勾选要下发的员工')
     },
-    
-// 指定访客下发规则
-     visitorHandle() {
-       this.personIds = null
-      //  a['visitorIds'] = null
+    visitorHandleTo() {
+        this.handleTo('visitorIds', 'visitor_dialogVisible', '请勾选要下发的访客')
     },
 
   // 选择通行时间
@@ -420,34 +298,43 @@ export default {
     getCheckedNodes(leafOnly) {
     },
 
-// 发起新增通行规则
+// 提交规则
     handleAddRule() {
       let [_this, getVerificationModes] = [this, this.addRules.getVerificationModes]
       function setVerificationModes () {return _this.$set(_this.addRules, 'getVerificationModes', getVerificationModes)}
       this.$refs['el_addRules'].validate((valid) => {
           if (valid) {
             // this.addRules.getVerificationModes = 'null'
+            this.issueSateLoading = true
             addRules(this.addRules).then((res) => {
               // setVerificationModes()
               if(res.code === 0) {
-                this.$message.success(res.msg)
-                
+                this.$message.success(`${ res.msg } 可在已下发规则页面查看`, 4000)
+                this.issueSateLoading = false
               } else {
                 this.$message.error(res.msg)
+                this.issueSateLoading = false
               }
+            this.clearSelectionState1 = true
+            this.clearSelectionState2 = true
             })
           } else {
             return false
           }
         })
     },
-    onSearch(){
-    },
-    onDelete() {
 
+// 获取人员ids
+    getPersonIds(x, y) {
+     let personIdsArr = []
+         x.map(item => personIdsArr.push(item.id))
+         this.addRules[y] = personIdsArr
     },
-    onExport() {
-
+    getemployeeIds(employeeIds) {
+      this.getPersonIds(employeeIds, 'employeeIds')
+    },
+    getVisitorIds(VisitorIds) {
+      this.getPersonIds(VisitorIds, 'VisitorIds')
     },
    changeDateTime() {
    var _this = this,
@@ -461,7 +348,7 @@ export default {
          addDate[d[i]] = dataTimeHandle(d['startDate'], 'YYYY-MM-DD', 0)
          console.log("🚀 ~ file: addRul", dataTimeHandle(d['startDate'], 'YYYY-MM-DD', 0))
        } else {
-         addDate[d[i]] = dataTimeHandle(d[i], 'hh:mm', i)
+         addDate[d[i]] = dataTimeHandle(d[i], 'hh:mm:ss', i)
        }
     }
     },

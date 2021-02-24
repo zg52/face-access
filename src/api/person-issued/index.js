@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-23 17:38:52
+ * @LastEditTime: 2021-02-24 10:17:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -31,13 +31,16 @@ export function issuedEmployee(deviceIds, employeeIds) {
  * @description: 根据设备id下发人员（访客）
  * @param { deviceIds, visitorIds }
  */
-export function issuedVisitor(params) {
-    return request({
-       url: passing,
-       method: 'POST',
-       data: params
-     })
-   }
+export function issuedVisitor(deviceIds, visitorIds) {
+  return request({
+     url: passing,
+     method: 'POST',
+     data: {
+        deviceIds: deviceIds,
+        visitorIds: visitorIds
+     }
+   })
+ }
 
     /**
  * @description: 查已下发员工

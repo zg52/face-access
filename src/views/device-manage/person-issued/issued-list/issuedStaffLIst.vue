@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 17:52:52
+ * @LastEditTime: 2021-02-24 10:44:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -93,7 +93,7 @@ import moment from 'moment'
 let vm
 
 export default {
-  name: 'issuedStaffLIst',
+  name: 'issuedStaffList',
   data() {
     return {
       date: null,
@@ -104,7 +104,7 @@ export default {
       multipleSelection: [],
       
       pagingQuery: {
-        operator: this.$store.getters.username,
+        operator: null,
         name: null,
         deviceIds: null,
         createTimeFrom: null,

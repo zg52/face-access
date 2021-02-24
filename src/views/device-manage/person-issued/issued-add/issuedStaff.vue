@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 19:38:21
+ * @LastEditTime: 2021-02-24 09:57:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -180,6 +180,10 @@ export default {
                   _this.table_loading = true
                   _this.onSearch()
                   _this.$message.success(res.msg +' 可在已下发人员页面查看', 4000)
+                } else {
+                   _this.$message.warning(res.msg, 4000)
+                   _this.table_loading = false
+                    _this.$refs.multipleTable.clearSelection()
                 }
               },(err) => {
                 _this.table_loading = false

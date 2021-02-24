@@ -1,15 +1,11 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-22 16:11:32
- * @LastEditTime: 2021-02-22 17:09:54
+ * @LastEditTime: 2021-02-24 11:39:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Editw
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\components\Business\DeviceNames\index.vue
 -->
-<style scoped>
- 
-</style>
-
 <template>
   <div>
      <el-form :model="deviceForm" :inline="true" ref="deviceFormRule">

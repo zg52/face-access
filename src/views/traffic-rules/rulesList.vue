@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 16:49:06
+ * @LastEditTime: 2021-02-24 19:11:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -52,14 +52,17 @@
       </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker
-          v-model="createTime"
-           type="datetime"
+          v-model="date1"
+          type="datetimerange"
           align="right"
           unlink-panels
+          range-separator="至"
           start-placeholder="创建日期"
-          :picker-options="pickerOptions"
-          @change="changeDate">
-        </el-date-picker>
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions2"
+          :default-time="['00:00:00', '23:59:59']"
+          @change="changeDate2">
+           </el-date-picker>
       </el-form-item>
  
       <el-form-item label="状态">
@@ -70,6 +73,7 @@
       
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
+      <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
       <el-button type="primary"><router-link to="/traffic-rules/addRules"><svg-icon icon-class="edit"/> 新建通行规则</router-link></el-button>
     </el-form>
@@ -80,11 +84,11 @@
       <el-table-column align="center" label="ID" width="40"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="120"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="所在设备" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
-      <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationModes | verificationModes_hadnle }}</template></el-table-column>
+      <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{scope.row.ops}}{{ scope.row.verificationModes | verificationModes_hadnle }}</template></el-table-column>
       <el-table-column align="center" label="通行人员类型" width="120"> <template v-slot="scope">{{ scope.row.personType === 'employee' ? '员工' : '访客' }}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
       <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
-      <el-table-column align="center" label="通行日期+时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.startTime } ~ ${ scope.row.endDate } ${ scope.row.endTime }` | dateTime }}</template></el-table-column>
+      <el-table-column align="center" label="通行时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.startTime } ~ ${ scope.row.endDate } ${ scope.row.endTime }` | dateTime }}</template></el-table-column>
       <el-table-column align="center" label="规则描述"><template v-slot="scope">{{ scope.row.description }}</template> </el-table-column> 
       <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
       <el-table-column align="center" label="修改时间" width="108"><template v-slot="scope">{{ scope.row.lastUpdateTime | filterDate }}</template></el-table-column>
@@ -94,7 +98,7 @@
       <el-table-column align="left" label="操作" width="220" fixed="right">
         <template v-slot="scope">
           <el-button class="radius_45" disabled type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
-          <el-button class="radius_45 mt10" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
+          <el-button v-show="scope.row.ruleType === 'by_person' ? true : false" class="radius_45 mt10" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
@@ -117,13 +121,15 @@
     ></el-pagination>
   </div>
 </template>
+
 <script>
-let vm
 import { getRules, deleteRules } from '@/api/traffic-rules'
 // import { searchDevice } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import { passWay, weekParams, passWayArrHandle, getDeviceNames } from '@/utils/business'
 import moment from 'moment'
+
+let vm
 
 export default {
   name: 'rulesList',
@@ -136,27 +142,29 @@ export default {
           shortcuts: [{
             text: '今天',
             onClick(picker) {
-              picker.$emit('pick', new Date());
+              picker.$emit('pick', new Date())
             }
           }, {
             text: '昨天',
             onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24)
               picker.$emit('pick', date);
             }
           }, {
             text: '一周前',
             onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', date)
             }
           }]
         },
         pickerOptions1: pickerOptions(),
+        pickerOptions2:pickerOptions(),
         multipleSelection: [], //多选删除
         date: null,
+        date1: null,
         props: { multiple: true },
         createTime: null,
         getDeviceNames: [],
@@ -195,15 +203,17 @@ export default {
       queryWeeksProps: { multiple: true },
       queryWeek: [],
       ruleList: [],
+      
       pagingQuery: {
-       operator: this.$store.getters.username,
+       operator: null,
        deviceId: null,
        name: null,
        verificationModes: null,
-       ruleType: 'by_person_type',
+       ruleType: null,
        personType: null,
       //  value: null,
-       createTime: null,
+       createTimeFrom: null,
+       createTimeTo: null,
        queryWeek: null,
        startDate: null,
        endDate: null,
@@ -215,6 +225,7 @@ export default {
        total: 10,
        status: ''
       },
+      ops: null,
     }
   },
   computed: {
@@ -222,11 +233,28 @@ export default {
   },
   filters: {
     verificationModes_hadnle(value) {
-      let txt = []
-      passWayArrHandle().map((item, index) => {
-        item.value == value[index] ? txt.push(item.label) : null
-      })
-      return txt.join('+')
+    let [
+      and, // 通行且（face,icCard）
+      one, // 通行单（face）
+    ] = [[], []]
+    value.forEach((item) => {
+      if(item.includes(',')) {
+        and.push(item)
+      } else {
+        one.push(item)
+      }
+    })
+      let andOne = [], // 合并通行且与单
+          txt = [],
+          passArr = passWayArrHandle()
+          
+      for(let i = 0; i < passArr.length; i++) {
+          value.includes(passArr[i].value)
+           ? (txt.push(passArr[i].label)
+           ) : null
+           
+      }
+      return txt.join(' / ')
     },
     weekComput(value) {
           let weekStr = []
@@ -301,7 +329,7 @@ export default {
            params.size = res.data.size
            params.current = res.data.current
            params.total = res.data.total
-           this.ruleList = res.data.records
+           this.ruleList = res.data.records.reverse()
                
 // 获取查询所需规则名称
                new Promise((resolved) => {
@@ -390,10 +418,17 @@ export default {
             })
           }
     },
-    changeDate() {
-      this.pagingQuery.createTime = moment(this.createTime).format('YYYY-MM-DD+hh:mm')
-      //  this.pagingQuery.createTime = this.pagingQuery.createTime.replace('+', ' ')
+    changeDate2() {
+      let _p = this.pagingQuery
+      this.date1 && this.date1.length
+        ? ((_p.createTimeFrom = moment( this.date1[0]).format("YYYY-MM-DD")),
+          (_p.createTimeTo = moment( this.date1[1]).format("YYYY-MM-DD")))
+        :  _p.createTimeFrom = _p.createTimeTo = null
     },
+    refreshPagingQuery() {
+      this.pagingQuery = {}
+      this.onSearch()
+    }
   },
   beforeCreate() {
     vm = this

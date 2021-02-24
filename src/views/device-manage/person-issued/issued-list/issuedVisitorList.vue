@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 19:37:20
+ * @LastEditTime: 2021-02-24 10:48:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -19,9 +19,11 @@
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="门禁卡号"><el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
-      <el-form-item label="IC卡号"><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
-       <el-form-item label="身份证号"><el-input class="w200" v-model.trim="pagingQuery.idNum" clearable></el-input></el-form-item>
+      <el-form-item label="所在公司">
+        <el-select class="w300" v-model="pagingQuery.deviceIds" placeholder="请选择" disabled filterable clearable>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
+        </el-select>
+      </el-form-item>
        <el-form-item label="创建日期">
         <el-date-picker
           v-model="date"
@@ -38,11 +40,12 @@
           >
         </el-date-picker>
       </el-form-item>
+       <el-form-item label="身份证号"><el-input class="w200" v-model.trim="pagingQuery.idNum" clearable></el-input></el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary"><router-link to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><svg-icon icon-class="guide"/> 去下发员工</router-link></el-button>
+      <el-button type="primary"><router-link to="/device-manage/person-issued/issued-add/issuedAdd?tab=1"><svg-icon icon-class="guide"/> 去下发访客</router-link></el-button>
     </el-form>
     
     <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
@@ -55,10 +58,9 @@
       </el-table-column>
       <el-table-column align="center" label="所在设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
        <el-table-column align="center" label="身份证号" width="200"> <template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
-      <el-table-column align="center" label="门禁卡" width="260"> <template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
-      <el-table-column align="center" label="IC卡" width="260"> <template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
+      <el-table-column align="center" label="所在公司" width="260"> <template v-slot="scope"> {{ scope.row.personOrganizationId }} </template></el-table-column>
       <el-table-column align="center" label="创建日期" width="230"> <template v-slot="scope"> {{ scope.row.createTime | filterDate}} </template></el-table-column>
-       <el-table-column align="left" label="操作" width="120" fixed="right">
+       <el-table-column align="left" label="操作" width="auto">
         <template v-slot="scope">
           <el-popconfirm
             confirmButtonText="确认"
@@ -68,7 +70,7 @@
             <el-button  class="radius_45 mt10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
           </el-popconfirm>
           </template>
-      </el-table-column>    
+      </el-table-column>
     </el-table>
 
     <el-pagination
@@ -93,7 +95,7 @@ import moment from 'moment'
 let vm
 
 export default {
-  name: 'issuedStaffLIst',
+  name: 'issuedVisitorList',
   data() {
     return {
       date: null,
@@ -104,7 +106,7 @@ export default {
       multipleSelection: [],
       
       pagingQuery: {
-        operator: this.$store.getters.username,
+        operator: null,
         name: null,
         deviceIds: null,
         createTimeFrom: null,
