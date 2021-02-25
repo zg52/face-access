@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-24 17:31:39
+ * @LastEditTime: 2021-02-25 16:58:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -57,7 +57,7 @@
      <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"><template v-slot="scope">{{ scope.row.position }}</template></el-table-column>
-      <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employee_num }} </template></el-table-column>
+      <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
       <el-table-column align="center" label="下发状态" width="160"><template v-slot="scope">{{ scope.row.status == 0 ? '已下发' : '未下发' }}</template> </el-table-column>
       <el-table-column align="center" label="入职时间"><template v-slot="scope">{{ scope.row.enrollTime }}</template></el-table-column>
       <el-table-column align="center" label="创建时间"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
@@ -91,6 +91,7 @@ export default {
     clearSelectionState1: {
       type: Boolean
     }
+    
   },
   data() {
     return {

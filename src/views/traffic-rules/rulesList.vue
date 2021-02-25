@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-24 19:11:22
+ * @LastEditTime: 2021-02-25 16:21:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -12,20 +12,20 @@
 <template>
   <div class="app-container">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator"></el-input></el-form-item>
+      <el-form-item label="创建人"><el-input class="w100" v-model.trim="pagingQuery.operator"></el-input></el-form-item>
       <el-form-item label="选择设备名称">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
-       <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.name" placeholder="请选择" clearable>
+       <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.name" placeholder="请选择" filterable clearable>
          <el-option v-for="(ruleName, index) of getRulesName" :key="index" :label="ruleName.name" :value="ruleName.name"></el-option>
        </el-select></el-form-item>
-       <el-form-item label="选择通行方式">
+       <!-- <el-form-item label="选择通行方式">
         <div class="block">
              <el-cascader class="w250" v-model="pagingQuery.verificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode"></el-cascader>
          </div>
-      </el-form-item>
+      </el-form-item> -->
      <el-form-item label="通行人员类型">
         <el-select v-model="pagingQuery.personType" class="w130" @change="personTypeHandle">
         <el-option v-for="(personType, index) of personTypes" :key="index" :label="personType.name" :value="personType.id"></el-option>
@@ -81,24 +81,24 @@
     <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-      <el-table-column align="center" label="ID" width="40"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
-      <el-table-column align="center" label="通行规则名称" width="120"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
+      <el-table-column align="center" label="ID" width="50"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
+      <el-table-column align="center" label="通行规则名称" width="110"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="所在设备" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{scope.row.ops}}{{ scope.row.verificationModes | verificationModes_hadnle }}</template></el-table-column>
-      <el-table-column align="center" label="通行人员类型" width="120"> <template v-slot="scope">{{ scope.row.personType === 'employee' ? '员工' : '访客' }}</template></el-table-column>
+      <el-table-column align="center" label="通行人员类型" width="125"> <template v-slot="scope">{{ scope.row.personType | personTypeFilter(scope.row)}}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
       <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
       <el-table-column align="center" label="通行时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.startTime } ~ ${ scope.row.endDate } ${ scope.row.endTime }` | dateTime }}</template></el-table-column>
       <el-table-column align="center" label="规则描述"><template v-slot="scope">{{ scope.row.description }}</template> </el-table-column> 
       <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
-      <el-table-column align="center" label="修改时间" width="108"><template v-slot="scope">{{ scope.row.lastUpdateTime | filterDate }}</template></el-table-column>
+      <!-- <el-table-column align="center" label="修改时间" width="108"><template v-slot="scope">{{ scope.row.lastUpdateTime | filterDate }}</template></el-table-column> -->
 
       <!-- <el-table-column align="center" label="创建人"><template v-slot="scope">{{ scope.row.userId }}</template></el-table-column> -->
       
       <el-table-column align="left" label="操作" width="220" fixed="right">
         <template v-slot="scope">
-          <el-button class="radius_45" disabled type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
-          <el-button v-show="scope.row.ruleType === 'by_person' ? true : false" class="radius_45 mt10" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
+          <el-button class="radius_45 mr10" disabled type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
+          <el-button v-show="scope.row.ruleType === 'by_person' ? true : false" class="radius_45 mt10 ml0" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
@@ -280,8 +280,24 @@ export default {
          item.id == value ? txt = item.name : null
       })
       return txt
+  },
+  personTypeFilter(value,row) {
+    if(row.ruleType === 'by_person_type') {
+      if(row.personType === 'employee') {
+        return '全部员工'
+      } else {
+        return '全部访客'
+      }
+    } else if(row.ruleType === 'by_person') {
+      if(row.personType === 'employee') {
+        return '指定员工'
+      } else if(row.personType === 'visitor') {
+        return '指定访客'
+      } else {
+        return '指定员工 + 访客'
+      }
+    } 
   }
- 
   },
   methods: {
     

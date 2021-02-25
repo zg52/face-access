@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-22 19:08:36
+ * @LastEditTime: 2021-02-25 16:59:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -268,7 +268,7 @@ export default {
           //  address: 'w',
           //  idNum: '622826199811192711',
           //  mail: '2@163.com',
-          //  employee_num: '32',
+          //  employeeNum: '32',
           //  companyId: '1',
           //  img_type: '1',
            files: null

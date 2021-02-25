@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-23 14:13:13
+ * @LastEditTime: 2021-02-25 14:05:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -82,7 +82,7 @@ position: absolute;
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addStaffForm.address" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w300" v-model.trim="addStaffForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="邮箱：" prop="mail"><el-input class="w300" v-model.trim="addStaffForm.mail" clearable></el-input></el-form-item>
-       <el-form-item label="工号：" prop="employee_num"><el-input class="w300" v-model.trim.trim="addStaffForm.employee_num" maxlength="30" clearable></el-input> </el-form-item>
+       <el-form-item label="工号：" prop="employeeNum"><el-input class="w300" v-model.trim.trim="addStaffForm.employeeNum" maxlength="30" clearable></el-input> </el-form-item>
        <el-form-item label="所属部门：">
          <el-select class="w300" v-model.trim="addStaffForm.region" placeholder="华捷艾米" disabled>
            <el-option label="人力组" value="shanghai"></el-option>
@@ -194,7 +194,7 @@ export default {
              notNull('身份证号')[0],
              { validator: validateIdCardTarge, trigger: "blur" },
           ],
-          employee_num: [
+          employeeNum: [
               notNull('工号')[0],
               { validator: numbers('工'), trigger: "blur" },
           ],

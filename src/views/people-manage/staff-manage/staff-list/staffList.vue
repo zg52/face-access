@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-24 11:27:26
+ * @LastEditTime: 2021-02-25 14:04:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -96,7 +96,7 @@
       <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator" clearable></el-input></el-form-item>
       <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
       <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-      <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employee_num" clearable></el-input></el-form-item>
+      <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employeeNum" clearable></el-input></el-form-item>
       <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone" clearable></el-input></el-form-item>
       <el-form-item label="住址"><el-input v-model.trim="pagingQuery.address" clearable></el-input></el-form-item>
       <el-form-item label="邮箱"><el-input v-model.trim="pagingQuery.mail" clearable></el-input></el-form-item>
@@ -160,7 +160,7 @@
                <el-form-item label="头像类型："><span>{{ props.row.faceType == 'life' ? '生活照' : '证件照' }} </span></el-form-item>
                  <el-form-item label="部门："> <span>华捷艾米 </span></el-form-item>
                  <el-form-item label="身份证号："><span>{{ props.row.idNum }} </span></el-form-item>
-                 <el-form-item label="工号："><span>{{ props.row.employee_num }} </span></el-form-item>
+                 <el-form-item label="工号："><span>{{ props.row.employeeNum }} </span></el-form-item>
                  <el-form-item label="电话："><span>{{ props.row.phone }} </span></el-form-item>
                  <el-form-item label="住址："><span>{{ props.row.address }} </span></el-form-item>
                  <el-form-item label="邮箱："><span>{{ props.row.mail }} </span></el-form-item>
@@ -185,7 +185,7 @@
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"> <template> 华捷艾米 </template></el-table-column>
-      <el-table-column align="center" label="工号" width="180"> <template v-slot="scope"> {{ scope.row.employee_num }} </template></el-table-column>
+      <el-table-column align="center" label="工号" width="180"> <template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
       <el-table-column align="center" label="电话" width="108"> <template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
       <el-table-column align="center" label="邮箱" width="180"> <template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"> <template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
@@ -295,7 +295,7 @@ export default {
         idNum: null,
         mail: null,
         // companyId: null,
-        employee_num: null,
+        employeeNum: null,
         position: null,
         icCardId: null,
         gateCardId: null,
@@ -322,7 +322,7 @@ export default {
            address: 'w',
            idNum: '622826199811192711',
            mail: '2@163.com',
-           employee_num: '32',
+           employeeNum: '32',
            companyId: '1',
            position: 'fwe',
            icCardId: '32',

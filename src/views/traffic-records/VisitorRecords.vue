@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-20 11:07:34
+ * @LastEditTime: 2021-02-25 16:47:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -52,7 +52,6 @@ margin-left: 30px;
   <div class="app-container1">
     <el-form :model="roles" :inline="true">
    <el-form-item label="姓名"><el-input></el-input></el-form-item>
-    <el-form-item label="职务"><el-input></el-input></el-form-item>
     <el-form-item label="性别">  <el-select  v-model="value" placeholder="请选择">
           <el-option>
           </el-option> </el-select></el-form-item>
@@ -130,14 +129,18 @@ margin-left: 30px;
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="员工姓名" width="80">
+      <el-table-column align="center" label="访客姓名" width="80">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="已注册人脸" width="140">
         <template>
-          <img src="../../../assets/image/2.png" alt="" width="140" />
+        </template>
+      </el-table-column>
+           <el-table-column align="center" label="性别" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.sex }}
         </template>
       </el-table-column>
         <el-table-column align="center" label="设备ID" width="80">
@@ -160,6 +163,11 @@ margin-left: 30px;
          刷脸+刷卡
         </template>
       </el-table-column>
+        <el-table-column align="center" label="来访事由" width="80">
+        <template slot-scope="scope">
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
         <el-table-column align="center" label="通行方向" width="140">
         <template>
        进门
@@ -175,32 +183,7 @@ margin-left: 30px;
          刷脸+刷卡
         </template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.sex }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="部门" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="工号" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.dfs }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="职务" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.job }}
-        </template>
-      </el-table-column>
- 
-      <el-table-column align="center" label="入职时间" width="108">
-        <template slot-scope="scope">
-          {{ scope.row.entryTime }}
-        </template>
-      </el-table-column>
+
          <el-table-column align="center" label="体温" width="140">
         <template>          
           <i class="dot_red"></i> 体温超标 -       

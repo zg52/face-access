@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-24 18:06:11
+ * @LastEditTime: 2021-02-25 15:47:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -42,20 +42,30 @@
       <el-form-item label="通行规则名称：" prop="name" :rules="{ required: true, message: '通行规则名称不能为空', trigger: 'blur' }"><el-input class="w200" v-model.trim="addRules.name" placeholder="通行规则名称"></el-input></el-form-item>
       <el-form-item label="通行规则描述：" prop="description" :rules=" { required: true, message: '请输入描述信息', trigger: 'blur' }"><el-input class="w200" type="textarea" placeholder="请输入描述信息" v-model="addRules.description" maxlength="50" show-word-limit></el-input></el-form-item>
       <el-form-item label="通行人员类型：">
-        <el-radio-group v-model="personTypeRadio" @change="personTypeHandle">
-         <el-radio :label="personTypeList[0]" border>全部员工</el-radio>
-         <el-radio :label="personTypeList[1]" @click.native="staffHandle" border>指定员工
+      <el-radio-group v-model="personTypeRadio" @change="personTypeHandle">
+         <el-radio :label="personTypeList[0]" @click.native="allStaffHandle" border>全部员工</el-radio>
+         <el-radio :label="personTypeList[2]" @click.native="allVisitorHandle" border>全部访客</el-radio>
+          
+         <!-- <el-radio :label="personTypeList[1]" @click.native="staffHandle" border>指定员工
            <sub class="p_num" v-show="Array.isArray(addRules.employeeIds) && addRules.employeeIds.length > 0"> 已选 {{ Array.isArray(addRules.employeeIds) ? addRules.employeeIds.length : null }} 人</sub>
-            </el-radio>
-            <div class="mt10">
+            </el-radio> -->
+            <!-- <div class="mt10">
              <el-radio :label="personTypeList[2]" border>全部访客</el-radio>
-             <el-radio :label="personTypeList[3]" @click.native="visitorHandle" border>指定访客
-           <sub class="p_num" v-show="Array.isArray(addRules.visitorIds) && addRules.visitorIds.length > 0"> 已选 {{ Array.isArray(addRules.visitorIds) ? addRules.visitorIds.length : null }} 人</sub>
+            <el-radio :label="personTypeList[3]" @click.native="visitorHandle" border>指定访客
+              <sub class="p_num" v-show="Array.isArray(addRules.visitorIds) && addRules.visitorIds.length > 0"> 已选 {{ Array.isArray(addRules.visitorIds) ? addRules.visitorIds.length : null }} 人</sub>
             </el-radio>
-         <!--  -->
-           <!-- <el-radio :label="'ruleType_personType'" border>全部访客</el-radio> -->
-         </div>
+         </div> -->
+
         </el-radio-group>
+<!-- 指定人员 -->
+        <div class="mt10">
+          <el-checkbox v-model="checked1" @click.native="staffHandle" :label="personTypeList[1]" border>
+            <template><span>指定员工</span><sub class="p_num" v-show="Array.isArray(addRules.employeeIds) && addRules.employeeIds.length > 0"> 已选 {{ Array.isArray(addRules.employeeIds) ? addRules.employeeIds.length : null }} 人</sub></template>
+          </el-checkbox>
+           <el-checkbox v-model="checked2" @click.native="visitorHandle" :label="personTypeList[3]" border>
+            <template><span>指定访客</span><sub class="p_num" v-show="Array.isArray(addRules.visitorIds) && addRules.visitorIds.length > 0"> 已选 {{ Array.isArray(addRules.visitorIds) ? addRules.visitorIds.length : null }} 人</sub></template>
+          </el-checkbox>
+        </div>
       </el-form-item>  
      <el-form-item label="选择通行时间：">
       <el-tabs v-model="activeName" type="border-card">
@@ -79,22 +89,22 @@
           </el-tab-pane>
       </el-tabs>
     </el-form-item>
-    <el-button type="primary" @click="handleAddRule" v-loading="issueSateLoading"><svg-icon icon-class="guide" />  一键下发</el-button>
+    <el-button type="primary" @click="handleAddRule" :disabled="issueSateLoading" v-loading="issueSateLoading"><svg-icon icon-class="guide" />  一键下发</el-button>
     <router-link to="/traffic-rules/rules" class="ml10"><el-button><i class="el-icon-view"></i> 查看已下发规则</el-button></router-link>
     </el-form>
 
     <el-dialog title="选择通行员工" :visible.sync="staff_dialogVisible" top="0" width="68%" class="dialog__body">
-      <StaffList @employeeIds="getemployeeIds" :clearSelectionState1.sync="clearSelectionState1" />
+      <StaffList @employeeIds="getemployeeIds" v-if="staff_dialogVisible" :clearSelectionState1.sync="clearSelectionState1" />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="staff_dialogVisible = false">取 消</el-button>
+        <el-button @click="staff_dialogVisible_handle">取 消</el-button>
         <el-button type="primary" @click="staffHandleTo">确 定</el-button>
       </span>
     </el-dialog>
     
     <el-dialog title="选择通行访客" :visible.sync="visitor_dialogVisible" top="0" width="72%" class="dialog__body">
-      <VisitorList @visitorIds="getVisitorIds" :clearSelectionState2.sync="clearSelectionState2" />
+      <VisitorList @visitorIds="getVisitorIds" v-if="visitor_dialogVisible" :clearSelectionState2.sync="clearSelectionState2" />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="visitor_dialogVisible = false">取 消</el-button>
+        <el-button @click="visitor_dialogVisible_handle">取 消</el-button>
         <el-button type="primary" @click="visitorHandleTo">确 定</el-button>
       </span>
     </el-dialog>
@@ -108,6 +118,7 @@ import StaffList from '@/components/Business/PersonList/StaffList'
 import VisitorList from '@/components/Business/PersonList/VisitorList'
 import moment from 'moment'
 
+let vm
  var weekOptions = []
       weekParams().map((item, index) => {
          weekOptions.push({
@@ -120,10 +131,11 @@ import moment from 'moment'
 const personTypeList = [
       'ruleType-by_person_type-employee', //全部员工
       'ruleType-by_person-employeeIds', //指定员工
+      
       'ruleType-by_person_type-visitor', //全部访客
       'ruleType-by_person-visitorIds' ////指定访客
       ]
-const personTypeParam = ['by_personType', 'by_person', 'employee', 'visitor']
+const personTypeParam = ['by_person_type', 'by_person', 'employee', 'visitor']
 
 export default {
   name: 'addRules',
@@ -176,6 +188,8 @@ export default {
            startTime: null,
            endTime: null
          },
+         checked1: false,
+         checked2: false,
 
 // 通行方式
        passWayProps: { multiple: true },
@@ -214,7 +228,27 @@ export default {
         size: 10,
       },
       employeeIdNum: null,
-      visitorIdNum: null
+      visitorIdNum: null,
+
+      
+    }
+  },
+  watch: {
+    staff_dialogVisible(val) {
+      if(!val) {
+        if(!this.employeeIdNum) {
+          this.checked1 = false
+          this.addRules.employeeIds = null
+        }
+      }
+    },
+   visitor_dialogVisible(val) {
+     if(!val) {
+        if(!this.visitorIdNum) {
+          this.checked2 = false
+          this.addRules.visitorIds = null
+        }
+      }
     }
   },
   methods: {
@@ -242,44 +276,100 @@ export default {
          a = this.addRules
          function personType(TYPE, PERSONID) { return (a['ruleType'] = TYPE, a['personType'] = PERSONID) }
            switch(p) {
-             case pLis[0] : (personType(personTypeParam[0], personTypeParam[2]), a['employeeIds'] = null); break
-             case pLis[1] :(personType(personTypeParam[1], personTypeParam[2]), a['visitorIds'] = null); break
-             case pLis[2] : (personType(personTypeParam[0],personTypeParam[3]), a['visitorIds'] = null); break
-             case pLis[3] : (personType(personTypeParam[1],personTypeParam[3]), a['employeeIds'] = null); break
+             case pLis[0] : (personType(personTypeParam[0], personTypeParam[2])); break
+            //  case pLis[1] :(personType(personTypeParam[1], personTypeParam[2])); break
+             case pLis[2] : (personType(personTypeParam[0],personTypeParam[3])); break
+            //  case pLis[3] : (personType(personTypeParam[1],personTypeParam[3])); break
              default : personType(personTypeParam[0], personTypeParam[2])
            }
     },
 
-// 指定人员工下发规则
-    personHandle(x, y) {
-      let a = this.addRules
-          a[x] = null
-          this[y] = true
-    },
+// 处理下发全部人员
+    allStaffHandle() { this.allPersonHandle() },
+    allVisitorHandle() { this.allPersonHandle() },
 
+// 处理下发指定人员
     staffHandle() {
-      this.personHandle('visitorIds', 'staff_dialogVisible')
+      this.personHandle('employeeIds', 'staff_dialogVisible', personTypeParam[1], personTypeParam[2], 'checked1', 'clearSelectionState1')
     },
     visitorHandle() {
-      this.personHandle('employeeIds', 'visitor_dialogVisible')
+      this.personHandle('visitorIds', 'visitor_dialogVisible', personTypeParam[1], personTypeParam[3], 'checked2', 'clearSelectionState2')
+    },
+    
+// 取消人员  checked1 = checked2 = false
+    staff_dialogVisible_handle() {
+      this.person_dialogVisible_handle('staff_dialogVisible', 'employeeIds', 'checked1')
+    },
+    visitor_dialogVisible_handle() {
+      this.person_dialogVisible_handle('visitor_dialogVisible', 'visitorIds', 'checked2')
     },
 
 // 下发判断是否已有人员id
-    handleTo(x, y, z) {
+    staffHandleTo() {
+        this.handleTo('employeeIds', 'staff_dialogVisible', '请勾选要下发的员工', 'employeeIdNum')
+    },
+    visitorHandleTo() {
+        this.handleTo('visitorIds', 'visitor_dialogVisible', '请勾选要下发的访客', 'visitorIdNum')
+    },
+
+// 获取人员ids
+  getPersonIds(x, y) {
+     let personIdsArr = []
+         x.map(item => personIdsArr.push(item.id))
+         this.addRules[y] = personIdsArr
+    },
+
+
+  allPersonHandle() {
+     vm.clearSelectionState1 = true
+      vm.clearSelectionState2 = true
+      vm.addRules['employeeIds'] = vm.addRules['visitorIds'] = null
+      vm.checked1 = vm.checked2 = false
+  },
+  personHandle(x, y, z, m, n, q) {
+      let a = this.addRules
+          a[x] = null
+          if(this[n]) {
+            this[y] = false
+            this[q] = false
+          } else {
+            this[y] = true
+          }
+
+          a['ruleType'] = z
+          a['personType'] = m
+          this.personTypeRadio = null
+    },
+    person_dialogVisible_handle(x, y, z) {
+      let a = this.addRules
+      this[x] = false
+      a[y] = null
+      this[z] = false
+      // if(Array.isArray(a[y])) {
+      //   if(a[y].length === 0) {
+      //   this[z] = false
+      // }
+      // } else if(a[y] === null) {
+      //   this[z] = false
+      // }
+    },
+    handleTo(x, y, z, m) {
       let a = this.addRules
          if (a[x] !== null) {
            if(a[x].length !== 0) {
              this[y] = false
+             this[m] = true
              }
           } else {
             this.$message.warning(z)
+            this[m] = null
           }
        },
-    staffHandleTo() {
-        this.handleTo('employeeIds', 'staff_dialogVisible', '请勾选要下发的员工')
+    getemployeeIds(employeeIds) {
+      this.getPersonIds(employeeIds, 'employeeIds')
     },
-    visitorHandleTo() {
-        this.handleTo('visitorIds', 'visitor_dialogVisible', '请勾选要下发的访客')
+    getVisitorIds(VisitorIds) {
+      this.getPersonIds(VisitorIds, 'visitorIds')
     },
 
   // 选择通行时间
@@ -300,11 +390,21 @@ export default {
 
 // 提交规则
     handleAddRule() {
-      let [_this, getVerificationModes] = [this, this.addRules.getVerificationModes]
+      let [a, _this, getVerificationModes] = [this.addRules, this, this.addRules.getVerificationModes]
       function setVerificationModes () {return _this.$set(_this.addRules, 'getVerificationModes', getVerificationModes)}
       this.$refs['el_addRules'].validate((valid) => {
           if (valid) {
             // this.addRules.getVerificationModes = 'null'
+
+// 同时下发员工和访客 ruleType = null
+            if(a['visitorIds'] && a['employeeIds']) {
+              a['personType'] = null
+            } else if(a['visitorIds']) {
+              a['personType'] = 'visitor'
+            } else if(a['employeeIds']) {
+              a['personType'] = 'employee'
+            }
+            
             this.issueSateLoading = true
             addRules(this.addRules).then((res) => {
               // setVerificationModes()
@@ -317,24 +417,12 @@ export default {
               }
             this.clearSelectionState1 = true
             this.clearSelectionState2 = true
+            this.employeeIdNum = this.visitorIdNum = null
             })
           } else {
             return false
           }
         })
-    },
-
-// 获取人员ids
-    getPersonIds(x, y) {
-     let personIdsArr = []
-         x.map(item => personIdsArr.push(item.id))
-         this.addRules[y] = personIdsArr
-    },
-    getemployeeIds(employeeIds) {
-      this.getPersonIds(employeeIds, 'employeeIds')
-    },
-    getVisitorIds(VisitorIds) {
-      this.getPersonIds(VisitorIds, 'VisitorIds')
     },
    changeDateTime() {
    var _this = this,
@@ -346,7 +434,6 @@ export default {
     for(let i = 0; i < d.length; i++) {
        if(i <= 1) {
          addDate[d[i]] = dataTimeHandle(d['startDate'], 'YYYY-MM-DD', 0)
-         console.log("🚀 ~ file: addRul", dataTimeHandle(d['startDate'], 'YYYY-MM-DD', 0))
        } else {
          addDate[d[i]] = dataTimeHandle(d[i], 'hh:mm:ss', i)
        }
@@ -365,6 +452,7 @@ export default {
     },
   },
   created() {
+    vm = this
    getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
