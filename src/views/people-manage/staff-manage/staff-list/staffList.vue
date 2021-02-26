@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-25 14:04:48
+ * @LastEditTime: 2021-02-26 11:36:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -48,7 +48,6 @@
 // 详情
  .demo-table-expand {
     width: 1100px;
-    
   }
  
   .demo-table-expand .el-form-item {
@@ -154,7 +153,7 @@
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
                <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
-               <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item></div>
+               <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="120"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
                 <el-form-item label="性别："><span>{{ props.row.gender === 'male' ? '男' : '女' }} </span></el-form-item>
                <el-form-item label="头像类型："><span>{{ props.row.faceType == 'life' ? '生活照' : '证件照' }} </span></el-form-item>
@@ -180,8 +179,8 @@
 
       
       <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="已注册人脸" width="140">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
+      <el-table-column align="center" label="已注册人脸" width="110">
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="100" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"> <template> 华捷艾米 </template></el-table-column>

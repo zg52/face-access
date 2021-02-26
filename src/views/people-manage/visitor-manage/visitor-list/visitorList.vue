@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-25 16:59:00
+ * @LastEditTime: 2021-02-26 16:05:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -127,7 +127,7 @@
       <el-button type="primary"><router-link to="/people-manage/visitor-manage/visitor-add/visitorAdd"><svg-icon icon-class="edit" /> 新增访客</router-link></el-button>
     </el-form>
     
-    <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
+    <el-table :data="tableData" class="people_list" border max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -136,7 +136,7 @@
        <el-table-column type="expand" label="详情" :width="60">
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
-              <div class="fl mr25 imgBox"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="140"></div></el-form-item></div>
+              <div class="fl mr25 imgBox"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="120"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
                <el-form-item label="性别："><span>{{ props.row.gender === 'male' ? '男' : '女' }} </span></el-form-item>
                  <el-form-item label="授权状态："><span>{{ props.row.status === 'auth' ? '已授权' : '已失效' }} </span></el-form-item>
@@ -159,8 +159,8 @@
      </el-table-column>
       
       <el-table-column align="center" label="来访人姓名" width="100"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="来访人头像" width="140">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="140" /></template>
+      <el-table-column align="center" label="来访人头像" width="110">
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="100" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"> <template v-slot="scope">{{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'auth' ? '已授权' : '已失效' }} </template></el-table-column>
@@ -170,7 +170,7 @@
        <el-table-column align="center" label="被访人姓名" width="108"><template v-slot="scope">{{ scope.row.intervieweeName }} </template></el-table-column>
       <el-table-column align="center" label="被访人电话" width="108"><template v-slot="scope">{{ scope.row.intervieweePhone }} </template></el-table-column>
        <el-table-column align="center" label="来访事由" width="120"><template v-slot="scope">{{ scope.row.reason }} </template></el-table-column>
-         <el-table-column align="center" label="来访时间" width="120"> <template v-slot="scope">{{ scope.row.visitStartTime }} ~ {{ scope.row.visitEndTime }}</template></el-table-column>
+         <el-table-column align="center" label="来访时间" width="300"> <template v-slot="scope">{{ scope.row.visitStartTime }} ~ {{ scope.row.visitEndTime }}</template></el-table-column>
        <!-- <el-table-column align="center" label="状态" width="60"> <template v-slot="scope">{{ scope.row.isDelete == 0 ? '正常' : '已删除' }}</template> </el-table-column> -->
       <el-table-column align="left" label="操作" width="190" fixed="right">
         <template v-slot="scope">

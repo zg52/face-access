@@ -293,8 +293,8 @@ export const asyncRoutes = [
     component: Layout,
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/blocklist'),
+        path: '/blocklist',
+        component: () => import('@/views/blocklist/blocklist'),
         name: 'blocklist',
         meta: { title: '黑名单管理', icon: 'blocklist' },
       }

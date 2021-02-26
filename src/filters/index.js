@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-02-08 11:34:54
+ * @LastEditTime: 2021-02-26 15:55:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -86,3 +86,77 @@ export function filterDate(string) {
     return string
   }
 }
+
+
+
+// 业务数据过滤
+
+import { passWay, weekParams, passWayArrHandle, getDeviceNames } from '@/utils/business'
+
+const businessData = [
+  'success',
+  'in'
+]
+
+/**
+ * @description: 处理通行结果
+ * @param {*} string
+ */
+export function trafficRersultFilter(string, row) {
+  if(string === businessData[0]) {
+    return '已通过'
+  } else {
+    return `未通过`
+  }
+}
+
+/**
+ * @description: 处理通行方向
+ * @param {*} string
+ */
+export function trafficDirectionFilter(string) {
+  if(string === businessData[1]) {
+    return '进'
+  } else {
+    return '出'
+  }
+}
+
+/**
+ * @description: 处理通行方式
+ * @param {*} string
+ */
+export function verificationModes_handle(value) {
+  let modelArr
+      if(Array.isArray(value)) {
+        modelArr = [...value]
+      } else {
+        modelArr = value.split()
+      }
+    let [
+      and, // 通行且（face,icCard）
+      one, // 通行单（face）
+    ] = [[], []]
+    
+    if(modelArr) {
+       modelArr.forEach((item) => {
+      if(item.includes(',')) {
+        and.push(item)
+      } else {
+        one.push(item)
+      }
+    })
+      let andOne = [], // 合并通行且与单
+          txt = [],
+          passArr = passWayArrHandle()
+          
+      for(let i = 0; i < passArr.length; i++) {
+        modelArr.includes(passArr[i].value)
+           ? (txt.push(passArr[i].label)
+           ) : null
+           
+      }
+      return txt.join(' / ')
+      }
+}
+

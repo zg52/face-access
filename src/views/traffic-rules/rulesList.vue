@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-25 16:21:05
+ * @LastEditTime: 2021-02-26 15:52:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -84,7 +84,7 @@
       <el-table-column align="center" label="ID" width="50"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="110"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="所在设备" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
-      <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{scope.row.ops}}{{ scope.row.verificationModes | verificationModes_hadnle }}</template></el-table-column>
+      <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationModes | verificationModes_handle }}</template></el-table-column>
       <el-table-column align="center" label="通行人员类型" width="125"> <template v-slot="scope">{{ scope.row.personType | personTypeFilter(scope.row)}}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
       <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
@@ -232,30 +232,6 @@ export default {
    
   },
   filters: {
-    verificationModes_hadnle(value) {
-    let [
-      and, // 通行且（face,icCard）
-      one, // 通行单（face）
-    ] = [[], []]
-    value.forEach((item) => {
-      if(item.includes(',')) {
-        and.push(item)
-      } else {
-        one.push(item)
-      }
-    })
-      let andOne = [], // 合并通行且与单
-          txt = [],
-          passArr = passWayArrHandle()
-          
-      for(let i = 0; i < passArr.length; i++) {
-          value.includes(passArr[i].value)
-           ? (txt.push(passArr[i].label)
-           ) : null
-           
-      }
-      return txt.join(' / ')
-    },
     weekComput(value) {
           let weekStr = []
           weekParams().forEach((item, index) => {

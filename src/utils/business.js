@@ -1,14 +1,18 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-02-24 17:11:50
+ * @LastEditTime: 2021-02-26 13:56:33
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
  */
 import { 
-    searchDevice,  // 查设备列表
+    searchDevice,  // 获取设备列表
    } from '@/api/device-manage'
+
+   import {
+      getRules //获取通行规则列表
+   } from '@/api/traffic-rules'
  
 /**
  * @description: 全局业务数据字典
@@ -72,7 +76,17 @@ const passWayArr = [
    faceTypes = [
       { id: 'id', name: '证件照' },
       { id: 'life', name: '生活照' }
+   ],
+   directions = [
+     { id: 'in', value: '进' },
+     { id: 'out', value: '出' }
+   ],
+   trafficResult = [
+     { id: 'success', value: '已通过'},
+     { id: 'failure', value: '未通过'}
    ]
+   
+   
  
 /**
  * @description: 处理通行方式
@@ -124,24 +138,56 @@ export function passWayArrHandle() {
       if(res.code === 0) {
        return searchDevice({size: res.data.total}).then((res) => {
           let data = res.data.records
+          if(data) {
            data.map((x,y) => {
-            deviceName.push({
-               name: x.name,
-               id: x.id
-            })
-          })
-          return deviceName
-        
+                deviceName.push({
+                   name: x.name,
+                   id: x.id
+                })
+                   })
+                   return deviceName
+          } else {
+           this.$message.warning('无可用设备，请添加设备')
+          }
         })
      } else {
-           this.$message.warning('无可用设备，请添加设备')
+           this.$message.warning(res.msg)
         }
     }
     )
   }
 
+/**
+ * @description: 根据设备id获取默认设备名称
+ */
+export async function getRuleNames() {
+  let ruleName = []
+  return getRules({current: 1}).then((res) => {
+    if(res.code === 0) {
+     return getRules({size: res.data.total}).then((res) => {
+        let data = res.data.records
+        if(data) {
+         data.map((x,y) => {
+              ruleName.push({
+                 name: x.name,
+                 id: x.id
+              })
+                 })
+                 return ruleName
+        } else {
+        //  this.$message.warning('无可用规则，请添加规则')
+        }
+      })
+   } else {
+         this.$message.warning(res.msg)
+      }
+  }
+  )
+}
+
+
   /**
- * @description: 性别、头像类型
+ * @description: 性别、头像类型、通行方向、通行结果
  */
   export function getGender() {
     return genders
@@ -149,3 +195,11 @@ export function passWayArrHandle() {
   export function getFaceType() {
     return faceTypes
   }
+  export function getDirection() {
+    return directions
+  }
+  export function getTrafficResult() {
+    return trafficResult
+  }
+
+  

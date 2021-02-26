@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-23 11:21:05
+ * @LastEditTime: 2021-02-26 19:10:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -32,7 +32,7 @@
     display: block;
   }
   .camera {
-margin-left: 30px;
+    margin-left: 30px;
     margin-top: 44px;
     i {
       font-size: 20px;
