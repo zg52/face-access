@@ -197,6 +197,7 @@ aside {
 .mr30{margin-right: 30px;}
 .ml10{margin-left:10px;}
 .ml0{margin-left: 0!important;}
+.ml-5{margin-left: -5px;}
 
 // 内边距
 .pl0{padding-left: 0;}
@@ -227,7 +228,9 @@ aside {
 .t_right {
   text-align: right;
 }
-
+.nowap {
+  white-space: nowrap;
+}
 .dot_red {
   background:red;
   position: relative;

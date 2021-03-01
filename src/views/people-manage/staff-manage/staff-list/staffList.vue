@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-26 11:36:03
+ * @LastEditTime: 2021-03-01 15:22:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -179,8 +179,8 @@
 
       
       <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="已注册人脸" width="110">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="100" /></template>
+      <el-table-column align="center" label="已注册人脸" width="90">
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="64" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"> <template> 华捷艾米 </template></el-table-column>
@@ -192,10 +192,10 @@
       <el-table-column align="center" label="IC卡" width="230"> <template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
        <el-table-column align="center" label="状态" width="60"><template v-slot="scope">{{ scope.row.status == 0 ? '在职' : '离职' }}</template> </el-table-column>
      
-      <el-table-column align="left" label="操作" width="190" fixed="right" v-if="pagingQuery.isDelete == 1 ? false : true">
+      <el-table-column align="left" label="操作" width="190" fixed="right">
         <template v-slot="scope">
-          
-        <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible" >
+      <div v-show="scope.row.isDelete == 1 ? false : true">
+             <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible" >
               <el-form ref="expiredDateFormRule" :model="expiredDateForm" :rules="expiredDateFormRule">
                 <el-form-item label="请选择离职日期：" prop="expiredDate">
                   <el-date-picker class="w300" v-model="expiredDateForm.expiredDate" type="date" align="right" unlink-panels start-placeholder="离职日期" @change="changeExpiredDate"></el-date-picker>
@@ -221,6 +221,7 @@
             @onConfirm="handleDelete(scope.$index, scope.row)">
             <el-button  class="radius_45 ml0 mt10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
           </el-popconfirm>
+      </div>
          </template>
       </el-table-column>
     </el-table> 
@@ -349,12 +350,15 @@ export default {
     getStaffList() {
       let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
       this.table_loading = true
+
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
+        if(res.code === 0) {
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
-        
+
+        if(res.data.records.length !== 0) {
          res.data.records.map((item, index) => {
            if(item.isDelete != 1) {
               filterData.push(item)
@@ -368,7 +372,6 @@ export default {
              isDeleteNum.push(item.isDelete)
            }
          })
-        this.table_loading = false
       
 //  转换state为Boolean
         let satatusArr = []
@@ -378,8 +381,9 @@ export default {
           })
         })
         this.status = satatusArr
-
-
+        }
+        this.table_loading = false
+        }
       })
     },
     onSearch() {

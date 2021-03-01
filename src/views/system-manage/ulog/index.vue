@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-18 15:25:08
+ * @LastEditTime: 2021-03-01 17:50:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -11,213 +11,141 @@
 </style>
 <template>
   <div class="app-container">
-    <el-form :model="roles" :inline="true">
-   <el-form-item label="操作人"><el-input></el-input></el-form-item>
-      <el-form-item label="设备ID"><el-input></el-input></el-form-item>
- 
-         <el-form-item label="操作类型">  <el-select  v-model="value" placeholder="请选择">
-          <el-option>增加</el-option>
-          <el-option>删除</el-option>
-           <el-option>修改</el-option>
-           </el-select>
-          </el-form-item>
-            <el-form-item label="操作结果">  <el-select  v-model="value" placeholder="请选择">
-          <el-option>成功</el-option>
-          <el-option>失败</el-option>
-           </el-select>
-          </el-form-item>
-     
-      <el-form-item label="操作时间">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
+    <el-form :model="pagingQuery" :inline="true">
+    <el-form-item label="操作人" v-model="pagingQuery.operator"><el-input></el-input></el-form-item>
+     <el-form-item label="选择设备名称">
+        <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
+        </el-select>
       </el-form-item>
-         <el-form-item label="修改时间">
-        <el-date-picker
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
+       <el-form-item label="操作类型">
+        <el-select v-model="pagingQuery.operationType" placeholder="请选择" filterable clearable>
+         <el-option v-for="(operation, index) of getOperations" :key="index" :label="operation.name" :value="operation.id"></el-option>
+        </el-select>
       </el-form-item>
+    <el-form-item label="操作时间">
+      <el-date-picker
+        v-model="date"
+        type="datetimerange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="操作时间"
+        end-placeholder="结束时间"
+        :picker-options="pickerOptions"
+        @change="changeDate">
+      </el-date-picker>
+    </el-form-item>
       <el-button type="success" @click="onSearch" class="search">
-        <i class="el-icon-search"></i><span>查询</span></el-button
-      >
-      <el-button type="warning" @click="onDelete">
-        <i class="el-icon-delete"></i><span>批量删除</span></el-button
-      >
-      <el-button type="primary" @click="onExport">
-        <svg-icon icon-class="excel" /> <span>导出</span></el-button
-      >
- 
+        <i class="el-icon-search"></i><span>查询</span></el-button>
     </el-form>
-    <el-table :data="rolesList" border class="people_list" max-height="650">
-      <el-table-column
-        width="50"
-        type="selection"
-        fixed
-      ></el-table-column>
-      <el-table-column label="序列" width="60" align="center">
-        <template>1</template></el-table-column
-      >
- 
-      <el-table-column align="center" label="操作人" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
+
+    <el-table :data="tableData" border max-height="650">
+        <el-table-column width="50" type="selection" fixed></el-table-column>
+        <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
+        <el-table-column align="center" label="操作人">
+        <template v-slot="scope">{{ scope.row.operator }}</template></el-table-column>
+        <el-table-column align="center" label="设备位置"> <template v-slot="scope"> {{ scope.row.location }} </template> </el-table-column>
+        <el-table-column align="center" label="操作类型"> <template v-slot="scope"> {{ scope.row.operationType }} </template> </el-table-column>
+        <el-table-column align="center" label="操作结果">
+        <template>成功</template>
       </el-table-column>
- 
-      <el-table-column align="center" label="设备ID" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.sex }}
-        </template>
-      </el-table-column>
-        <el-table-column align="center" label="设备位置" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-            <el-table-column align="center" label="操作类型" width="90">
-        <template> 新增 </template>
-      </el-table-column>
-        <el-table-column align="center" label="操作结果" width="90">
-        <template> 失败 </template>
-      </el-table-column>
-    <el-table-column align="center" label="操作时间" width="100">
-        <template> 2020 02 03</template>
-      </el-table-column>
-       <el-table-column align="center" label="修改时间" width="100">
-        <template> 2020 02 03</template>
-      </el-table-column>
- 
-          <el-table-column align="center" label="备注">
-        <template> fff </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作" width="90">
-        <template slot-scope="scope">
-          <el-button
-            class="radius_45 mt10"
-            type="danger"
-            size="mini"
-            ><i class="el-icon-delete"></i><span>删除</span></el-button
-          ></template
-        >
-      </el-table-column>
+      <el-table-column align="center" label="操作时间"><template v-slot="scope"> {{ scope.row.createTime }} </template> </el-table-column>
     </el-table>
       <el-pagination
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
-         :current-page="pagingParams['current']"
+         :current-page="pagingQuery['current']"
          :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
-         :page-size="pagingParams['size']"
+         :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
-         :total="pagingParams['total']"
+         :total="pagingQuery['total']"
     ></el-pagination>
   </div>
 </template>
 <script>
+
 import { logList } from'@/api/system-manage/ulog'
+import { getDeviceNames, getDevice_handle_list } from '@/utils/business'
+import { pickerOptions } from '@/utils'
+import moment from 'moment'
+
 export default {
   name: 'ulog',
   data() {
     return {
-      value: 1,
-      pickerOptions: [],
+      table_loading: false,
+      getDeviceNames: [],
+      getOperations: getDevice_handle_list(),
+      pickerOptions: pickerOptions(),
+      date: null,
       props: { multiple: true },
-      roles: [
-        {
-          roleName: "",
-        },
-      ],
-      addUserForm: [
-        
-      ],
-      rolesList: [
-        {
-          name: "阿娃",
-          description: "算法应用院",
-          createTime: "2020 01.12",
-          updataTime: "2020 02.13",
-          switch: 1,
-          dfs: 9988983,
-          phone: 15652655412,
-          job: "打杂专员",
-          sex: "女",
-          entryTime: "2023-12-12",
-        },
-        {
-          name: "阿龙",
-          description: "超管",
-          createTime: "2020 01.12",
-          updataTime: "2020 02.13",
-          switch: 1,
-        },
-      ],
-       options: [
-         {
-          label: '刷脸',
-       },
-       {
-          label: '二维码',
-       },
-         {
-          label: '刷卡',
-          children: [
-            {
-            value: 'shejiyuanze',
-            label: '门禁卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: 'IC卡',
-           },
-           {
-            value: 'shejiyuanze',
-            label: '身份证',
-           }
-          ]
-       },
-        
-       ],
-     pagingParams: {
-        username: "",
-        email: "",
-        // appkey: "",
-        // secret:"",
-        createDateFrom: "",
-        createDateTo: "",
-        current: 1, //默认当前页数为1
-        size: 10,
-        total: 0,
-        status: "",
-        // type:'0',
+      tableData: [],
+      filter: {
+       getDeviceId_name(value) {
+        let txt = null
+          vm.getDeviceNames.map((item, index) => {
+             item.id == value ? txt = item.name : null
+          })
+          return txt
       },
-    };
-  },
-  methods: {
-    onSearch(){
+      },
 
-    },
-    onDelete() {
+     pagingQuery: {
+      operator: null,
+      operationType: null,
+      deviceId: null,
+      createTimeFrom: null,
+      createTimeTo: null,
+      location: null,
 
-    },
-    onExport() {
-
+      current: 1,
+      size: 20,
+      total: null,
+      },
     }
   },
-  created() {
-    console.log(logList())
-   
+  methods: {
+    onSearch() {
+      this.pagingQuery.current = 1
+     this.getLogs()
+    },
+    getLogs() {
+       logList(this.pagingQuery).then((res) => {
+        if(res.code === 0)  {
+          this.tableData = []
+          this.table_loading = false
+          if(res.data.records.length !== 0) {
+            this.tableData = res.data.records.reseve()
+          }
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
+        }
+      })
+    },
+    handleSizeChange(val) {
+      this.pagingQuery.size = val
+      this.onSearch()
+    },
+    handleCurrentChange(val) {
+      this.pagingQuery.current = val
+      this.onSearch()
+    },
+    changeDate() {
+      let _this = this,
+          date = _this.date
+      date && date.length
+        ? ((_this.pagingQuery.createTimeFrom = moment(date[0]).format("YYYY-MM-DD hh:mm")),
+          (_this.pagingQuery.createTimeTo = moment(date[1]).format("YYYY-MM-DD hh:mm")))
+        :  _this.pagingQuery.createTimeFrom = _this.pagingQuery.createTimeTo = null
+    },
   },
-  mounted() {},
-};
+  created() {
+  getDeviceNames().then((res) => {
+    this.getDeviceNames = res
+    })
+   this.onSearch()
+  }
+}
 </script>

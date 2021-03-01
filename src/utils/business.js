@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-02-26 13:56:33
+ * @LastEditTime: 2021-03-01 19:00:49
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -84,8 +84,54 @@ const passWayArr = [
    trafficResult = [
      { id: 'success', value: '已通过'},
      { id: 'failure', value: '未通过'}
+   ],
+   categorys = [
+     { id: 'blocklist', name: '禁止通行名单' },
+     { id: 'high_body_temperature', name: '体温过高' },
+     { id: 'device_upgrade_failed', name: '设备升级失败' },
+     { id: 'device_out_of_order', name: '设备故障' }
+   ],
+   deviceHandle = [
+     { id: 'open', name: '开门' },
+     { id: 'close', name: '关门' },
+     { id: 'always_open', name: '常开' },
+     { id: 'always_close', name: '常关' },
+     { id: 'restart', name: '重启' },
+     { id: 'shutdown', name: '关机' },
+     { id: 'issue_person', name: '下发通行人员' },
+     { id: 'remove_person', name: '移除通行人员' },
+     { id: 'issue_rule', name: '下发通行规则' },
+     { id: 'delete_rule', name: '移除通行规则' },
+     { id: 'issue_blocklist', name: '添加黑名单人员' },
+     { id: 'delete_blocklist', name: '删除黑名单人员' }
+   ],
+   deviceStates = [
+      { id: 'normal', value: '正常' },
+      { id: 'out_of_order', value: '故障' },
+      // { id: 'out_of_sync', value: '未同步' },
+      { id: 'always_open', value: '常开门' },
+      { id: 'always_close', value: '常关门' },
+      { id: 'shutdown', value: '关机' },
+
+      // { id: 'close', value: '关门' },
+      // { id: 'open', value: '开门' },
+      { id: 'restart', value: '重启' },
    ]
    
+// 状态
+// { id: 'normal', value: '正常' },
+// { id: 'out_of_order', value: '故障' },
+// { id: 'always_open', value: '常开门' },
+// { id: 'always_close', value: '常关门' },
+// { id: 'power_off', value: '关机' },
+   
+  //  更多操作
+  //  OPEN("open", "开门", 0), 
+  //  CLOSE("close", "关门", 1), 
+  //  ALWAYS_OPEN("always_open", "常开", 2), 
+  //  ALWAYS_CLOSE("always_close", "常关", 3), 
+  //  RESTART("restart", "重启", 4),
+  //  SHUTDOWN("shutdown", "关机", 5), 
    
  
 /**
@@ -187,7 +233,7 @@ export async function getRuleNames() {
 
 
   /**
- * @description: 性别、头像类型、通行方向、通行结果
+ * @description: 性别、头像类型、通行方向、通行结果、设备/人员告警
  */
   export function getGender() {
     return genders
@@ -201,5 +247,11 @@ export async function getRuleNames() {
   export function getTrafficResult() {
     return trafficResult
   }
-
+  export function getCategory() {
+    return categorys
+  }
+  export function getDevice_handle_list() {
+    return deviceHandle
+  }
+  
   

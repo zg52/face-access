@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-01-25 14:14:39
+ * @LastEditTime: 2021-03-01 11:58:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -99,14 +99,14 @@ margin-left: 30px;
   <div class="app-container">
     <el-form :model="pagingParams" :inline="true">
       <el-form-item label="设备ID">
-        <el-select multiple collapse-tags v-model="pagingParams.selectedDevices" @change='changeSelect' clearable="true">
+        <el-select multiple collapse-tags v-model="pagingParams.selectedDevices" @change='changeSelect' clearable>
         <el-checkbox v-model="checked" @change='selectAll'>全选</el-checkbox>
         <el-option v-for='(item, index) in deviceList' :key='index' :label='item' :value='item'>
         </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="告警类型">
-        <el-select v-model="pagingParams.category" clearable="true">
+        <el-select v-model="pagingParams.category" clearable>
           <el-option v-for='(item, index) in categoryType' :key='index' :label='item.label' :value='item.value'>
             <span style="float: right;color:yello;">
               <i class="el-icon-check"></i>
@@ -139,9 +139,7 @@ margin-left: 30px;
     <el-button type="warning" @click="onDeleteRecordList">
         <i class="el-icon-delete"></i><span>批量删除</span>
     </el-button>
-    <el-button type="primary" @click="onExport" disabled="true">
-      <svg-icon icon-class="excel" /> <span>导出</span>
-    </el-button>
+    <el-button type="primary" @click="onExport"><svg-icon icon-class="excel" /> <span>导出</span></el-button>
   </el-form>
 
   <el-table :data="recordList" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
@@ -179,7 +177,7 @@ margin-left: 30px;
     </el-table-column>
     <el-table-column align="center" label="是否在线" width="150">
       <template slot-scope="scope">
-        <el-switch class="switchStyle" v-model="scope.row.state" disabled="false" active-value="ONLINE" inactive-value="OUTLINE" active-text="在线" inactive-text="离线" active-color="#00A854" inactive-color="#F04134"></el-switch>
+        <el-switch class="switchStyle" v-model="scope.row.state" active-value="ONLINE" inactive-value="OUTLINE" active-text="在线" inactive-text="离线" active-color="#00A854" inactive-color="#F04134"></el-switch>
       </template>
     </el-table-column>
     <el-table-column align="center" label="最近心跳时间" width="180" sortable>

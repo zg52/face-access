@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-25 16:33:33
+ * @LastEditTime: 2021-03-01 18:26:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -303,9 +303,9 @@ const deviceTypes = [
     { id: false, value: '离线' }
    ],
   deviceStates = [
-      { id: 'removed', value: '已删除' },
+      // { id: 'removed', value: '已删除' },
       { id: 'out_of_order', value: '故障' },
-      { id: 'out_of_sync', value: '未同步' },
+      // { id: 'out_of_sync', value: '未同步' },
       { id: 'close', value: '关门' },
       { id: 'open', value: '开门' },
       { id: 'always_open', value: '常开门' },
@@ -350,23 +350,24 @@ export default {
        
  // 编辑设备
       editDeviceData: {
-       username: '',
-       name: '',
-       model: '',
-       manufacturer: '',
-       sn: '',
-       location: '',
-       description: '',
-       secret:'',
+       username: null,
+       name: null,
+       model: null,
+       manufacturer: null,
+       sn: null,
+       location: null,
+       description: null,
+       secret:null,
        },
        editParam: null, // 编辑参数
+       
 // 设备查询/分页参数
      pagingQuery: {
       //  username: '艾米',
        name: null,
-       type: deviceTypes[0].id,
-       isOnline: deviceISOnline[0].id,
-       state: deviceStates[0].id,
+       type: null,
+       isOnline: null,
+       states: null,
        model: null,
        manufacturer: null,
        sn: null,
@@ -378,7 +379,7 @@ export default {
        
        current: 1, 
        size: 20,
-       total: 0,
+       total: null,
       },
 
 // 设备列表

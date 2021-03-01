@@ -272,18 +272,18 @@ export const asyncRoutes = [
     name: 'alarm',
     component: Layout,
     meta: { title: '告警中心', icon: 'alarm' },
-    redirect: '/alarm/device',
+    redirect: '/alarm/deviceAlarm',
     children: [
       {
-        path: 'device',
-        name: 'device',
-        component: () => import('@/views/alarm/device'),
+        path: 'deviceAlarm',
+        name: 'deviceAlarm',
+        component: () => import('@/views/alarm/deviceAlarm'),
         meta: { title: '设备告警', icon: 'alarmDevice' },
       },
       {
-        path: 'personnel',
-        name: 'personnel',
-        component: () => import('@/views/alarm/personnel'),
+        path: 'personAlarm',
+        name: 'personAlarm',
+        component: () => import('@/views/alarm/personAlarm'),
         meta: { title: '人员告警', icon: 'alarmPesonnel' },
       },
     ]

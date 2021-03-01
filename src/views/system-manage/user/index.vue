@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-01-13 14:03:30
+ * @LastEditTime: 2021-03-01 17:53:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -85,7 +85,7 @@
       </el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeleteUserList"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
-      <el-button type="primary" @click="onExport" disabled="true"> <i class="el-icon-download"></i><span>导出</span></el-button>
+      <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
       <el-button type="primary" @click="showAddUser"><svg-icon icon-class="edit" /> 新增用户</el-button>
     </el-form>
 

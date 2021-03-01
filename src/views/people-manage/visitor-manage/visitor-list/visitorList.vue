@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-26 16:05:08
+ * @LastEditTime: 2021-03-01 18:01:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -145,7 +145,6 @@
                  <el-form-item label="电话："><span>{{ props.row.phone }} </span></el-form-item>
                    <el-form-item label="住址："><span>{{ props.row.address }} </span></el-form-item>
                  <el-form-item label="身份证号："><span>{{ props.row.idNum }} </span></el-form-item>
-                    <el-form-item label="来访时间："><span>{{ props.row.visitStartTime }} ~ {{ props.row.visitEndTime }}</span></el-form-item>
                    <el-form-item label="来访事由："><span>{{ props.row.reason }} </span></el-form-item>
                  <el-form-item label="被访人姓名："><span>{{ props.row.intervieweeName }} </span></el-form-item>
                   <el-form-item label="被访人电话："><span>{{ props.row.intervieweePhone }} </span></el-form-item>
@@ -154,13 +153,14 @@
                   <!-- <el-form-item label="状态："><span>{{ props.row.isDelete == 0 ? '正常' : '已删除' }}</span> </el-form-item> -->
                  <el-form-item label="备注："><span>{{ props.row.remark }}</span></el-form-item>
                 <el-form-item label="创建人："><span>{{ props.row.operator }}</span></el-form-item>
+                <el-form-item label="来访时间：" class="nowap"><span>{{ props.row.visitStartTime }} ~ {{ props.row.visitEndTime }}</span></el-form-item>
            </el-form>
            </template>
      </el-table-column>
       
       <el-table-column align="center" label="来访人姓名" width="100"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="来访人头像" width="110">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="100" /></template>
+      <el-table-column align="center" label="来访人头像" width="90">
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="64" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"> <template v-slot="scope">{{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
       <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'auth' ? '已授权' : '已失效' }} </template></el-table-column>
@@ -175,7 +175,6 @@
       <el-table-column align="left" label="操作" width="190" fixed="right">
         <template v-slot="scope">
           <el-switch class="mll5" size="mini" active-text="授权" inactive-text="拒绝" v-model="isDeletes[scope.$index].state" @change="changeStaffStatus(scope.$index, scope.row)" disabled></el-switch>
-          <el-switch class="mll5 mt10" size="mini" active-text="正常" inactive-text="拉黑" v-model="isDeletes[scope.$index].state" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
           <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"

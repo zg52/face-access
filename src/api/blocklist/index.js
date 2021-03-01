@@ -1,24 +1,48 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-03 17:40:51
+ * @LastEditTime: 2021-03-01 11:37:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'
 
+
+const passing = '_api/passing/blocklist'
+
 /**
- * @description: 查询用户
+ * @description: 添黑名单人员
  * @param {*}
- * @return {*}
  */
-const passing = '_api/passing/'
-export function searchBlocklist(params) {
+export function addBlockList(params) {
   return request({
-     url: `${ passing }blocklist/`,
+     url: passing,
+     method: 'POST',
+     data: params
+   })
+  }
+
+/**
+ * @description: 查黑名单
+ * @param {*}
+ */
+export function blockList(params) {
+  return request({
+     url: passing,
      method: 'GET',
-     params: params
+     params
    })
  }
 
+ /**
+ * @description: 删黑名单
+ * @param {*}
+ */
+export function deleteBlock(ids) {
+  return request({
+     url: passing,
+     method: 'DELETE',
+     data: {ids: ids}
+   })
+ }
