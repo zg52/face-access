@@ -20,7 +20,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            今日访客提交信息
+            今日访客预约
           </div>
           <count-to :start-val="0" :end-val="3" :duration="3000" class="card-panel-num" />
         </div>
@@ -48,7 +48,7 @@
           <div class="card-panel-text">
             今日体温异常人数
           </div>
-          <count-to :start-val="0" :end-val="13" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="0" :duration="3600" class="card-panel-num" />
         </div>
       </div>
     </el-col>

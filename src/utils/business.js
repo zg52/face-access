@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-01 19:00:49
+ * @LastEditTime: 2021-03-02 10:51:11
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -105,34 +105,33 @@ const passWayArr = [
      { id: 'issue_blocklist', name: '添加黑名单人员' },
      { id: 'delete_blocklist', name: '删除黑名单人员' }
    ],
-   deviceStates = [
+   deviceStates = {
+     search: [
       { id: 'normal', value: '正常' },
       { id: 'out_of_order', value: '故障' },
       // { id: 'out_of_sync', value: '未同步' },
       { id: 'always_open', value: '常开门' },
       { id: 'always_close', value: '常关门' },
-      { id: 'shutdown', value: '关机' },
-
-      // { id: 'close', value: '关门' },
-      // { id: 'open', value: '开门' },
-      { id: 'restart', value: '重启' },
+      { id: 'power_off', value: '已关机' },
+      { id: 'statuses:removed', value: '已删除'}
+   ],
+   operate: [
+     { id: 'open', value: '开门' },
+     { id: 'close', value: '关门' },
+     { id: 'always_open', value: '常开门' },
+     { id: 'always_close', value: '常关门' },
+     { id: 'restart', value: '重启' },
+     { id: 'shutdown', value: '关机' },
    ]
-   
-// 状态
-// { id: 'normal', value: '正常' },
-// { id: 'out_of_order', value: '故障' },
-// { id: 'always_open', value: '常开门' },
-// { id: 'always_close', value: '常关门' },
-// { id: 'power_off', value: '关机' },
-   
-  //  更多操作
-  //  OPEN("open", "开门", 0), 
-  //  CLOSE("close", "关门", 1), 
-  //  ALWAYS_OPEN("always_open", "常开", 2), 
-  //  ALWAYS_CLOSE("always_close", "常关", 3), 
-  //  RESTART("restart", "重启", 4),
-  //  SHUTDOWN("shutdown", "关机", 5), 
-   
+   },
+   deviceISOnline = [
+    { id: true, value: '在线' },
+    { id: false, value: '离线' }
+   ],
+   deviceTypes = [
+    { id: 'entrance', value: '门禁' },
+    { id: 'brake', value: '闸机' }
+]
  
 /**
  * @description: 处理通行方式
@@ -233,7 +232,7 @@ export async function getRuleNames() {
 
 
   /**
- * @description: 性别、头像类型、通行方向、通行结果、设备/人员告警
+ * @description: 性别、头像类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
  */
   export function getGender() {
     return genders
@@ -253,5 +252,17 @@ export async function getRuleNames() {
   export function getDevice_handle_list() {
     return deviceHandle
   }
+  export function getDeviceStates() {
+    return deviceStates
+  }
+  export function getDeviceISOnline() {
+    return deviceISOnline
+  }
+  export function getDeviceTypes() {
+    return deviceTypes
+  }
+
+
+  
   
   

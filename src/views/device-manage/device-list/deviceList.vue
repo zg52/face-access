@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-01 18:26:50
+ * @LastEditTime: 2021-03-02 11:01:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -132,7 +132,7 @@ margin-left: 30px;
       <el-form-item label="设备SN"><el-input v-model.trim="pagingQuery.sn" clearable></el-input></el-form-item>
       <el-form-item label="设备位置"><el-input v-model.trim="pagingQuery.location" clearable></el-input></el-form-item>
       <!-- <el-form-item label="已下发人数" ><el-input class="w120" v-model.trim="pagingQuery.num" clearable></el-input></el-form-item> -->
-      <el-form-item label="设备在线状态"><el-select class="w100" v-model="pagingQuery.isOnline" clearable><el-option v-for="(isOnline, index) of deviceISOnline" :key="index" :label="isOnline.value" :value="isOnline.id"></el-option></el-select></el-form-item>
+      <el-form-item label="在线 / 离线"><el-select class="w100" v-model="pagingQuery.online" clearable><el-option v-for="(isOnline, index) of deviceISOnline" :key="index" :label="isOnline.value" :value="isOnline.id"></el-option></el-select></el-form-item>
        <!-- <el-form-item label="方向">  <el-select class="w100"  v-model="value" placeholder="请选择"> <el-option>进</el-option><el-option>出</el-option> </el-select></el-form-item> -->
       <el-form-item label="创建时间">
         <el-date-picker
@@ -148,11 +148,12 @@ margin-left: 30px;
           @change="changeDate">
         </el-date-picker>
       </el-form-item>
-     <el-form-item label="设备状态"><el-select class="w100" v-model="pagingQuery.state" clearable><el-option v-for="(deviceState, index) of deviceStates" :key="index" :label="deviceState.value" :value="deviceState.id"></el-option></el-select></el-form-item>
+     <el-form-item label="设备状态"><el-select class="w100" v-model="states" clearable @change="changeStates"><el-option v-for="(deviceState, index) of deviceStates" :key="index" :label="deviceState.value" :value="deviceState.id"></el-option></el-select></el-form-item>
      
       <el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="onExport"><svg-icon icon-class="excel"/> <span>导出</span></el-button>
+        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
       <router-link class="ml10" to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
     </el-form>
@@ -167,7 +168,6 @@ margin-left: 30px;
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
                <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
-               <el-form-item label="设备ID："><span>{{ props.row.id }}</span></el-form-item>
                <el-form-item label="设备名称："><span>{{ props.row.name }}</span></el-form-item>
                <el-form-item label="设备类型："><span>{{ props.row.type | filterDiveType}}</span></el-form-item>
                <el-form-item label="设备型号："><span>{{ props.row.model }}</span></el-form-item>
@@ -186,15 +186,13 @@ margin-left: 30px;
            </el-form>
            </template>
      </el-table-column>
-    
-      <el-table-column align="center" label="ID" :width="80"><template v-slot="scope">{{ scope.row.id }}</template></el-table-column>
-      <el-table-column align="center" label="设备名称" :width="80"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
+      <el-table-column align="center" label="设备名称" :width="100"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="设备类型" :width="80"><template v-slot="scope">{{ scope.row.type | filterDiveType}}</template></el-table-column>
       <el-table-column align="center" label="设备型号" :width="80"><template v-slot="scope">{{ scope.row.model }}</template></el-table-column>
       <el-table-column align="center" label="设备厂商" :width="80"><template v-slot="scope">{{ scope.row.manufacturer }}</template></el-table-column>
       <el-table-column align="center" label="设备SN" :width="80"><template v-slot="scope">{{ scope.row.sn }}</template></el-table-column>
       <el-table-column align="center" label="设备版本" :width="80"><template v-slot="scope">{{ scope.row.firmware_version }}</template></el-table-column>
-      <el-table-column align="center" label="设备位置" :width="80"><template v-slot="scope"> {{ scope.row. location }} </template></el-table-column>
+      <el-table-column align="center" label="设备位置" :width="100"><template v-slot="scope"> {{ scope.row. location }} </template></el-table-column>
       <!-- <el-table-column align="center" label="已下发人数" :width="115" sortable><template v-slot="scope"> {{ scope.row.name }} </template></el-table-column> -->
       <!-- <el-table-column align="center" label="方向" :width="100"> <template v-slot="scope"> {{ scope.row.description }} </template> </el-table-column> -->
       <el-table-column align="center" label="在线状态" :width="140"><template v-slot="scope">
@@ -291,28 +289,12 @@ import {
   instructDevice // 操作设备
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
+import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
 import moment from "moment"
 // import { filterDate } from '@/filters'
 const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
-const deviceTypes = [
-       { id: 'entrance', value: '门禁' },
-       { id: 'brake', value: '闸机' }
-   ],
-  deviceISOnline = [
-    { id: true, value: '在线' },
-    { id: false, value: '离线' }
-   ],
-  deviceStates = [
-      // { id: 'removed', value: '已删除' },
-      { id: 'out_of_order', value: '故障' },
-      // { id: 'out_of_sync', value: '未同步' },
-      { id: 'close', value: '关门' },
-      { id: 'open', value: '开门' },
-      { id: 'always_open', value: '常开门' },
-      { id: 'always_close', value: '常关门' },
-      { id: 'restart', value: '重启' },
-      { id: 'shutdown', value: '关机' },
-  ]
+let vm
+
 export default {
   name: "deviceList",
   data() {
@@ -324,11 +306,12 @@ export default {
       editDeviceVisible: false,
       value: 1,
       pickerOptions: pickerOptions(),
-      deviceTypes: deviceTypes,
-      deviceISOnline: deviceISOnline,
-      deviceStates: deviceStates,
+      deviceTypes: getDeviceTypes(),
+      deviceISOnline: getDeviceISOnline(),
+      deviceStates: getDeviceStates().search,
       multipleSelection: [], //多选删除
       date: null,
+      states: null,
       instructDeviceId: null,
       offLineDeviceNum: 0,
       lineDeviceNum: 0,
@@ -339,7 +322,7 @@ export default {
       addDeviceData: {
        username: '',
        name: '',
-       type: deviceTypes[0].id,
+       type: getDeviceTypes()[0].id,
        model: '',
        manufacturer: '',
        sn: '',
@@ -366,8 +349,9 @@ export default {
       //  username: '艾米',
        name: null,
        type: null,
-       isOnline: null,
+       online: null,
        states: null,
+       status: null,
        model: null,
        manufacturer: null,
        sn: null,
@@ -396,20 +380,22 @@ export default {
     },
     
 // 设备操作字段
-    commandes: deviceStates.slice(3)
+    commandes: getDeviceStates().operate
   }
   },
   filters: {
     filterDiveType(value) {
-      return value === deviceTypes[0].id ? deviceTypes[0].value : deviceTypes[1].value
+      return value === vm.deviceTypes[0].id ? vm.deviceTypes[0].value : vm.deviceTypes[1].value
     },
     filterOnline(value) {
-      return value == deviceISOnline[0].id ? deviceISOnline[0].value : deviceISOnline[1].value
+      return value == vm.deviceISOnline[0].id ? vm.deviceISOnline[0].value : vm.deviceISOnline[1].value
     },
     filterDeivceState(value) {
-      for(let i = 0; i < deviceStates.length; i++) {
-        if(deviceStates[i].id === value) {
-          return deviceStates[i].value
+    console.log("🚀 ~ file: deviceList.vue ~ line 396 ~ filterDeivceState ~ value", value)
+    
+      for(let i = 0; i < vm.deviceStates.length; i++) {
+        if(vm.deviceStates[i].id === value) {
+          return vm.deviceStates[i].value
         }
       }
     },
@@ -488,11 +474,12 @@ export default {
       searchDevice(this.pagingQuery).then((res) => {
         if(res.code === 0 && res.data) {
           this.deviceList = []
+             this.table_loading = false
            params.size = res.data.size
            params.current = res.data.current
            params.total = res.data.total
-           this.deviceList = res.data.records
-           this.table_loading = false
+           if(res.data.records.length !== 0) {
+             this.deviceList = res.data.records
 
 // 在线/离线/故障设备个数
           searchDevice({size: params.total}).then((res1) => {
@@ -513,10 +500,23 @@ export default {
           })
           }
           })
+           } 
         } else {
-              this.$message.success(res.msg)
+              this.$message.error(res.msg)
+               this.table_loading = false
             }
       })
+    },
+    changeStates() {
+      let p = this.pagingQuery
+      if(this['states'] === 'statuses:removed') {
+        let i = this['states'].indexOf(':')
+        p['statuses'] = this['states'].substr(i + 1)
+        p['states'] = null
+      } else {
+        p['states'] = this['states']
+        p['statuses'] = null
+      }
     },
     changeDate() {
       let date = this.date,
@@ -592,14 +592,18 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-
-// 重置表单
+   refreshPagingQuery() {
+      this.pagingQuery = {}
+      this.date = null
+      this.onSearch()
+    },
     resetAddDeviceData(e) { 
     this.$refs[e].resetFields()
    },
    
   },
   created() {
+    vm = this
     this.onSearch()
  
   },

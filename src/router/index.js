@@ -193,6 +193,42 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/device-manage',
+    name: 'device-manag',
+    component: Layout,
+    meta: { title: '设备管理', icon: 'el-icon-video-camera-solid' },
+    redirect: '/device-manage/deviceList',
+    children: [
+      {
+        path: 'deviceList',
+        name: 'deviceList',
+        component: () => import('@/views/device-manage/device-list/deviceList'),
+        meta: { title: '设备列表', icon: 'door' },
+      },
+      {
+        path: 'person-issued',
+        component: () => import('@/views/device-manage/person-issued'),
+        redirect: '/device-manage/person-issued/issued-list',
+        alwaysShow: true,
+        meta: { title: '人员下发', icon: 'guide' },
+        children: [
+          {
+            path: 'issued-add/issuedAdd',
+            name: 'issuedAdd',
+            component: () => import('@/views/device-manage/person-issued/issued-add/issuedAdd'),
+            meta: { title: '选择人员下发' },
+          },
+          {
+            path: 'issued-list/issuedList',
+            name: 'issuedList',
+            component: () => import('@/views/device-manage/person-issued/issued-list/issuedList'),
+            meta: { title: '已下发人员' },
+          },
+        ]
+      },
+    ]
+  },
+  {
     path: '/traffic-rules',
     name: 'traffic-rules',
     component: Layout,
@@ -230,42 +266,6 @@ export const asyncRoutes = [
         meta: { title: '通行记录', icon: 'trafficRecords' },
      },
   ]
-  },
-  {
-    path: '/device-manage',
-    name: 'device-manag',
-    component: Layout,
-    meta: { title: '设备管理', icon: 'el-icon-video-camera-solid' },
-    redirect: '/device-manage/deviceList',
-    children: [
-      {
-        path: 'deviceList',
-        name: 'deviceList',
-        component: () => import('@/views/device-manage/device-list/deviceList'),
-        meta: { title: '设备列表', icon: 'door' },
-      },
-      {
-        path: 'person-issued',
-        component: () => import('@/views/device-manage/person-issued'),
-        redirect: '/device-manage/person-issued/issued-list',
-        alwaysShow: true,
-        meta: { title: '人员下发', icon: 'guide' },
-        children: [
-          {
-            path: 'issued-add/issuedAdd',
-            name: 'issuedAdd',
-            component: () => import('@/views/device-manage/person-issued/issued-add/issuedAdd'),
-            meta: { title: '选择人员下发' },
-          },
-          {
-            path: 'issued-list/issuedList',
-            name: 'issuedList',
-            component: () => import('@/views/device-manage/person-issued/issued-list/issuedList'),
-            meta: { title: '已下发人员' },
-          },
-        ]
-      },
-    ]
   },
   {
     path: '/alarm',

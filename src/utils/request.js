@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-02-07 17:27:20
+ * @LastEditTime: 2021-03-02 17:17:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\utils\request.js
@@ -23,10 +23,13 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    
     const conType = config.headers.post['Content-Type']
     if (store.getters.token) {
     config.headers['Authorization'] = getToken()
     }
+ 
+    config.url = config.url.replace(new RegExp('_api'), '_api/api/v1/')
 
 // 凡是post发送的请求一律序列化为formdata格式
     if (config.data !== undefined && config.data !== null && !config.data.append) {
@@ -40,6 +43,7 @@ service.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+
 service.interceptors.response.use(
   response => {
     const res = response.data
