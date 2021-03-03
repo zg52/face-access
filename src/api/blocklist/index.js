@@ -9,7 +9,7 @@
 import request from '@/utils/request'
 
 
-const passing = '_api/passing/blocklist'
+const passing = 'passing/blocklist'
 
 /**
  * @description: 添黑名单人员

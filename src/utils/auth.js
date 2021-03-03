@@ -1,14 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-02-08 17:43:01
+ * @LastEditTime: 2021-03-03 16:52:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\auth.js
  */
 import Cookies from 'js-cookie'
 
-const TokenKey = 'hjimi-Token'
+const TokenKey = 'token'
 
 export function getToken() {
   return Cookies.get(TokenKey)

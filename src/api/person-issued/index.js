@@ -1,14 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-24 10:17:30
+ * @LastEditTime: 2021-03-03 10:34:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'
 
-const passing = '_api/passing/person'
+const passing = 'passing/person'
 
 // 人员（员工访客）下发/查
 

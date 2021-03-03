@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-02 18:56:57
+ * @LastEditTime: 2021-03-03 10:25:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\utils\request.js
@@ -12,7 +12,7 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 import qs from 'qs'
 const service = axios.create({
-  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true,
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -28,8 +28,6 @@ service.interceptors.request.use(
     if (store.getters.token) {
     config.headers['Authorization'] = getToken()
     }
- 
-    config.url = config.url.replace(new RegExp('_api'), '_api/api/v1/')
 
 // 凡是post发送的请求一律序列化为formdata格式
     if (config.data !== undefined && config.data !== null && !config.data.append) {

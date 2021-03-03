@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-20 18:40:17
+ * @LastEditTime: 2021-03-03 18:09:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'
-const person = '_api/person/person'
+import { issuedEmployee } from '../person-issued'
+const person = 'person/person'
 // 人员管理-员工
 
 /**
@@ -68,4 +69,24 @@ export function deleteStaff(id) {
      method: 'DELETE',
    })
  }
- 
+
+   /**
+ * @description: 批量导入员工（先导入图片zip，再导入表格）
+ */
+export function employeeZip() {
+  return `${ process.env.VUE_APP_BASE_API }person/importZip`
+}
+
+  /**
+ * @description: 导出列表
+ */
+export function downloadEmployee(current, size) {
+  return request({
+     url: 'person/downloadEmployee',
+     method: 'GET',
+     params: {
+      current: current,
+      size: size
+     },
+   })
+ }

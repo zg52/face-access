@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-01 18:01:17
+ * @LastEditTime: 2021-03-03 16:40:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -208,8 +208,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { visitorList, deleteVisitor } from '@/api/people-manage/visitorManage'
-import { imgUrl } from '@/api/public'
+import { visitorList, deleteVisitor, downloadVisitor } from '@/api/people-manage/visitorManage'
+import { imgUrl, downVisitorXls } from '@/api/public'
 import { pickerOptions } from '@/utils'
 import { getGender, getFaceType} from '@/utils/business'
 import VisitorFromHandle from '../components/VisitorFromHandle'
@@ -359,6 +359,12 @@ export default {
       }
     },
     onExport() {
+      let p = this.pagingQuery
+      downloadVisitor(p.current, p.size).then(res => {
+        if(res) {
+          downVisitorXls(p.current, p.size)
+        }
+      })
     },
     
 // 切换员工状态(在职/离职)

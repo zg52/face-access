@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-01 15:22:39
+ * @LastEditTime: 2021-03-03 16:35:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -247,8 +247,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getStaffList, deleteStaff, StaffState } from '@/api/people-manage/staffManage'
-import { imgUrl } from '@/api/public'
+import { getStaffList, deleteStaff, StaffState, downloadEmployee } from '@/api/people-manage/staffManage'
+import { imgUrl, downStaffXls } from '@/api/public'
 import { pickerOptions } from '@/utils'
 import { getGender, getFaceType} from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
@@ -437,7 +437,12 @@ export default {
       }
     },
     onExport() {
-
+      let p = this.pagingQuery
+      downloadEmployee(p.current, p.size).then(res => {
+        if(res) {
+          downStaffXls(p.current, p.size)
+        }
+      })
     },
     handleStatus(row) {
       row.visible = true

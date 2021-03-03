@@ -8,7 +8,7 @@
  */
 import request from '@/utils/request'
 
-const log = '_api/passing/log'
+const log = 'passing/log'
 // 设备操作日志
 
 /**

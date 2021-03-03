@@ -1,14 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-02-20 15:58:56
+ * @LastEditTime: 2021-03-03 16:38:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\people-manage\visitorManage.js
  */
 
 import request from '@/utils/request'
-const person = '_api/person/visitor/'
+const person = 'person/visitor/'
 // 人员管理-访客
 
 /**
@@ -69,4 +69,17 @@ export function deleteVisitor(id) {
      method: 'DELETE',
    })
  }
- 
+
+   /**
+ * @description: 导出列表
+ */
+export function downloadVisitor(current, size) {
+  return request({
+     url: 'person/visitor/downloadVisitor',
+     method: 'GET',
+     params: {
+      current: current,
+      size: size
+     },
+   })
+ }

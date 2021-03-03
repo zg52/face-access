@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-25 14:05:07
+ * @LastEditTime: 2021-03-03 19:33:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -67,6 +67,12 @@ position: absolute;
     display: flex;
     margin-top: -22px;
   }
+  .import {
+    margin-top:30px;
+    .el-upload__tip {
+      margin-top:20px;
+    }
+  }
 </style>
 <template>
   <div class="app-container">
@@ -117,18 +123,54 @@ position: absolute;
        </div>
       </el-form-item><br>
      <el-form-item class="save_staff">
-        <el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button>
+        <el-button type="primary" v-show="!btn_el.includes('edit')" @click.prevent="bulkImport"><i class="el-icon-folder-add" /> 批量导入</el-button>
         <el-button @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveStaffHandle('addStaffFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
         <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
         <el-button @click="cancelEdit" v-show="!btn_el.includes('add')"><span>取 消</span></el-button>
      </el-form-item>
      </el-form>
+
+<!-- 批量导入 -->
+    <el-dialog
+      title="批量导入员工信息"
+      :visible.sync="import_dialogVisible"
+      width="60%"
+      >
+     <el-steps :active="importActive" align-center>
+      <el-step v-for="(step, index) of steps" :key="index" :title="step.tit" :description="step.des"></el-step>
+    </el-steps>
+  <div class="import">
+    <div class="zip">
+      <el-upload
+        class="importUpload"
+        ref="uploadZip"
+        :action="employeeZip"
+        :file-list="fileList"
+         multiple
+        :before-upload="beforeZipUpload"
+        :on-error="zipError"
+        >
+      <el-button slot="trigger" size="small" type="primary">上传zip 文件</el-button>
+      <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
+      <div slot="tip" class="el-upload__tip">zip文件列表：</div>
+    </el-upload>
+     </div>
+     <div class="xls">
+
+     </div>
+  </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button class="xia">下一步</el-button>
+    <el-button @click="import_dialogVisible = false">取 消</el-button>
+    <!-- <el-button type="primary" @click="import_dialogVisible = false">确 定</el-button> -->
+  </span>
+</el-dialog>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveStaff, editStaff } from '@/api/people-manage/staffManage'
+import { saveStaff, editStaff, employeeZip } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
@@ -160,13 +202,14 @@ export default {
      !isNaN(value) ? callback() : callback(new Error(`${ str }号只能为数字组成！`))
     }
     }
-   
     
     function notNull(notNullName) { return [{required: true, message: `请输入员工${ notNullName }`, trigger: "blur" }] }
     return {
       save_loading: false,
       addStaffFormVisible: true,
+      import_dialogVisible: true,
       imgUploading: false,
+      importActive: 1,
       save_loading_text: '保 存',
       proxyUrl: 'http://www.zg.com',
       genders: getGender(),
@@ -208,6 +251,19 @@ export default {
           ],
           enrollTime: notNull('入职时间')
         },
+
+        fileList: [{name: '示例.zip', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+        steps: [
+          {
+            tit: '步骤一',
+            des: '图片命名格式为姓名，批量压缩图片为zip上传'
+          },
+          {
+            tit: '步骤二',
+            des: '上传员工信息表格文件（xls/excel/xlsx）'
+          }
+        ],
+        employeeZip: employeeZip()
     }
   },
   computed: {
@@ -344,7 +400,39 @@ export default {
 // 取消编辑传给列表页
     cancelEdit() {
         this.$emit('cacelEdit')
-    }
+    },
+
+// -----------------------------------------批量导入图片zip和xls----------------------------
+   bulkImport() {
+     this.import_dialogVisible = true
+   },
+   submitUploadZip() {
+     this.$refs.uploadZip.submit();
+   },
+
+  beforeZipUpload(file) {
+    
+     this.zipRule(file.type, file.size, file)
+  },
+  zipRule (fileType, fileSize, fileRaw) {
+     function zipType () { return fileType === 'application/zip' }
+     const isLt1M = fileSize / 1024 / 1024 < 20;
+        if (!zipType()) { 
+          this.$message.error('上传压缩包只能是 zip 格式!')
+          } else if (zipType() && !isLt1M) {
+             this.$message.error('上传zip大小不能超过20MB!')
+          } else if (!zipType() && !isLt1M) {
+             this.$message.error('上传zip大小不能超过20MB,只能是 zip 格式!')
+          }
+        return zipType() && isLt1M
+    },
+  zipError(err, file, fileList) {
+    let _this = this
+        _this.$message({
+               message: err.type == 'error' ? file.name + ' 上传失败，请重试' : '上传失败，请重试',
+                type: "error"
+           })
+},
   },
   created() {
     vm = this
@@ -353,7 +441,7 @@ export default {
 
   },
   mounted() {
-    console.log(vm)
+
   },
 };
 </script>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-02-08 09:43:26
+ * @LastEditTime: 2021-03-03 10:34:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -15,7 +15,7 @@ import request from '@/utils/request'
  */
 export function searchUser(params) {
   return request({
-     url: '_api/user/user/',
+     url: 'user/user/',
      method: 'GET',
      params: params
    })
@@ -27,7 +27,7 @@ export function searchUser(params) {
  */
 export function editUser(params) {
   return request({
-     url: `_api/user/user/${params.id}`,
+     url: `user/user/${params.id}`,
      method: 'POST',
      data: params
    })
@@ -39,7 +39,7 @@ export function editUser(params) {
  */
 export function addUser(params) {
   return request({
-     url: '_api/user/user/',
+     url: 'user/user/',
      method: 'POST',
      data: params
    })
@@ -51,7 +51,7 @@ export function addUser(params) {
  */
 export function deleteUser(id) {
   return request({
-     url: `_api/user/user/${id}`,
+     url: `user/user/${id}`,
      method: 'DELETE'
    })
  }

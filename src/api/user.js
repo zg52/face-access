@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-02 17:09:20
+ * @LastEditTime: 2021-03-03 10:28:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\user.js
@@ -9,7 +9,7 @@
 import request from '@/utils/request'
 import { getToken } from '@/utils/auth'
 
-const user = '_api/user/account/'
+const user = 'user/account/'
 export function login(params) {
   return request({
     url: `${ user }login`,
