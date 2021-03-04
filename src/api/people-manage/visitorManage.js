@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-03-03 16:38:51
+ * @LastEditTime: 2021-03-04 17:29:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\people-manage\visitorManage.js
@@ -83,3 +83,15 @@ export function downloadVisitor(current, size) {
      },
    })
  }
+
+/**
+ * @description: 批量导入访客（先导入图片zip，再导入表格）
+ */
+
+// 无参形式
+export function visitorZip() {
+  return `${ process.env.VUE_APP_BASE_API }${ person }importZip`
+}
+export function visitorExcel() {
+  return `${ process.env.VUE_APP_BASE_API }${ person }batchImport`
+}

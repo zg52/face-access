@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-03 16:35:53
+ * @LastEditTime: 2021-03-04 14:36:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -305,6 +305,7 @@ export default {
         createTimeTo: null,
         status: null,
         isDelete: null, /// 0为正常1为已删除
+        descs: 'null',
         
         current: 1, 
         size: 20,

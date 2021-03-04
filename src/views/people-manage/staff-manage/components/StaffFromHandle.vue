@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-03 19:33:53
+ * @LastEditTime: 2021-03-04 17:46:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -69,6 +69,7 @@ position: absolute;
   }
   .import {
     margin-top:30px;
+        width: 40%;
     .el-upload__tip {
       margin-top:20px;
     }
@@ -135,47 +136,62 @@ position: absolute;
     <el-dialog
       title="批量导入员工信息"
       :visible.sync="import_dialogVisible"
-      width="60%"
+      width="45%"
       >
      <el-steps :active="importActive" align-center>
       <el-step v-for="(step, index) of steps" :key="index" :title="step.tit" :description="step.des"></el-step>
     </el-steps>
   <div class="import">
-    <div class="zip">
+    <div class="zip" v-show="zipShow">
       <el-upload
-        class="importUpload"
+        class="avatar-uploader"
         ref="uploadZip"
         :action="employeeZip"
-        :file-list="fileList"
          multiple
         :before-upload="beforeZipUpload"
         :on-error="zipError"
+        :on-success="handleZipSuccess"
         >
-      <el-button slot="trigger" size="small" type="primary">上传zip 文件</el-button>
+      <el-button slot="trigger" size="small" type="primary"><svg-icon icon-class="zip" /> 上传 zip 文件</el-button>
       <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
       <div slot="tip" class="el-upload__tip">zip文件列表：</div>
     </el-upload>
      </div>
-     <div class="xls">
-
+     
+     <div class="xls" v-show="excelShow">
+      <el-upload
+        class="importUpload"
+        ref="uploadExcel"
+        :action="employeeExcel"
+         multiple
+        :before-upload="beforeExcelUpload"
+        :on-error="excelError"
+        :on-success="handleExcelSuccess"
+        >
+      <el-button slot="trigger" size="small" type="primary"><svg-icon icon-class="excel" /> 上传表格文件</el-button>
+      <el-button size="small" type="primary" @click="getEmployeeTemplate" class="ml10"><i class="el-icon-download"></i> 下载模板</el-button>
+      <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
+      <div slot="tip" class="el-upload__tip">表格文件列表：</div>
+    </el-upload>
      </div>
   </div>
   <span slot="footer" class="dialog-footer">
-    <el-button class="xia">下一步</el-button>
+    <el-button class="xia" :disabled="this.zipShow ? true : false" @click.prevent="zipExcelToggle">{{ this.zipShow ? '下一步' : '上一步' }}</el-button>
     <el-button @click="import_dialogVisible = false">取 消</el-button>
     <!-- <el-button type="primary" @click="import_dialogVisible = false">确 定</el-button> -->
   </span>
 </el-dialog>
+ <el-button plain @click="open1" class="none"></el-button>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveStaff, editStaff, employeeZip } from '@/api/people-manage/staffManage'
+import { saveStaff, editStaff, employeeZip, employeeExcel, getEmployeeTemplate } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
 import { getGender, getFaceType} from '@/utils/business'
-import { imgUrl } from '@/api/public'
+import { imgUrl, downEmployeeTemplate } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
 let vm
@@ -207,9 +223,7 @@ export default {
     return {
       save_loading: false,
       addStaffFormVisible: true,
-      import_dialogVisible: true,
       imgUploading: false,
-      importActive: 1,
       save_loading_text: '保 存',
       proxyUrl: 'http://www.zg.com',
       genders: getGender(),
@@ -252,7 +266,9 @@ export default {
           enrollTime: notNull('入职时间')
         },
 
-        fileList: [{name: '示例.zip', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+// 批量导入
+        import_dialogVisible: true,
+        importActive: 1,
         steps: [
           {
             tit: '步骤一',
@@ -260,10 +276,13 @@ export default {
           },
           {
             tit: '步骤二',
-            des: '上传员工信息表格文件（xls/excel/xlsx）'
+            des: '上传员工信息表格文件（xls、excel、xlsx）'
           }
         ],
-        employeeZip: employeeZip()
+        employeeZip: employeeZip(),
+        employeeExcel: employeeExcel(),
+        zipShow: true,
+        excelShow: false
     }
   },
   computed: {
@@ -272,7 +291,6 @@ export default {
     ])
   },
   methods: {
-    
 // 提交员工信息
   async saveStaffHandle(el) {
     let a = this.addStaffForm
@@ -409,30 +427,88 @@ export default {
    submitUploadZip() {
      this.$refs.uploadZip.submit();
    },
-
   beforeZipUpload(file) {
-    
-     this.zipRule(file.type, file.size, file)
+    return this.zipRule(file.type, file.size, file)
   },
-  zipRule (fileType, fileSize, fileRaw) {
+   handleZipSuccess(res, file) {
+     this.zipExcelToggle()
+     if(res.code === 0) {
+      this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+     }
+    },
+  zipError(err, file, fileList) {
+    this.zipExcelToggle()
+    if(file.raw.type ==  'application/zip') {
+       this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
+    }
+  },
+  zipRule(fileType, fileSize, fileRaw) {
      function zipType () { return fileType === 'application/zip' }
      const isLt1M = fileSize / 1024 / 1024 < 20;
         if (!zipType()) { 
-          this.$message.error('上传压缩包只能是 zip 格式!')
+          this.$message.error('上传压缩包只能是 zip 格式！', 4000)
           } else if (zipType() && !isLt1M) {
-             this.$message.error('上传zip大小不能超过20MB!')
+             this.$message.error('上传zip大小不能超过20MB！', 4000)
           } else if (!zipType() && !isLt1M) {
-             this.$message.error('上传zip大小不能超过20MB,只能是 zip 格式!')
+             this.$message.error('上传zip大小不能超过20MB,只能是 zip 格式！', 4000)
           }
         return zipType() && isLt1M
     },
-  zipError(err, file, fileList) {
-    let _this = this
-        _this.$message({
-               message: err.type == 'error' ? file.name + ' 上传失败，请重试' : '上传失败，请重试',
-                type: "error"
-           })
-},
+
+// 导入表格
+  beforeExcelUpload(file) {
+    return this.excelRule(file.type, file.size, file)
+  },
+  excelRule(fileType, fileSize, fileRaw) {
+     function excelType () { return fileType.indexOf('sheet') !== -1 }
+     const isLt1M = fileSize / 1024 / 1024 < 20;
+        if (!excelType()) { 
+          this.$message.error('上传表格文件只能是 xls、excel、xlsx 格式！', 4000)
+          } else if (excelType() && !isLt1M) {
+             this.$message.error('上传表格文件大小不能超过20MB！', 4000)
+          } else if (!excelType() && !isLt1M) {
+             this.$message.error('上传表格文件大小不能超过20MB,只能是 xls、excel、xlsx 格式！', 4000)
+          }
+        return excelType() && isLt1M
+    },
+   handleExcelSuccess(res, file) {
+     if(res.code === 0) {
+        this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+        this.cancelEdit()
+     }
+    },
+  excelError(err, file, fileList) {
+    if(file.raw.type.indexOf('sheet') !== -1) {
+     this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
+    }
+  },
+
+// 下载员工录入模板
+  getEmployeeTemplate() {
+     getEmployeeTemplate().then(res => {
+        if(res) {
+          downEmployeeTemplate()
+        }
+      })
+  },
+   zipExcelToggle() {
+     if(this.zipShow) {
+       this.zipShow = false
+       this.excelShow = true
+       this.importActive = 2
+     } else if(this.excelShow) {
+       this.zipShow = true
+       this.excelShow = false
+       this.importActive = 1
+     }
+   },
+  open1(zipName, statusName, status) {
+        this.$notify({
+          title: statusName,
+          message: zipName,
+          type: status
+        })
+      },
   },
   created() {
     vm = this
@@ -443,5 +519,5 @@ export default {
   mounted() {
 
   },
-};
+}
 </script>
