@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-23 18:23:10
+ * @LastEditTime: 2021-03-05 18:54:03
  * @LastEditors: Please set LastEditors
  * @Description: 全局路由钩子
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\permission.js
@@ -22,7 +22,7 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start()
 
   // 设置页标签标题
-  document.title = getPageTitle(to.meta.title)
+ document.title = getPageTitle(to.meta.title)
 
   // 确认用户是否已登录
   const hasToken = getToken()

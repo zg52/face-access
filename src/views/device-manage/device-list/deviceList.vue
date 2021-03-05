@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-02 11:01:18
+ * @LastEditTime: 2021-03-05 18:22:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -53,7 +53,6 @@ margin-left: 30px;
   margin-right: 0!important;
     margin-bottom: 0;
     width: 27%;
-    border-bottom: 1px #eee dashed;
   }
     .demo-table-expand ::v-deep .el-form-item__label {
       padding-right: 0;
