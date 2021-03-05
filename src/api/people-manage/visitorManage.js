@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-03-04 17:29:58
+ * @LastEditTime: 2021-03-05 15:43:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\people-manage\visitorManage.js
@@ -95,3 +95,28 @@ export function visitorZip() {
 export function visitorExcel() {
   return `${ process.env.VUE_APP_BASE_API }${ person }batchImport`
 }
+
+// 查看当前表格导入状态
+export function getImportStatus() {
+  return request({
+     url: `${ person }getImportStatus`,
+     method: 'GET'
+   })
+ }
+  /**
+ * @description: 下载访客表格模板
+ */
+export function getVisitorTemplate() {
+  return request({
+     url: 'person/visitor/getVisitorTemplate',
+     method: 'GET'
+   })
+ }
+
+// 访客导入结果查询
+export function getReslut() {
+  return request({
+     url: `${ person }getReslut`,
+     method: 'GET'
+   })
+ }

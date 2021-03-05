@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 14:10:22
+ * @LastEditTime: 2021-03-05 14:45:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -26,7 +26,7 @@
     }
 </style>
 <template>
-  <div class="app-container1">
+  <div class="app-container">
     <!-- <el-form :model="pagingQuery" :inline="true">
       <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
       <el-form-item label="通行设备">
@@ -62,12 +62,13 @@
     
     <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
-      <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-      <el-table-column align="center" label="姓名" width="100"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
-      <el-table-column align="center" label="已注册人脸" width="110" class="ppp">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="100" /></template>
+      <!-- <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column> -->
+      <el-table-column align="center" label="姓名" width="200"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
+      <el-table-column align="center" label="人员类型" width="200"><template v-slot="scope">{{ scope.row.personType |  personTypeFilter(scope.row) }}</template></el-table-column>
+      <el-table-column align="center" label="已注册人脸" width="130" class="ppp">
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="120" /></template>
       </el-table-column>
-        <el-table-column align="center" label="加入规则时间" width="100"><template v-slot="scope">{{ scope.row.creatTime }}</template></el-table-column>
+        <el-table-column align="center" label="加入规则时间" width="auto"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
     </el-table>
 
     <el-pagination
@@ -91,7 +92,11 @@ import moment from 'moment'
 let vm
 
 export default {
-  name: 'StaffRecords',
+    props: {
+     been_person_rule_param: {
+            type: Number
+        }
+    },
   data() {
     return {
       date: null,
@@ -120,7 +125,7 @@ export default {
       painingQueryList: [],
     }
   },
-  filter: {
+  filters: {
   personTypeFilter(value,row) {
       if(row.personType === 'employee') {
         return '员工'
@@ -139,14 +144,16 @@ export default {
     get_rulePersonList() {
       this.table_loading = true
       let params = this.pagingQuery
-      beenRulePeson(20).then((res) => {
+      beenRulePeson(this.been_person_rule_param).then((res) => {
          if(res.code === 0) {
-           this.painingQueryList = []
            this.table_loading = false
            params.size = res.data.size
            params.current = res.data.current
            params.total = res.data.total
-           this.painingQueryList = res.data.records
+            this.painingQueryList = []
+         if(res.data) {
+           this.painingQueryList = res.data
+         }
          } else {
             this.$message.error(res.msg)
             this.table_loading = false
@@ -178,7 +185,9 @@ export default {
   },
   created() {
     vm = this
-    this.onSearch()
+    if(this.been_person_rule_param) {
+      this.onSearch()
+    }
   },
 }
 </script>

@@ -9,7 +9,7 @@
           <div class="card-panel-text">
            今日进门人数
           </div>
-          <count-to :start-val="0" :end-val="213" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="0" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -22,7 +22,7 @@
           <div class="card-panel-text">
             今日访客预约
           </div>
-          <count-to :start-val="0" :end-val="3" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="0" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>

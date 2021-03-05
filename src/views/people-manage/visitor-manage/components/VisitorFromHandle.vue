@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-04 17:46:42
+ * @LastEditTime: 2021-03-05 17:11:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -127,7 +127,7 @@ position: absolute;
        </div>
       </el-form-item><br>
      <el-form-item class="save_staff">
-        <el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button>
+        <el-button type="primary" v-show="!btn_el.includes('edit')" @click.prevent="bulkImport"><i class="el-icon-folder-add" /> 批量导入</el-button>
         <el-button @click="resetAddVisitorForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveVisitorHandle('addVisitorFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
         <router-link to="/people-manage/visitor-manage/visitor-list/visitorlist" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看访客列表</el-button></router-link>
@@ -139,7 +139,7 @@ position: absolute;
     <el-dialog
       title="批量导入访客信息"
       :visible.sync="import_dialogVisible"
-      width="45%"
+      width="44%"
       >
      <el-steps :active="importActive" align-center>
       <el-step v-for="(step, index) of steps" :key="index" :title="step.tit" :description="step.des"></el-step>
@@ -189,12 +189,12 @@ position: absolute;
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveVisitor, editVisitor, visitorZip, visitorExcel, downVisitorTemplate } from '@/api/people-manage/visitorManage'
+import { saveVisitor, editVisitor, visitorZip, visitorExcel, getVisitorTemplate, getImportStatus, getReslut } from '@/api/people-manage/visitorManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate'
 import { getGender, getFaceType} from '@/utils/business'
-import { imgUrl } from '@/api/public'
+import { imgUrl, downVisitorTemplate } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
 let vm
@@ -255,12 +255,12 @@ export default {
         },
 
 // 批量导入
-        import_dialogVisible: true,
+        import_dialogVisible: false,
         importActive: 1,
         steps: [
           {
             tit: '步骤一',
-            des: '图片命名格式为姓名，批量压缩图片为zip上传'
+            des: '图片命名格式为姓名（张三.jpg/png/bmp），批量压缩图片为zip格式上传'
           },
           {
             tit: '步骤二',
@@ -270,7 +270,7 @@ export default {
         visitorZip: visitorZip(),
         visitorExcel: visitorExcel(),
         zipShow: true,
-        excelShow: true
+        excelShow: false
     }
   },
   computed: {
@@ -426,10 +426,9 @@ export default {
     return this.zipRule(file.type, file.size, file)
   },
    handleZipSuccess(res, file) {
-     this.zipExcelToggle()
-       console.log(res)
-     if(res.code === 0) {
-      this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+     if(res === 'success') {
+       this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+       this.zipExcelToggle()
      }
     },
   zipError(err, file, fileList) {
@@ -450,7 +449,7 @@ export default {
         return zipType() && isLt1M
     },
 
-// 导入表格
+// -----------------------------------------导入表格----------------------------------
   beforeExcelUpload(file) {
     return this.excelRule(file.type, file.size, file)
   },
@@ -468,7 +467,10 @@ export default {
     },
    handleExcelSuccess(res, file) {
      console.log(res)
-     if(res.code === 0) {
+     if(res === 'going') {
+       getImportStatus().then(res => {
+         
+       })
         this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
         this.cancelEdit()
      }
@@ -517,6 +519,7 @@ export default {
    }
   },
   mounted() {
+    // getReslut().then()
   },
 };
 </script>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-03 10:33:45
+ * @LastEditTime: 2021-03-05 17:05:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -9,7 +9,7 @@
 import request from '@/utils/request'
 
 
-const exception = 'exception/exception'
+const exception = 'passing/exception'
 
 /**
  * @description: 查设备异常记录

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-29 17:49:54
- * @LastEditTime: 2021-03-03 10:34:50
+ * @LastEditTime: 2021-03-05 11:28:19
  * @LastEditors: Please set LastEditors
  * @Description: 通行规则
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\traffic-rules\index.js
@@ -41,5 +41,16 @@ export function deleteRules(params) {
     url: passing,
     method: 'DELETE',
     data: params
+  })
+}
+
+/**
+ * @description: 查看已在规则中的人员
+ * @param {ids}
+ */
+export function beenRulePeson(id) {
+  return request({
+    url: `${ passing }/${ id }/person`,
+    method: 'GET'
   })
 }

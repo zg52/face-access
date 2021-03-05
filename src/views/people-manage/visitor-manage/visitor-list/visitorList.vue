@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-03 16:40:51
+ * @LastEditTime: 2021-03-05 16:05:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -124,7 +124,7 @@
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
-      <el-button type="primary"><router-link to="/people-manage/visitor-manage/visitor-add/visitorAdd"><svg-icon icon-class="edit" /> 新增访客</router-link></el-button>
+      <router-link to="/people-manage/visitor-manage/visitor-add/visitorAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增访客</el-button></router-link>
     </el-form>
     
     <el-table :data="tableData" class="people_list" border max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">

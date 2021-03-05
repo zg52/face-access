@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-01 16:52:53
+ * @LastEditTime: 2021-03-05 17:09:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -135,7 +135,7 @@ export default {
           this.tableData = []
           this.table_loading = false
           if(res.data.records.length !== 0) {
-            this.tableData = res.data.records.reseve()
+            this.tableData = res.data.records
           }
         } else {
           this.$message.error(res.msg)

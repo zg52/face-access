@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-01 18:01:34
+ * @LastEditTime: 2021-03-05 17:02:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -46,6 +46,8 @@ position: absolute;
     font-size: 12px;
     padding-left: 30px;
     line-height: 16px;
+    margin-top: -27px;
+    margin-left: 87px;
   }
   .img {position: absolute;left:0;top:0;}
     .photo {
@@ -65,7 +67,6 @@ position: absolute;
   .save_staff {
     justify-content: flex-end;
     display: flex;
-    margin-top: -22px;
   }
 </style>
 <template>
@@ -158,10 +159,11 @@ position: absolute;
           <img class="img" v-if="imageUrl" :src="imageUrl" width="100%">
           </div>
        </el-upload>
-       <div class="fl">
-           <p class="des">上传图片文件支持PNG、JPG、JPEG、BMP，图片大小不超过2M</p>
-       </div>
+      
       </el-form-item><br>
+      <div>
+           <p class="des">图片文件支持PNG、JPG、JPEG、BMP，大小不超过2M</p>
+       </div>
      <el-form-item class="save_staff">
         <el-button @click="resetAddBlock"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveBlockHandle('addBlockRule')"><i class="el-icon-check"></i> &nbsp;保 存</el-button>
@@ -257,10 +259,11 @@ export default {
           formData = new FormData()
           for(let item in a) { formData.append(item, a[item]) }
                addBlockList(formData).then((res) => {
-                if(res.code === 0 && res.data) {
+                if(res.code === 0) {
                    vm.save_loading = false
                    vm.$message.success(`${ a?.['name'] } 保存成功！`, 4000)
                    vm.resetAddBlock()
+                   vm.getBockList()
                      } else {
                        vm.$message.warning(res.msg, 4000)
                        vm.save_loading = false

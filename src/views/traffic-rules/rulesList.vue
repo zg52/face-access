@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-26 15:52:15
+ * @LastEditTime: 2021-03-05 15:56:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -75,7 +75,7 @@
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
-      <el-button type="primary"><router-link to="/traffic-rules/addRules"><svg-icon icon-class="edit"/> 新建通行规则</router-link></el-button>
+      <router-link to="/traffic-rules/addRules"><el-button type="primary"><svg-icon icon-class="edit"/> 新建通行规则</el-button></router-link>
     </el-form>
       
     <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
@@ -98,7 +98,7 @@
       <el-table-column align="left" label="操作" width="220" fixed="right">
         <template v-slot="scope">
           <el-button class="radius_45 mr10" disabled type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
-          <el-button v-show="scope.row.ruleType === 'by_person' ? true : false" class="radius_45 mt10 ml0" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
+          <el-button @click="showRulePerson(scope.row)" v-show="scope.row.ruleType === 'by_person' ? true : false" class="radius_45 mt10 ml0" type="primary" size="mini"><i class="el-icon-view"></i><span>通行人员</span></el-button> 
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
@@ -119,6 +119,16 @@
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingQuery['total']"
     ></el-pagination>
+    <el-dialog
+      title="可通行人员"
+      :visible.sync="dialogPesonVisible"
+      width="60%"
+      top="0">
+     <BeenPersonRule v-if="dialogPesonVisible" :been_person_rule_param="been_person_rule_param" />
+      <div slot="footer">
+        <el-button @click="dialogPesonVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -127,15 +137,21 @@ import { getRules, deleteRules } from '@/api/traffic-rules'
 // import { searchDevice } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import { passWay, weekParams, passWayArrHandle, getDeviceNames } from '@/utils/business'
+import BeenPersonRule  from './components/BeenPersonRule'
 import moment from 'moment'
+
 
 let vm
 
 export default {
   name: 'rulesList',
+  components: {
+    BeenPersonRule
+  },
   data() {
     return {
       userFormVisible: true,
+      dialogPesonVisible: false,
       value: 1,
       table_loading: false,
        pickerOptions: {
@@ -226,6 +242,7 @@ export default {
        status: ''
       },
       ops: null,
+      been_person_rule_param: null
     }
   },
   computed: {
@@ -384,8 +401,13 @@ export default {
 // 修改规则
     handleEdit() {
       
+
+},
+// 查可通行人员
+    showRulePerson(row) {
+      this.dialogPesonVisible = true
+      this.been_person_rule_param = row.id
     },
-    
     handleSizeChange(val) {
       this.pagingQuery.size = val
       this.getRuleList()

@@ -68,7 +68,7 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user', noCache: true },
       }
     ]
-  }
+  },
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -81,20 +81,6 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
-  // {
-  //   path: '/guide',
-  //   component: Layout,
-  //   redirect: '/guide/index',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/guide/index'),
-  //       name: 'Guide',
-  //       meta: { title: 'guide', icon: 'guide', noCache: true }
-  //     }
-  //   ]
-  // },
-
 ]
 export const asyncRoutes = [
   // {
@@ -247,12 +233,12 @@ export const asyncRoutes = [
         name: 'rules',
         meta: { title: '已下发规则', icon: 'list1' }
      },
-     {
-      path: 'person',
-      component: () => import('@/views/traffic-rules/person/index'),
-      name: 'person',
-      meta: { title: '可通行人员', icon: 't_person' }
-   }
+  //    {
+  //     path: 'person',
+  //     component: () => import('@/views/traffic-rules/person/index'),
+  //     name: 'person',
+  //     meta: { title: '可通行人员', icon: 't_person' }
+  //  }
   ]
   },
   {

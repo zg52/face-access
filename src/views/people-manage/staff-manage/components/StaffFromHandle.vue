@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-04 17:46:18
+ * @LastEditTime: 2021-03-05 16:07:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -267,12 +267,12 @@ export default {
         },
 
 // 批量导入
-        import_dialogVisible: true,
+        import_dialogVisible: false,
         importActive: 1,
         steps: [
           {
             tit: '步骤一',
-            des: '图片命名格式为姓名，批量压缩图片为zip上传'
+            des: '图片命名格式为姓名（张三.jpg/png/bmp），批量压缩图片为zip格式上传'
           },
           {
             tit: '步骤二',
@@ -431,13 +431,12 @@ export default {
     return this.zipRule(file.type, file.size, file)
   },
    handleZipSuccess(res, file) {
-     this.zipExcelToggle()
-     if(res.code === 0) {
-      this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+     if(res === 'success') {
+       this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+       this.zipExcelToggle()
      }
     },
   zipError(err, file, fileList) {
-    this.zipExcelToggle()
     if(file.raw.type ==  'application/zip') {
        this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
     }
