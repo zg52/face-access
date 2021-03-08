@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-04 16:14:39
+ * @LastEditTime: 2021-03-08 17:36:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -70,6 +70,7 @@ export function deleteStaff(id) {
    })
  }
 
+
    /**
  * @description: 批量导入员工（先导入图片zip，再导入表格）
  */
@@ -82,6 +83,7 @@ export function employeeExcel() {
   return `${ process.env.VUE_APP_BASE_API }person/batchImport`
 }
 
+// 导入图片zip包
 export function employeeZip1(params) {
   return request({
      url: 'person/importZip',
@@ -90,6 +92,31 @@ export function employeeZip1(params) {
    })
  }
 
+ // 查看当前表格导入状态
+export function getImportStatus() {
+  return request({
+     url: 'person/getImportStatus',
+     method: 'GET'
+   })
+ }
+
+ // 查看当前表格导入结果（serialNumber=20210308085808）
+ export function getReslut() {
+  return request({
+     url: 'person/getReslut',
+     method: 'GET'
+   })
+ }
+
+// 查看表格导入历史列表
+  export function getSerialList() {
+    return request({
+       url: 'person/getSerialList',
+       method: 'GET'
+     })
+   }
+
+ 
 
   /**
  * @description: 导出列表

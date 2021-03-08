@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-01 18:01:06
+ * @LastEditTime: 2021-03-08 16:30:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -154,8 +154,8 @@ export default {
 
     handleDelete(x, row) {
       deleteDevicePerson({ids: row.id}).then((res) => {
-        if (res.code == 0 && res.data) {
-          this.$message.success({message: res.msg})
+        if (res.code == 0) {
+          this.$message.success(res.msg)
           this.onSearch()
         } else {
           this.$message.error({message: res.msg})
@@ -173,7 +173,7 @@ export default {
         }).then(() => {
             for (let i = 0; i < this.multipleSelection.length; i++) {
               deleteDevicePerson({ids:this.multipleSelection[i].id}).then((res) => {
-                if (res.code == 0 && res.data) {
+                if (res.code == 0) {
                   if(i + 1 >= this.multipleSelection.length) {
                   this.onSearch()
                   this.$message.success({message: res.msg})

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-04 14:36:24
+ * @LastEditTime: 2021-03-08 15:24:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -424,8 +424,10 @@ export default {
                 if (res.code == 0) {
                   if(i + 1 >= this.multipleSelection.length) {
                   this.onSearch()
-                  this.$message.success({message: res.msg})
-                  } 
+                  this.$message.success(res.msg)
+                  }
+                } else {
+                  this.$message.error(res.msg)
                 }
               })
             }

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 18:22:01
+ * @LastEditTime: 2021-03-08 18:50:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -168,6 +168,7 @@ margin-left: 30px;
              <el-form label-position="left" inline class="demo-table-expand">
                <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
                <el-form-item label="设备名称："><span>{{ props.row.name }}</span></el-form-item>
+                <el-form-item label="设备标识："><span>{{ props.row.uniqueDeviceIdentifier }}</span></el-form-item>
                <el-form-item label="设备类型："><span>{{ props.row.type | filterDiveType}}</span></el-form-item>
                <el-form-item label="设备型号："><span>{{ props.row.model }}</span></el-form-item>
                <el-form-item label="设备厂商："><span>{{ props.row.manufacturer }}</span></el-form-item>
@@ -186,6 +187,7 @@ margin-left: 30px;
            </template>
      </el-table-column>
       <el-table-column align="center" label="设备名称" :width="100"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
+       <el-table-column align="center" label="设备标识" :width="100"><template v-slot="scope">{{ scope.row.uniqueDeviceIdentifier }}</template></el-table-column>
       <el-table-column align="center" label="设备类型" :width="80"><template v-slot="scope">{{ scope.row.type | filterDiveType}}</template></el-table-column>
       <el-table-column align="center" label="设备型号" :width="80"><template v-slot="scope">{{ scope.row.model }}</template></el-table-column>
       <el-table-column align="center" label="设备厂商" :width="80"><template v-slot="scope">{{ scope.row.manufacturer }}</template></el-table-column>
@@ -390,8 +392,6 @@ export default {
       return value == vm.deviceISOnline[0].id ? vm.deviceISOnline[0].value : vm.deviceISOnline[1].value
     },
     filterDeivceState(value) {
-    console.log("🚀 ~ file: deviceList.vue ~ line 396 ~ filterDeivceState ~ value", value)
-    
       for(let i = 0; i < vm.deviceStates.length; i++) {
         if(vm.deviceStates[i].id === value) {
           return vm.deviceStates[i].value
@@ -498,7 +498,7 @@ export default {
               this.outDeviceNum = outArr.length
           })
           }
-          })
+        })
            } 
         } else {
               this.$message.error(res.msg)
@@ -569,9 +569,11 @@ export default {
     
 // 操作设备
      handleCommand(command) {
-       instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
-       res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg)
+       setTimeout(()=> {
+         instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
+       res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
       })
+       })
       },
     hanlecommandData(x) {
         this.instructDeviceId = x.id

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 16:07:06
+ * @LastEditTime: 2021-03-08 18:28:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -169,7 +169,7 @@ position: absolute;
         :on-success="handleExcelSuccess"
         >
       <el-button slot="trigger" size="small" type="primary"><svg-icon icon-class="excel" /> 上传表格文件</el-button>
-      <el-button size="small" type="primary" @click="getEmployeeTemplate" class="ml10"><i class="el-icon-download"></i> 下载模板</el-button>
+      <el-button size="small" @click="getEmployeeTemplate" class="ml10"><i class="el-icon-download"></i> 下载示例模板</el-button>
       <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
       <div slot="tip" class="el-upload__tip">表格文件列表：</div>
     </el-upload>
@@ -186,7 +186,7 @@ position: absolute;
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveStaff, editStaff, employeeZip, employeeExcel, getEmployeeTemplate } from '@/api/people-manage/staffManage'
+import { saveStaff, editStaff, employeeZip, employeeExcel, getEmployeeTemplate, getImportStatus, getReslut, getSerialList } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
@@ -460,7 +460,7 @@ export default {
   },
   excelRule(fileType, fileSize, fileRaw) {
      function excelType () { return fileType.indexOf('sheet') !== -1 }
-     const isLt1M = fileSize / 1024 / 1024 < 20;
+     const isLt1M = fileSize / 1024 / 1024 < 3;
         if (!excelType()) { 
           this.$message.error('上传表格文件只能是 xls、excel、xlsx 格式！', 4000)
           } else if (excelType() && !isLt1M) {
@@ -471,10 +471,18 @@ export default {
         return excelType() && isLt1M
     },
    handleExcelSuccess(res, file) {
+     getImportStatus().then(res => {
      if(res.code === 0) {
-        this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
-        this.cancelEdit()
+       if(res.data.status === 'ok') {
+          this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+          this.cancelEdit()
+          getReslut().then((res) =>{})
+          getSerialList().then((res) =>{})
+       }
+     } else {
+       this.$message.error(res.msg)
      }
+     })
     },
   excelError(err, file, fileList) {
     if(file.raw.type.indexOf('sheet') !== -1) {

@@ -1,3 +1,1 @@
-# POST http://192.168.10.148:31181/api/v1/user/account/login?username=admin&password=admin
-
-POST http://192.168.10.148:31181/api/v1/user/account/info?token=81pRMpVq
+GET https://blog.csdn.net/?code=0

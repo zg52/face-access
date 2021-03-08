@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-02-25 15:47:54
+ * @LastEditTime: 2021-03-08 17:25:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -11,19 +11,16 @@
   color: #999;
   font-size: 12px;
 }
-
 </style>
 <style lang="scss">
 .dialog__body {
   .el-dialog__body {
   padding-top: 0!important;
- 
 }
  .el-dialog__footer {
     margin-top:-50px
   }
   }
-  
 </style>
 <template>
   <div class="app-container">
@@ -71,7 +68,7 @@
       <el-tabs v-model="activeName" type="border-card">
           <el-tab-pane label="星期制" name="week">
             <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-            
+
             <el-checkbox-group v-model="checkedWeeks" @change="handleWeekChange">
             <el-checkbox v-for="(week, index) in weeks" :label="weeks[index]" :key="week.name">{{ week.name }}</el-checkbox>
           </el-checkbox-group>
@@ -425,11 +422,13 @@ export default {
         })
     },
    changeDateTime() {
-   var _this = this,
+     var _this = this,
        addDate = this.addRules,
        d = ['startDate', 'endDate', 'startTime', 'endTime']
     function dataTimeHandle(x, conversionMode, num) {
-       return moment(_this.dateTime[num]).format(conversionMode)
+      if(_this.dateTime !== null) {
+        return moment(_this.dateTime[num]).format(conversionMode)
+      }
     }
     for(let i = 0; i < d.length; i++) {
        if(i <= 1) {

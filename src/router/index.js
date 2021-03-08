@@ -225,7 +225,7 @@ export const asyncRoutes = [
         path: 'addRules',
         component: () => import('@/views/traffic-rules/addRules'),
         name: 'addRules',
-        meta: { title: '下发规则', icon: 'rules' }
+        meta: { title: '下发规则', icon: 'rules', noCache: true }
      },
      {
         path: 'rules',
