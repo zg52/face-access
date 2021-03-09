@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 17:02:38
+ * @LastEditTime: 2021-03-09 13:58:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -94,7 +94,7 @@ position: absolute;
         <template slot-scope="scope"> {{ scope.row.name }} </template>
       </el-table-column>
       <el-table-column align="center" label="头像" width="90">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageUrl}`" width="64" /></template>
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageUrl}`" width="100%" /></template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" width="180">
         <template slot-scope="scope">

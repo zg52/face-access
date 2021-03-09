@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-08 17:25:31
+ * @LastEditTime: 2021-03-09 11:24:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -168,7 +168,7 @@ export default {
            getVerificationModes: [],
            verificationModes: [], // 发给后台转换后的参数
            name: null,
-           description: 'hh',
+           description: null,
           //  ruleType: 'personType', 
 
 // 指定员工id/或访客id

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 14:13:32
+ * @LastEditTime: 2021-03-09 14:00:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -66,7 +66,7 @@
       <el-table-column align="center" label="姓名" width="200"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
       <el-table-column align="center" label="人员类型" width="200"><template v-slot="scope">{{ scope.row.personType |  personTypeFilter(scope.row) }}</template></el-table-column>
       <el-table-column align="center" label="已注册人脸" width="140" class="ppp">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="100" /></template>
+        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
         <el-table-column align="center" label="加入规则时间" width="auto"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
     </el-table>

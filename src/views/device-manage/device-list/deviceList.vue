@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 09:47:01
+ * @LastEditTime: 2021-03-09 13:47:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -177,7 +177,7 @@ margin-left: 30px;
                <el-form-item label="设备位置："><span>{{ props.row.location }}</span></el-form-item>
                <!-- <el-form-item label="方向："><span>{{ props.row.name }}</span></el-form-item> -->
                <el-form-item label="在线状态："><span>{{ props.row.online | filterOnline}}</span></el-form-item>
-               <el-form-item label="设备状态："><span>{{ props.row.state | filterDeivceState}}</span></el-form-item>
+               <el-form-item label="设备状态："><span>{{ props.row.state | filterDeivceState(props.row)}}</span></el-form-item>
                <el-form-item label="设备密钥："><span>{{ props.row.secret }}</span></el-form-item>
                <el-form-item label="设备信息："><span>{{ props.row.information }}</span></el-form-item>
                <el-form-item label="设备末次心跳同步时间："><span>{{ props.row.astHeartbeatTime | filterDate }}</span></el-form-item>
@@ -198,15 +198,16 @@ margin-left: 30px;
       <!-- <el-table-column align="center" label="方向" :width="100"> <template v-slot="scope"> {{ scope.row.description }} </template> </el-table-column> -->
       <el-table-column align="center" label="在线状态" :width="140"><template v-slot="scope">
         <!-- <i class="dot_red"></i> -->
-         {{ scope.row.online | filterOnline}} </template> </el-table-column>
-      <el-table-column align="center" label="设备状态" :width="140"><template v-slot="scope">{{ scope.row.state | filterDeivceState}} </template> </el-table-column>
+        <span :class="scope.row.online ? 'green' : 'red'">{{ scope.row.online | filterOnline}}</span></template> </el-table-column>
+      <el-table-column align="center" label="设备状态" :width="140"><template v-slot="scope"><span>{{ scope.row.state | filterDeivceState(scope.row)}}</span></template> </el-table-column>
       <el-table-column align="center" label="设备信息" :width="140"><template v-slot="scope">{{ scope.row.information }} </template> </el-table-column>
       <el-table-column align="center" label="创建时间" :width="150" sortable><template v-slot="scope">{{scope.row.createTime | filterDate }}</template> </el-table-column>
       <!-- <el-table-column align="center" label="修改时间" :width="150" sortable><template v-slot="scope">{{ scope.row.lastUpdateTime }}</template> </el-table-column> -->
 
       <el-table-column align="center" label="操作" :width="300" fixed="right">
         <template v-slot="scope">
-          <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button >
+         <div v-show="scope.row.status !== 'removed' ? true : false">
+            <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button >
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
@@ -220,6 +221,7 @@ margin-left: 30px;
                  <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.id" @click.prevent.native="hanlecommandData(scope.row)">{{ command.value }}</el-dropdown-item>
                </el-dropdown-menu>
               </el-dropdown>
+         </div>
             </template>
       </el-table-column>
     </el-table>   
@@ -391,12 +393,17 @@ export default {
     filterOnline(value) {
       return value == vm.deviceISOnline[0].id ? vm.deviceISOnline[0].value : vm.deviceISOnline[1].value
     },
-    filterDeivceState(value) {
-      for(let i = 0; i < vm.deviceStates.length; i++) {
+    filterDeivceState(value, row) {
+      if(row.status === 'removed') {
+        return '已删除'
+      } else {
+        for(let i = 0; i < vm.deviceStates.length; i++) {
         if(vm.deviceStates[i].id === value) {
           return vm.deviceStates[i].value
         }
       }
+      }
+      
     },
   },
   computed: {

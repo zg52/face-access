@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-08 18:28:39
+ * @LastEditTime: 2021-03-09 10:41:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -436,7 +436,8 @@ export default {
     }
   },
   zipRule(fileType, fileSize, fileRaw) {
-     function zipType () { return fileType === 'application/zip' }
+     let zipFormat = (fileRaw.name).lastIndexOf('.')
+     function zipType () { return fileType === 'application/zip' || (fileRaw.name).substr(zipFormat + 1).includes('zip') }
      const isLt1M = fileSize / 1024 / 1024 < 20;
         if (!zipType()) { 
           this.$message.error('上传压缩包只能是 zip 格式！', 4000)

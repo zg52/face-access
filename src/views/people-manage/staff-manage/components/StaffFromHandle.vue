@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 10:03:58
+ * @LastEditTime: 2021-03-09 17:32:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -136,7 +136,7 @@ position: absolute;
     <el-dialog
       title="批量导入员工信息"
       :visible.sync="import_dialogVisible"
-      width="45%"
+      width="51%"
       >
      <el-steps :active="importActive" align-center>
       <el-step v-for="(step, index) of steps" :key="index" :title="step.tit" :description="step.des"></el-step>
@@ -147,7 +147,8 @@ position: absolute;
         class="avatar-uploader"
         ref="uploadZip"
         :action="employeeZip"
-         multiple
+        :file-list="zipList"
+        :on-change="zipChange"
         :before-upload="beforeZipUpload"
         :on-error="zipError"
         :on-success="handleZipSuccess"
@@ -163,7 +164,6 @@ position: absolute;
         class="importUpload"
         ref="uploadExcel"
         :action="employeeExcel"
-         multiple
         :before-upload="beforeExcelUpload"
         :on-error="excelError"
         :on-success="handleExcelSuccess"
@@ -267,12 +267,13 @@ export default {
         },
 
 // 批量导入
+        zipList: [],
         import_dialogVisible: false,
         importActive: 1,
         steps: [
           {
             tit: '步骤一',
-            des: '图片命名格式为姓名（张三.jpg/png/bmp），批量压缩图片为zip格式上传'
+            des: '图片命名格式为姓名（张三.jpg/png/bmp），单个图片大小不能超过500KB，批量压缩图片为zip格式上传'
           },
           {
             tit: '步骤二',
@@ -431,28 +432,39 @@ export default {
     return this.zipRule(file.type, file.size, file)
   },
    handleZipSuccess(res, file) {
+    //  console.log(this.zipList)
      if(res === 'success') {
        this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
        this.zipExcelToggle()
+     } else{
+       this.$message.error(res.msg)
+       this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
      }
     },
   zipError(err, file, fileList) {
-    if(file.raw.type ==  'application/zip') {
+    if(this.zipType(file.raw.type, file.raw.name)) {
        this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
     }
   },
+  zipType(fileName, fileType) {
+     let zipFormat = (fileName).lastIndexOf('.')
+   return fileType === 'application/zip' || (fileName).substr(zipFormat + 1).includes('zip')
+  },
   zipRule(fileType, fileSize, fileRaw) {
-     function zipType () { return fileType === 'application/zip' }
-     const isLt1M = fileSize / 1024 / 1024 < 20;
-        if (!zipType()) { 
+     const isLt1M = fileSize / 1024 / 1024 < 500
+        if (!this.zipType(fileType, fileRaw.name)) { 
           this.$message.error('上传压缩包只能是 zip 格式！', 4000)
-          } else if (zipType() && !isLt1M) {
-             this.$message.error('上传zip大小不能超过20MB！', 4000)
-          } else if (!zipType() && !isLt1M) {
+          } else if (this.zipType(fileType, fileRaw.name) && !isLt1M) {
+             this.$message.error('上传zip大小不能超过500MB！', 4000)
+          } else if (!this.zipType(fileType, fileRaw.name) && !isLt1M) {
              this.$message.error('上传zip大小不能超过20MB,只能是 zip 格式！', 4000)
           }
-        return zipType() && isLt1M
+        return this.zipType(fileType, fileRaw.name) && isLt1M
     },
+  zipChange(file, fileList) {
+  // console.log("🚀 ~ file: StaffFromHandle.vue ~ line 467 ~ zipChange ~ fileList", fileList)
+
+  },
 
 // 导入表格
   beforeExcelUpload(file) {
@@ -460,7 +472,7 @@ export default {
   },
   excelRule(fileType, fileSize, fileRaw) {
      function excelType () { return fileType.indexOf('sheet') !== -1 }
-     const isLt1M = fileSize / 1024 / 1024 < 3;
+     const isLt1M = fileSize / 1024 / 1024 < 3
         if (!excelType()) { 
           this.$message.error('上传表格文件只能是 xls、excel、xlsx 格式！', 4000)
           } else if (excelType() && !isLt1M) {
@@ -476,9 +488,16 @@ export default {
        if(res.data.status === 'ok') {
           this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
           this.cancelEdit()
-          getReslut().then((res) =>{})
+          getReslut(
+            { serialNumber: res.serialNumber }
+          ).then((res) =>{})
           getSerialList().then((res) =>{})
        }
+       
+       getReslut(
+         { serialNumber: res.data.serialNumber }
+       ).then((res) =>{})
+          getSerialList().then((res) =>{})
      } else {
        this.$message.error(res.msg)
      }

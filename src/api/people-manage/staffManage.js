@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-08 17:36:36
+ * @LastEditTime: 2021-03-09 18:16:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -101,10 +101,14 @@ export function getImportStatus() {
  }
 
  // 查看当前表格导入结果（serialNumber=20210308085808）
- export function getReslut() {
+
+//  编辑时：传入name+serialNumber,
+// 保存时：图片重传——>传serialNumber 清除之前错误的数据
+ export function getReslut(params) {
   return request({
-     url: 'person/getReslut',
-     method: 'GET'
+     url: 'person/getReslut?size=10000000',
+     method: 'GET',
+     params
    })
  }
 
