@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-02-26 15:55:06
+ * @LastEditTime: 2021-03-09 09:54:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -107,7 +107,7 @@ export function trafficRersultFilter(string, row) {
     return '已通过'
   } else {
     return `未通过`
-  }
+  }  
 }
 
 /**

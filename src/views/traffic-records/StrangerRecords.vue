@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-01 09:41:24
+ * @LastEditTime: 2021-03-09 10:08:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -24,7 +24,6 @@
     font-size: 12px!important;
         }
     }
-
 </style>
 <template>
   <div class="app-container1">
@@ -107,7 +106,7 @@ export default {
         gateCardId: null,
         icCardId: null,
         idNum: null,
-        personType: null,
+        personType: 'null',
 
         current: 1,
         size: 20,

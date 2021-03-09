@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-08 18:46:45
+ * @LastEditTime: 2021-03-09 09:56:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -73,8 +73,8 @@
       <el-table-column align="center" label="已抓拍人脸" width="110" class="ppp"> 
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" alt="" width="100" /></template>
       </el-table-column>
-      <el-table-column align="center" label="通行设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
-      <el-table-column align="center" label="通行结果" width="110"> <template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
+      <el-table-column align="center" label="通行设备" width="200"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
+      <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
       <span v-show="scope.row.result !== 'success'" class="red">（{{ scope.row.reason }}）</span></template></el-table-column>
       <el-table-column align="center" label="体温" width="90"> <template v-slot="scope"><span :class="scope.row.temperature >= 37.5 ? 'red' : ''">{{ scope.row.temperature }}℃</span></template></el-table-column>
       <el-table-column align="center" label="身份证号" width="120"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
