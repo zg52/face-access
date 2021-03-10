@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 17:08:34
+ * @LastEditTime: 2021-03-10 14:57:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -98,6 +98,7 @@ export default {
       tableData: [],
       
       pagingQuery: {
+        source: 'device',
         deviceId: null,
         category: null,
         createTimeFrom: null,

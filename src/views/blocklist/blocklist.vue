@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 13:58:09
+ * @LastEditTime: 2021-03-10 17:04:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -94,7 +94,7 @@ position: absolute;
         <template slot-scope="scope"> {{ scope.row.name }} </template>
       </el-table-column>
       <el-table-column align="center" label="头像" width="90">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageUrl}`" width="100%" /></template>
+        <template v-slot="scope"><img :src="scope.row.imgUrl" width="100%" /></template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" width="180">
         <template slot-scope="scope">
@@ -323,16 +323,18 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         }).then(() => {
-            for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteBlock(this.multipleSelection[i].id).then((res) => {
+           let personIds = []
+          for (let i = 0; i < this.multipleSelection.length; i++) {
+            personIds.push(this.multipleSelection[i].id)
+          }
+            deleteBlock(personIds).then((res) => {
                 if (res.code == 0 && res.data) {
-                  if(i + 1 >= this.multipleSelection.length) {
                   this.onSearch()
-                  this.$message.success({message: res.msg})
-                  } 
+                  this.$message.success(res.msg)
+                } else {
+                   this.$message.error(res.msg)
                 }
               })
-            }
           }).catch(() => {
              this.$message.info({message: '已取消删除'})
              this.$refs.multipleTable.clearSelection()

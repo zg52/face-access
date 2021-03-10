@@ -175,7 +175,6 @@ export const asyncRoutes = [
          },
         ]
       },
- 
     ]
   },
   {
@@ -194,7 +193,7 @@ export const asyncRoutes = [
       {
         path: 'person-issued',
         component: () => import('@/views/device-manage/person-issued'),
-        redirect: '/device-manage/person-issued/issued-list',
+        redirect: '/device-manage/person-issued/issued-add/issuedAdd?tab=0',
         alwaysShow: true,
         meta: { title: '人员下发', icon: 'guide' },
         children: [

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 14:26:40
+ * @LastEditTime: 2021-03-10 17:41:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -79,11 +79,11 @@
       <el-table-column align="center" label="体温" width="90"> <template v-slot="scope"><span :class="scope.row.temperature >= 37.5 ? 'red' : ''">{{ scope.row.temperature }}℃</span></template></el-table-column>
       <el-table-column align="center" label="身份证号" width="120"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
       <el-table-column align="center" label="门禁卡" width="120"> <template v-slot="scope"> {{ scope.row.gateCardId }}</template></el-table-column>
-        <el-table-column align="center" label="IC卡" width="120"> <template v-slot="scope"> {{ scope.row.icCardId }}</template></el-table-column>
+      <el-table-column align="center" label="IC卡" width="120"> <template v-slot="scope"> {{ scope.row.icCardId }}</template></el-table-column>
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
       <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>
-      <el-table-column align="center" label="通行时间" width="auto"> <template v-slot="scope"> {{ scope.row.createTime | filterDate}} </template></el-table-column>
+      <el-table-column align="center" label="通行时间" width="160" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>
 
     <el-pagination
@@ -212,6 +212,9 @@ export default {
        this.getRuleNames = res
     })
     this.onSearch()
+    setInterval(() => {
+      this.onSearch()
+    },360_0000)
   },
   mounted() {},
 }

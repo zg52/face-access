@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-02 10:51:11
+ * @LastEditTime: 2021-03-10 14:14:42
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -131,7 +131,12 @@ const passWayArr = [
    deviceTypes = [
     { id: 'entrance', value: '门禁' },
     { id: 'brake', value: '闸机' }
-]
+],
+ issuePersonStatus = [
+   { id: 'normal',value: '已下发' },
+   { id: 'issuing', value: '下发中...' },
+   { id: 'removing', value: '已删除' }
+ ]
  
 /**
  * @description: 处理通行方式
@@ -232,7 +237,7 @@ export async function getRuleNames() {
 
 
   /**
- * @description: 性别、头像类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
+ * @description: 性别、头像类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型、r
  */
   export function getGender() {
     return genders
@@ -261,7 +266,9 @@ export async function getRuleNames() {
   export function getDeviceTypes() {
     return deviceTypes
   }
-
+  export function get_issuePersonStatus() {
+    return issuePersonStatus
+  }
 
   
   

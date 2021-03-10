@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 15:56:37
+ * @LastEditTime: 2021-03-10 16:02:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -75,22 +75,22 @@
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
-      <router-link to="/traffic-rules/addRules"><el-button type="primary"><svg-icon icon-class="edit"/> 新建通行规则</el-button></router-link>
+      <router-link class="ml10" to="/traffic-rules/addRules"><el-button type="primary"><svg-icon icon-class="edit"/> 新建通行规则</el-button></router-link>
     </el-form>
       
     <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-      <el-table-column align="center" label="ID" width="50"> <template v-slot="scope">{{ scope.row.id }} </template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="110"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="所在设备" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
+        <el-table-column align="center" label="设备标识" width="120"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier}}</template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationModes | verificationModes_handle }}</template></el-table-column>
       <el-table-column align="center" label="通行人员类型" width="125"> <template v-slot="scope">{{ scope.row.personType | personTypeFilter(scope.row)}}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
-      <el-table-column align="center" label="通行星期" width="108"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
+      <el-table-column align="center" label="通行星期" width="135"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
       <el-table-column align="center" label="通行时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.startTime } ~ ${ scope.row.endDate } ${ scope.row.endTime }` | dateTime }}</template></el-table-column>
       <el-table-column align="center" label="规则描述"><template v-slot="scope">{{ scope.row.description }}</template> </el-table-column> 
-      <el-table-column align="center" label="创建时间" width="108"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
+      <el-table-column align="center" label="创建时间" width="152"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
       <!-- <el-table-column align="center" label="修改时间" width="108"><template v-slot="scope">{{ scope.row.lastUpdateTime | filterDate }}</template></el-table-column> -->
 
       <!-- <el-table-column align="center" label="创建人"><template v-slot="scope">{{ scope.row.userId }}</template></el-table-column> -->
@@ -252,16 +252,20 @@ export default {
     weekComput(value) {
           let weekStr = []
           weekParams().forEach((item, index) => {
-            value.includes(item?.id) ? weekStr.push(`周${ item?.value }`) : ''
+            value.includes(item?.id) ? weekStr.push(`${ item?.value }`) : ''
             })
-         if(value.length === 7) {
+         if(value.length === 11) {
            return '周一至周日'
          } else if(value.includes('1,2,3,4,5,6')) {
             return '周一 至 周六'
          } else if(value.includes('1,2,3,4,5')) {
             return '周一 至 周五'
+         } else if(value.includes('1,2,3,4')) {
+            return '周一 至 周四'
+         } else if(value.includes('1,2,3')) {
+            return '周一 至 周三'
          } else {
-            return weekStr.join('，')
+            return '周' + weekStr.join('、')
          }
   },
   dateTime(value) {

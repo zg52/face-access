@@ -1,13 +1,22 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-04 17:26:25
+ * @LastEditTime: 2021-03-10 16:44:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\article.js
  */
-import request from '@/utils/request'
+// import request from '@/utils/request'
 
+  /**
+ * @description: 公用代理地址
+ */
+let proxyUrl = 'http://www.zg.com'
+export { proxyUrl as  proxyUrl_1}
+
+  /**
+ * @description: 公用图片地址
+ */
 export function imgUrl(target, imgId) {
    return `http://192.168.10.148:8081/`
 }
@@ -46,3 +55,4 @@ export function downEmployeeTemplate() {
 export function downVisitorTemplate() {
    downXsl(null, null, '访客信息录入模板', downVisitor)
  }
+ 

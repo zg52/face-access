@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 17:32:08
+ * @LastEditTime: 2021-03-10 16:47:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -191,7 +191,7 @@ import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
 import { getGender, getFaceType} from '@/utils/business'
-import { imgUrl, downEmployeeTemplate } from '@/api/public'
+import {proxyUrl_1, imgUrl, downEmployeeTemplate } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
 let vm
@@ -225,7 +225,7 @@ export default {
       addStaffFormVisible: true,
       imgUploading: false,
       save_loading_text: '保 存',
-      proxyUrl: 'http://www.zg.com',
+      proxyUrl: proxyUrl_1,
       genders: getGender(),
       faceTypes: getFaceType(),
       imageUrl: '',
@@ -543,7 +543,6 @@ export default {
 
   },
   mounted() {
-
   },
 }
 </script>

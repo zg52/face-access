@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 13:47:45
+ * @LastEditTime: 2021-03-10 16:31:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -287,7 +287,7 @@ import {
   addDevice,  // 增设备
   editDevice, // 编辑设备
   searchDevice,  // 查设备列表
-  getDeviceDetails, // 查设备详情
+  // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
   instructDevice // 操作设备
  } from '@/api/device-manage'

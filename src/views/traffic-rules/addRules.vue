@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 11:24:47
+ * @LastEditTime: 2021-03-10 12:39:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -422,22 +422,22 @@ export default {
         })
     },
    changeDateTime() {
-     var _this = this,
-       addDate = this.addRules,
+       let addDate = this.addRules,
        d = ['startDate', 'endDate', 'startTime', 'endTime']
-    function dataTimeHandle(x, conversionMode, num) {
-      if(_this.dateTime !== null) {
-        return moment(_this.dateTime[num]).format(conversionMode)
-      }
-    }
-    for(let i = 0; i < d.length; i++) {
-       if(i <= 1) {
-         addDate[d[i]] = dataTimeHandle(d['startDate'], 'YYYY-MM-DD', 0)
-       } else {
-         addDate[d[i]] = dataTimeHandle(d[i], 'hh:mm:ss', i)
-       }
-    }
-    },
+        for(let i = 0; i < d.length; i++) {
+           if(i <= 1) {
+             addDate[d[i]] = dataTimeHandle('YYYY-MM-DD', i)
+           } else {
+             addDate[d[2]] = dataTimeHandle('HH:mm:ss', 0)
+              addDate[d[3]] = dataTimeHandle('HH:mm:ss', 1)
+           }
+        }
+        function dataTimeHandle(conversionMode, num) {
+          if(vm.dateTime !== null) {
+            return moment(vm.dateTime[num]).format(conversionMode)
+          }
+        }
+        },
     handleSizeChange(val) {
       this.pagingParams.size = val
       this.getDeviceList()

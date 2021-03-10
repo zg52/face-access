@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 14:33:37
+ * @LastEditTime: 2021-03-10 15:20:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -38,6 +38,11 @@
           >
         </el-date-picker>
       </el-form-item>
+      <el-form-item label="状态">
+        <el-select v-model="pagingQuery.status" placeholder="请选择" filterable clearable>
+         <el-option v-for="(personStatus, index) of get_issuePersonStatus" :key="index" :label="personStatus.value" :value="personStatus.id"></el-option>
+        </el-select>
+      </el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
@@ -53,14 +58,17 @@
        <el-table-column align="center" label="已注册人脸" width="95">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-      <el-table-column align="center" label="所在设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
-       <el-table-column align="center" label="身份证号" width="200"> <template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
-      <el-table-column align="center" label="门禁卡" width="260"> <template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
-      <el-table-column align="center" label="IC卡" width="260"> <template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
+       <el-table-column align="center" label="状态" width="90"><template v-slot="scope"> {{ scope.row.status | filter_issuePersonStatus }} </template></el-table-column>
+      <el-table-column align="center" label="设备标识" width="200"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
+      <el-table-column align="center" label="所在设备" width="200"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
+      <el-table-column align="center" label="身份证号" width="200"><template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
+      <el-table-column align="center" label="门禁卡" width="260"><template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
+      <el-table-column align="center" label="IC卡" width="260"><template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
       <el-table-column align="center" label="创建日期" width="230"> <template v-slot="scope"> {{ scope.row.createTime | filterDate}} </template></el-table-column>
        <el-table-column align="left" label="操作" width="auto" fixed="right">
         <template v-slot="scope">
           <el-popconfirm
+            v-show="scope.row.status != 'removing' ? true : false"
             confirmButtonText="确认"
             cancelButtonText="取消"
             title="确定要删除该通行人员？"
@@ -84,7 +92,7 @@
 </template>
 <script>
 
-import { getDeviceNames } from '@/utils/business'
+import { getDeviceNames, get_issuePersonStatus } from '@/utils/business'
 import { beenIssuedEmployee, deleteDevicePerson } from '@/api/person-issued/index'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -102,6 +110,7 @@ export default {
       getDeviceNames: [],
       getImgUrl: imgUrl(),
       multipleSelection: [],
+      get_issuePersonStatus: get_issuePersonStatus(),
       
       pagingQuery: {
         operator: null,
@@ -112,6 +121,7 @@ export default {
         gateCardId: null,
         icCardId: null,
         idNum: null,
+        status: 'normal',
 
         current: 1,
         size: 20,
@@ -162,25 +172,26 @@ export default {
         }
       })
     },
-
-// 批量删规则
     onDeletes() {
+      let _this = this
        if (this.multipleSelection.length !== 0) {
         this.$confirm("此操作将永久删除已选设备通行人员, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
         }).then(() => {
-            for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteDevicePerson({ids:this.multipleSelection[i].id}).then((res) => {
-                if (res.code == 0) {
-                  if(i + 1 >= this.multipleSelection.length) {
+          let personIds = []
+          for (let i = 0; i < _this.multipleSelection.length; i++) {
+            personIds.push(_this.multipleSelection[i].id)
+          }
+          deleteDevicePerson({ids: personIds}).then((res) => {
+              if (res.code == 0) {
                   this.onSearch()
-                  this.$message.success({message: res.msg})
-                  } 
+                  this.$message.success(res.msg)
+                } else {
+                  this.$message.error(res.msg, 4000)
                 }
-              })
-            }
+             })
           }).catch(() => {
              this.$message.info({message: '已取消删除'})
              this.$refs.multipleTable.clearSelection()

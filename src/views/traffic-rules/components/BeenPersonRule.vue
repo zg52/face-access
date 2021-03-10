@@ -1,30 +1,11 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-05 14:45:05
+ * @LastEditTime: 2021-03-10 17:58:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
-<style lang="scss" scoped>
-// 详情
- .demo-table-expand {
-    width: 1100px;
-  }
- 
-  .demo-table-expand .el-form-item {
-  margin-right: 0!important;
-    margin-bottom: 0;
-    width: 20%;
-  }
-  .demo-table-expand ::v-deep .el-form-item__label {
-      padding-right: 0;
-        font-weight: normal;
-      .el-form-item__content {
-    font-size: 12px!important;
-        }
-    }
-</style>
 <template>
   <div class="app-container">
     <!-- <el-form :model="pagingQuery" :inline="true">
@@ -68,7 +49,7 @@
       <el-table-column align="center" label="已注册人脸" width="130" class="ppp">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="120" /></template>
       </el-table-column>
-        <el-table-column align="center" label="加入规则时间" width="auto"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
+        <el-table-column align="center" label="加入规则时间" width="auto"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
     </el-table>
 
     <el-pagination

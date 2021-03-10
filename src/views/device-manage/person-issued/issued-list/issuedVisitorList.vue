@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 14:33:56
+ * @LastEditTime: 2021-03-10 14:39:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -40,6 +40,11 @@
           >
         </el-date-picker>
       </el-form-item>
+      <el-form-item label="状态">
+        <el-select v-model="pagingQuery.status" placeholder="请选择" filterable clearable>
+         <el-option v-for="(personStatus, index) of get_issuePersonStatus" :key="index" :label="personStatus.value" :value="personStatus.id"></el-option>
+        </el-select>
+      </el-form-item>
        <el-form-item label="身份证号"><el-input class="w200" v-model.trim="pagingQuery.idNum" clearable></el-input></el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
@@ -56,6 +61,8 @@
        <el-table-column align="center" label="已注册人脸" width="95">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
+      <el-table-column align="center" label="状态" width="90"><template v-slot="scope"> {{ scope.row.status | filter_issuePersonStatus }} </template></el-table-column>
+      <el-table-column align="center" label="设备标识" width="200"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
       <el-table-column align="center" label="所在设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
        <el-table-column align="center" label="身份证号" width="200"> <template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
       <el-table-column align="center" label="所在公司" width="260"> <template v-slot="scope"> {{ scope.row.personOrganizationId }} </template></el-table-column>
@@ -63,6 +70,7 @@
        <el-table-column align="left" label="操作" width="auto">
         <template v-slot="scope">
           <el-popconfirm
+           v-show="scope.row.status != 'removing' ? true : false"
             confirmButtonText="确认"
             cancelButtonText="取消"
             title="确定要删除该通行人员？"
@@ -86,7 +94,7 @@
 </template>
 <script>
 
-import { getDeviceNames } from '@/utils/business'
+import { getDeviceNames, get_issuePersonStatus } from '@/utils/business'
 import { beenIssuedVisitor, deleteDevicePerson } from '@/api/person-issued/index'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -104,6 +112,7 @@ export default {
       getDeviceNames: [],
       getImgUrl: imgUrl(),
       multipleSelection: [],
+      get_issuePersonStatus: get_issuePersonStatus(),
       
       pagingQuery: {
         operator: null,
@@ -114,6 +123,7 @@ export default {
         gateCardId: null,
         icCardId: null,
         idNum: null,
+        status: 'normal',
 
         current: 1,
         size: 20,

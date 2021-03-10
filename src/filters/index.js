@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-09 09:54:05
+ * @LastEditTime: 2021-03-10 14:27:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -91,7 +91,7 @@ export function filterDate(string) {
 
 // 业务数据过滤
 
-import { passWay, weekParams, passWayArrHandle, getDeviceNames } from '@/utils/business'
+import { passWay, weekParams, passWayArrHandle, getDeviceNames, get_issuePersonStatus } from '@/utils/business'
 
 const businessData = [
   'success',
@@ -159,4 +159,17 @@ export function verificationModes_handle(value) {
       return txt.join(' / ')
       }
 }
+
+/**
+ * @description: 处理设备下发人员状态
+ */
+  export function filter_issuePersonStatus(value) {
+    if(value.includes(get_issuePersonStatus()[0].id)) {
+      return get_issuePersonStatus()[0].value
+    } else if(value.includes(get_issuePersonStatus()[1].id)) {
+      return get_issuePersonStatus()[1].value
+    } else {
+      return get_issuePersonStatus()[2].value
+    }
+  }
 

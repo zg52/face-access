@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 10:41:44
+ * @LastEditTime: 2021-03-10 16:48:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -127,7 +127,7 @@ position: absolute;
        </div>
       </el-form-item><br>
      <el-form-item class="save_staff">
-        <el-button type="primary" v-show="!btn_el.includes('edit')" @click.prevent="bulkImport"><i class="el-icon-folder-add" /> 批量导入</el-button>
+        <el-button type="primary" v-show="!btn_el.includes('edit')" @click.prevent="bulkImport" disabled><i class="el-icon-folder-add" /> 批量导入</el-button>
         <el-button @click="resetAddVisitorForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveVisitorHandle('addVisitorFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
         <router-link to="/people-manage/visitor-manage/visitor-list/visitorlist" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看访客列表</el-button></router-link>
@@ -193,7 +193,7 @@ import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate'
 import { getGender, getFaceType} from '@/utils/business'
-import { imgUrl, downVisitorTemplate } from '@/api/public'
+import {proxyUrl_1, imgUrl, downVisitorTemplate } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
 let vm
@@ -227,7 +227,7 @@ export default {
       addVisitorFormVisible: true,
       imgUploading: false,
       save_loading_text: '保 存',
-      proxyUrl: 'http://www.zg.com',
+      proxyUrl: proxyUrl_1,
       date: null,
       genders: getGender(),
       faceTypes: getFaceType(),

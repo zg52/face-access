@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 14:26:16
+ * @LastEditTime: 2021-03-10 15:54:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -28,7 +28,7 @@
 <template>
   <div class="app-container1">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
+      <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.personName" clearable></el-input></el-form-item>
       <el-form-item label="通行设备">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
@@ -79,7 +79,7 @@
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
       <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>
-      <el-table-column align="center" label="通行时间" width="auto"> <template v-slot="scope"> {{ scope.row.createTime | filterDate}} </template></el-table-column>
+      <el-table-column align="center" label="通行时间" width="160" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>
 
     <el-pagination
@@ -119,7 +119,7 @@ export default {
       multipleSelection: [],
       
       pagingQuery: {
-        name: null,
+        personName: null,
         deviceId: null,
         ruleName: null,
         direction: null,
