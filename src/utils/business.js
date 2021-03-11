@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-10 14:14:42
+ * @LastEditTime: 2021-03-11 10:47:59
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -69,6 +69,10 @@ const passWayArr = [
       ]
     }
     ],
+    personTypes = [
+      { id: 'employee', name: '员工' },
+       { id: 'visitor', name: '访客' }
+    ],
     genders = [
       { id: 'male' , value: '男' },
       { id: 'female', value: '女'  }
@@ -86,8 +90,8 @@ const passWayArr = [
      { id: 'failure', value: '未通过'}
    ],
    categorys = [
-     { id: 'blocklist', name: '禁止通行名单' },
-     { id: 'high_body_temperature', name: '体温过高' },
+     { id: 'blocklist', name: '黑名单人员' },
+     { id: 'high_body_temperature', name: '体温异常' },
      { id: 'device_upgrade_failed', name: '设备升级失败' },
      { id: 'device_out_of_order', name: '设备故障' }
    ],
@@ -237,39 +241,19 @@ export async function getRuleNames() {
 
 
   /**
- * @description: 性别、头像类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型、r
+ * @description: 性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
  */
-  export function getGender() {
-    return genders
-  }
-  export function getFaceType() {
-    return faceTypes
-  }
-  export function getDirection() {
-    return directions
-  }
-  export function getTrafficResult() {
-    return trafficResult
-  }
-  export function getCategory() {
-    return categorys
-  }
-  export function getDevice_handle_list() {
-    return deviceHandle
-  }
-  export function getDeviceStates() {
-    return deviceStates
-  }
-  export function getDeviceISOnline() {
-    return deviceISOnline
-  }
-  export function getDeviceTypes() {
-    return deviceTypes
-  }
-  export function get_issuePersonStatus() {
-    return issuePersonStatus
-  }
-
+  export function getGender() { return genders }
+  export function getFaceType() { return faceTypes }
+  export function getDirection() { return directions }
+  export function getTrafficResult() { return trafficResult } 
+  export function getCategory() { return categorys }
+  export function getDevice_handle_list() { return deviceHandle }
+  export function getDeviceStates() { return deviceStates }
+  export function getDeviceISOnline() { return deviceISOnline }
+  export function getDeviceTypes() { return deviceTypes }
+  export function get_issuePersonStatus() { return issuePersonStatus }
   
+  export { personTypes as getPersonTypes }
   
   

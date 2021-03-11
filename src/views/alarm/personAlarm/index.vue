@@ -1,75 +1,167 @@
 <!--
  * @Author: your name
- * @Date: 2021-01-15 17:56:08
- * @LastEditTime: 2021-03-01 16:50:55
+ * @Date: 2021-01-08 16:14:42
+ * @LastEditTime: 2021-03-11 10:48:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\device-manage\personnel\index.vue
+ * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
-<style scoped>
-.app-container {
-  padding-top:10px;
-}
-  
+<style lang="scss" scoped>
 </style>
 <template>
-<div class="app-container">
-  <el-tabs v-model="activeName" :tab-position="tabPosition">
-      <el-tab-pane v-for="(tab, index) of tabs" :label="tab.value" :key="index">
-         <staffAlarm v-if="isShow1"/>
-         <visitorAlarm v-if="isShow2"/>
-    </el-tab-pane>
-    <!-- <el-tab-pane label="其他" disabled>其他</el-tab-pane> -->
-  </el-tabs>
-</div>
+  <div class="app-container">
+
+ <el-form :model="pagingQuery" :inline="true">
+ <el-form-item label="选择设备名称">
+         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
+        </el-select>
+      </el-form-item>
+  <el-form-item label="告警类型"><el-select class="w140" v-model="pagingQuery.category" clearable><el-option v-for="(deviceCategory, index) of deviceCategorys" :key="index" :label="deviceCategory.name" :value="deviceCategory.id"></el-option></el-select></el-form-item>
+  <el-form-item label="人员类型"><el-select class="w140" v-model="pagingQuery.personType" clearable><el-option v-for="(personType, index) of personTypes" :key="index" :label="personType.name" :value="personType.id"></el-option></el-select></el-form-item>
+    <el-form-item label="告警时间">
+      <el-date-picker
+        v-model="date"
+        type="datetimerange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="起止日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        @change="changeDate">
+      </el-date-picker>
+    </el-form-item>
+    <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span> </el-button>
+     <el-button type="primary" @click.prevent="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
+  </el-form>
+
+  <el-table border :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading">
+    <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
+    <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
+    <el-table-column align="center" label="姓名" width="auto"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
+    <el-table-column align="center" label="头像" width="auto"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
+    <el-table-column align="center" label="设备名称" width="auto"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template> </el-table-column>
+    <el-table-column align="center" label="设备标识" width="auto"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template> </el-table-column>
+    <el-table-column align="center" label="告警类型" width="auto"><template v-slot="scope">{{ scope.row.category | filterCategory }}</template></el-table-column>
+    <el-table-column align="center" label="告警时间" width="auto" sortable><template v-slot="scope"> {{ scope.row.createTime | filterDate }} </template></el-table-column>
+    </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagingQuery['current']"
+      :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
+      :page-size="pagingQuery['size']"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="pagingQuery['total']">
+    </el-pagination> 
+  </div>
 </template>
 <script>
 
-import staffAlarm from './staffAlarm'
-import visitorAlarm from './visitorAlarm'
+import { deviceException } from '@/api/alarm'
+import { getDeviceNames, getCategory, getPersonTypes } from '@/utils/business'
+import { pickerOptions } from '@/utils'
+import moment from 'moment'
 
-let vm
+let vm,
+    deviceCategory = [...getCategory()]
+    deviceCategory = deviceCategory.slice(0, 2)
 
-  export default {
-    components: {
-      staffAlarm,
-      visitorAlarm
-    },
-    data() {
-      return {
-        tabs: [
-          {
-            value: '员工告警',
-          },
-          {
-            value: '访客告警',
-          }
-        ],
-        tabPosition: 'top',
-        activeName: 0,
-        isShow1: true,
-        isShow2: false
-      };
-    },
-    watch: {
-      activeName(val) {
-         this.$router.push(`${ this.$route.path }?tab=${ val }`)
-         sessionStorage.setItem('personAlarm', val)
-         val == 0 ? (this.isShow1 = true, this.isShow2 = false) : (this.isShow1 = false, this.isShow2 = true)
-       }
-    },
-    created() {
-      vm = this
-      const tab = this.$route.query.tab
-       if (tab) {
-         this.activeName = tab
-       }
-    let getTabIndex = sessionStorage.getItem('personAlarm')
-        this.activeName = getTabIndex
-        this.$router.push(`${ this.$route.path }?tab=${ getTabIndex }`)
-    },
-    mounted() {
-
+export default {
+  name: 'device',
+  data() {
+    return {
+      table_loading: false,
+      getDeviceNames: [],
+      checked: false,
+      pickerOptions: pickerOptions(),
+      deviceCategorys: deviceCategory,
+      date: null,
+      tableData: [],
+      personTypes: getPersonTypes,
+      pagingQuery: {
+        personType: null,
+        source: 'person',
+        deviceId: null,
+        category: null,
+        createTimeFrom: null,
+        createTimeTo: null,
+        
+        current: 1,
+        size: 20,
+        total: null,
+      },
+    };
+  },
+  filters: {
+   getDeviceId_name(value) {
+    let txt = null
+      vm.getDeviceNames.map((item, index) => {
+         item.id == value ? txt = item.name : null
+      })
+      return txt
+  },
+  filterCategory(value) {
+    if(value === 'blocklist') {
+      return '黑名单人员'
+    } else {
+      return '体温异常'
     }
-  };
+  }
+  },
+  methods: {
+    onSearch() {
+      this.pagingQuery.current = 1
+      this.getDeviceException()
+    },
+    getDeviceException() {
+        let params = this.pagingQuery
+       deviceException(this.pagingQuery).then((res) => {
+        this.table_loading = true
+        if(res.code === 0)  {
+         this.table_loading = false
+         this.tableData = []
+            params.size = res.data.size
+            params.current = res.data.current
+            params.total = res.data.total
+          if(res.data.records.length !== 0) {
+            this.tableData = res.data.records
+          }
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
+        }
+      })
+    },
+    handleSizeChange(val) {
+      this.pagingQuery.size = val
+      this.getDeviceException()
+    },
+    handleCurrentChange(val) {
+      this.pagingQuery.current = val
+      this.getDeviceException()
+    },
+
+    changeDate() {
+      let _this = this,
+          date = _this.date
+      date && date.length
+        ? ((_this.pagingQuery.createTimeFrom = moment(date[0]).format("YYYY-MM-DD hh:mm")),
+          (_this.pagingQuery.createTimeTo = moment(date[1]).format("YYYY-MM-DD hh:mm")))
+        :  _this.pagingQuery.createTimeFrom = _this.pagingQuery.createTimeTo = null
+    },
+     refreshPagingQuery() {
+      this.pagingQuery = {}
+        this.onSearch()
+    }
+  },
+  created() {
+      vm = this
+      getDeviceNames().then((res) => {
+       this.getDeviceNames = res
+    })
+   this.onSearch()
+  }
+}
 </script>
