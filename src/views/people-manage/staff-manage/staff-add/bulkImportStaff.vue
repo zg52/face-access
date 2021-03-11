@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 15:09:04
+ * @LastEditTime: 2021-03-11 18:58:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -88,71 +88,98 @@
     display: block;
     height: 20px;
     }
+
+.el-steps--horizontal {
+  width: 60%;
+}
+.import {
+    margin-top:30px;
+        width: 25%;
+    .el-upload__tip {
+      margin-top:20px;
+    }
+  }
+  .importActive {
+    margin-top:30px;
+    .el-step {
+      margin-bottom: 35px;
+    }
+   ::v-deep .el-step.is-vertical .el-step__line {
+      height: 84px;
+    }
+  }
+  .xia {
+    margin-top: 50px;
+  }
 </style>
 <template>
   <div class="app-container">
-  <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
-      <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator" clearable></el-input></el-form-item>
-      <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
-      <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-      <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employeeNum" clearable></el-input></el-form-item>
-      <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone" clearable></el-input></el-form-item>
-      <el-form-item label="住址"><el-input v-model.trim="pagingQuery.address" clearable></el-input></el-form-item>
-      <el-form-item label="邮箱"><el-input v-model.trim="pagingQuery.mail" clearable></el-input></el-form-item>
-      <el-form-item label="部门"> <el-select disabled v-model="value" clearable></el-select></el-form-item> 
-      <el-form-item label="职务" ><el-input v-model.trim="pagingQuery.position" clearable></el-input></el-form-item>
-      <el-form-item label="入职日期：">
-        <el-date-picker class="w300" v-model="pagingQuery.enrollTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate1"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="离职日期">
-        <el-date-picker class="w300" v-model="pagingQuery.expiredTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate2"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select v-model="pagingQuery.states" class="w100" @change="changeStatus" clearable>
-         <el-option v-for="(state, index) of states" :key="index" :label="state.value" :value="state.id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="门禁卡号"> <el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
-      <el-form-item label="IC卡号" ><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
-      <el-form-item label="创建日期">
-        <el-date-picker
-          v-model="date"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="创建日期"
-          end-placeholder="截止日期"
-          :picker-options="pickerOptions"
-          :default-time="['00:00:00', '23:59:59']"
-          @change="changeDate3"
-          clearable
-          >
-        </el-date-picker>
-      </el-form-item>
-      <!-- <el-form-item label="有无人脸">
-        <el-select v-model="pagingQuery.state" class="w100">
-          <el-option></el-option>
-        </el-select>
-      </el-form-item> -->
+<el-page-header @back="goBack" content=""></el-page-header>
+<!-- 批量导入 -->
+  <el-steps :active="importActive" direction="vertical" class="importActive">
+    <el-step v-for="(step, index) of steps" :key="index" :title="step.tit" :description="step.des"></el-step>
+  </el-steps>
+  <div class="import">
+    <div class="zip" v-show="zipShow">
+      <el-upload
+        class="avatar-uploader"
+        ref="uploadZip"
+        :action="employeeZip"
+        :file-list="zipList"
+        :on-change="zipChange"
+        :before-upload="beforeZipUpload"
+        :on-error="zipError"
+        :on-success="handleZipSuccess"
+        >
+      <el-button slot="trigger" size="small" type="primary"><svg-icon icon-class="zip" /> 上传 zip 文件</el-button>
+      <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
 
+      <div slot="tip" class="el-upload__tip">zip文件列表：</div>
+    </el-upload>
+     </div>
+     <div class="xls" v-show="excelShow">
+      <el-upload
+        class="importUpload"
+        ref="uploadExcel"
+        :action="employeeExcel"
+        :before-upload="beforeExcelUpload"
+        :on-error="excelError"
+        :on-success="handleExcelSuccess"
+        >
+      <el-button slot="trigger" size="small" type="primary"><svg-icon icon-class="excel" /> 上传表格文件</el-button>
+      <el-button size="small" @click="getEmployeeTemplate" class="ml10"><i class="el-icon-download"></i> 下载示例模板</el-button>
+      <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
+      <div slot="tip" class="el-upload__tip">表格文件列表：</div>
+    </el-upload>
+     </div>
+    <div class="xia">
+      <el-button @click="searchFailRecodrs"><i class="el-icon-view"></i> 最近导入失败记录</el-button>
+     <el-button :disabled="zipShow ? true : false" @click.prevent="zipExcelToggle">{{ this.zipShow ? '下一步' : '上一步' }}</el-button>
+    </div>
+  </div>
+ <el-button plain @click="open1" class="none"></el-button>
+
+<!-- 导入出错的信息, 提出单个修改 -->
+    <el-dialog
+      title="员工导入失败记录）"
+      :visible.sync="dialogVisible_editStaff"
+      width="70%"
+      top="0"
+     >
+       <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
+      <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
-      <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
-       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
-      <router-link to="/people-manage/staff-manage/staff-add/staffAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增员工</el-button></router-link>
     </el-form>
     
     <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
-      <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
 
 <!-- 详情 -->
        <el-table-column type="expand" label="详情" :width="60">
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
-               <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
                <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="120"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
                 <el-form-item label="性别："><span>{{ props.row.gender === 'male' ? '男' : '女' }} </span></el-form-item>
@@ -170,14 +197,12 @@
                  <el-form-item label="离职日期："><span>{{ props.row.status == 1 ? props.row.expiredTime : null }} </span></el-form-item>
                  <el-form-item label="创建时间："><span>{{ props.row.createTime | filterDate }} </span></el-form-item>
                  <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | filterDate }} </span></el-form-item>
-                  <el-form-item label="状态："><span>{{ props.row.status == 0 ? '在职' : '离职' }}</span> </el-form-item>
                  <el-form-item label="备注："><span></span></el-form-item>
                 <el-form-item label="创建人："><span>{{ props.row.operator }}</span></el-form-item>
            </el-form>
            </template>
      </el-table-column>
 
-      
       <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
       <el-table-column align="center" label="已注册人脸" width="90">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
@@ -188,11 +213,8 @@
       <el-table-column align="center" label="电话" width="108"> <template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
       <el-table-column align="center" label="邮箱" width="180"> <template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"> <template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
-      <el-table-column align="center" label="门禁卡" width="230"> <template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
-      <el-table-column align="center" label="IC卡" width="230"> <template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
-       <el-table-column align="center" label="状态" width="60"><template v-slot="scope">{{ scope.row.status == 0 ? '在职' : '离职' }}</template> </el-table-column>
-     
-      <el-table-column align="left" label="操作" width="190" fixed="right">
+      <el-table-column align="center" label="身份证号" width="auto"> <template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
+      <el-table-column align="left" label="操作" width="90" fixed="right">
         <template v-slot="scope">
       <div v-show="scope.row.isDelete == 1 ? false : true">
              <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible" >
@@ -202,25 +224,8 @@
                 </el-form-item>
                 <sup v-show="expiredDateTip" class="expireDateTip">请选择离职日期</sup>
               </el-form>
-            <div class="change_staff_btn mt10">
-              <el-button v-show="scope.row.status == 1 ? true : false" size="mini" type="primary" @click="setStatusHadnle(scope.$index, scope.row)">设为在职</el-button>
-              <el-button type="primary" size="mini" @click="submitExpiredDate(scope.row, 'expiredDateFormRule')">确定</el-button>
-              <el-button size="mini" type="button" @click="cacelStatusHandle(scope.row.id)">取消</el-button>
-            </div>
-            <div class="change_staff_status" slot="reference">
-              <span @click="handleStatus"></span>
-              <el-switch class="mll5" size="mini" active-text="在职" inactive-text="离职" v-model="status[scope.$index].status" @change="changeStaffStatus(scope.$index, scope.row)"></el-switch>
-            </div>
         </el-popover>
-
           <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
-          <el-popconfirm
-            confirmButtonText="确认"
-            cancelButtonText="取消"
-            title="确定要删除员工吗？"
-            @onConfirm="handleDelete(scope.$index, scope.row)">
-            <el-button  class="radius_45 ml0 mt10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
-          </el-popconfirm>
       </div>
          </template>
       </el-table-column>
@@ -243,12 +248,17 @@
           >
           <StaffFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEditHandle" />
       </el-dialog>
+      <div slot="footer">
+        <el-button @click="dialogVisible_editStaff = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getStaffList, deleteStaff, StaffState, downloadEmployee } from '@/api/people-manage/staffManage'
-import { imgUrl, downStaffXls } from '@/api/public'
+import { getStaffList, deleteStaff, StaffState, downloadEmployee, employeeZip, employeeExcel, getEmployeeTemplate, getImportStatus, getReslut, getSerialList } from '@/api/people-manage/staffManage'
+import {imgUrl, downEmployeeTemplate } from '@/api/public'
 import { pickerOptions } from '@/utils'
 import { getGender, getFaceType} from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
@@ -266,9 +276,30 @@ export default {
    components: { StaffFromHandle },
   data() {
     return {
+      // 批量导入
+        zipList: [],
+        import_dialogVisible: true,
+        importActive: 1,
+        steps: [
+          {
+            tit: '步骤一',
+            des: '图片命名格式为姓名（张三.jpg/png/bmp），单个图片大小不能超过500KB，批量压缩图片为zip格式上传'
+          },
+          {
+            tit: '步骤二',
+            des: '上传员工信息表格文件（xls、excel、xlsx）'
+          }
+        ],
+        employeeZip: employeeZip(),
+        employeeExcel: employeeExcel(),
+        zipShow: true,
+        excelShow: false,
+
+// --------------------------------------导入失败-------------------------
       expiredDateTip: false,
       table_loading:false,
       dialogVisible1: false,
+      dialogVisible_editStaff: false,
       value: '华捷艾米',
       genders: getGender(),
       status: [],
@@ -343,6 +374,126 @@ export default {
     ])
   },
   methods: {
+
+// -----------------------------------------批量导入图片zip和xls----------------------------
+   bulkImport() {
+     this.import_dialogVisible = true
+   },
+   submitUploadZip() {
+     this.$refs.uploadZip.submit();
+   },
+  beforeZipUpload(file) {
+    return this.zipRule(file.type, file.size, file)
+  },
+   handleZipSuccess(res, file) {
+    //  console.log(this.zipList)
+     if(res === 'success') {
+       this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+       this.zipExcelToggle()
+     } else{
+       this.$message.error(res.msg)
+       this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
+     }
+    },
+  zipError(err, file, fileList) {
+    if(this.zipType(file.raw.type, file.raw.name)) {
+       this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
+    }
+  },
+  zipType(fileName, fileType) {
+     let zipFormat = (fileName).lastIndexOf('.')
+   return fileType === 'application/zip' || (fileName).substr(zipFormat + 1).includes('zip')
+  },
+  zipRule(fileType, fileSize, fileRaw) {
+     const isLt1M = fileSize / 1024 / 1024 < 500
+        if (!this.zipType(fileType, fileRaw.name)) { 
+          this.$message.error('上传压缩包只能是 zip 格式！', 4000)
+          } else if (this.zipType(fileType, fileRaw.name) && !isLt1M) {
+             this.$message.error('上传zip大小不能超过500MB！', 4000)
+          } else if (!this.zipType(fileType, fileRaw.name) && !isLt1M) {
+             this.$message.error('上传zip大小不能超过20MB,只能是 zip 格式！', 4000)
+          }
+        return this.zipType(fileType, fileRaw.name) && isLt1M
+    },
+  zipChange(file, fileList) {
+  // console.log("🚀 ~ file: StaffFromHandle.vue ~ line 467 ~ zipChange ~ fileList", fileList)
+
+  },
+
+// 导入表格
+  beforeExcelUpload(file) {
+    return this.excelRule(file.type, file.size, file)
+  },
+  excelRule(fileType, fileSize, fileRaw) {
+     function excelType () { return fileType.indexOf('sheet') !== -1 }
+     const isLt1M = fileSize / 1024 / 1024 < 3
+        if (!excelType()) { 
+          this.$message.error('上传表格文件只能是 xls、excel、xlsx 格式！', 4000)
+          } else if (excelType() && !isLt1M) {
+             this.$message.error('上传表格文件大小不能超过20MB！', 4000)
+          } else if (!excelType() && !isLt1M) {
+             this.$message.error('上传表格文件大小不能超过20MB,只能是 xls、excel、xlsx 格式！', 4000)
+          }
+        return excelType() && isLt1M
+    },
+   handleExcelSuccess(res, file) {
+     getImportStatus().then(res => {
+     if(res.code === 0) {
+       if(res.data.status === 'ok') {
+          this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
+          this.cancelEdit()
+          getReslut(
+            { serialNumber: res.serialNumber }
+          ).then((res) =>{})
+          getSerialList().then((res) =>{})
+       }
+       
+       getReslut(
+         { serialNumber: res.data.serialNumber }
+       ).then((res) =>{})
+          getSerialList().then((res) =>{})
+     } else {
+       this.$message.error(res.msg)
+     }
+     })
+    },
+  excelError(err, file, fileList) {
+    if(file.raw.type.indexOf('sheet') !== -1) {
+     this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
+    }
+  },
+  searchFailRecodrs() {
+    this.dialogVisible_editStaff = true
+  },
+
+// 下载员工录入模板
+  getEmployeeTemplate() {
+     getEmployeeTemplate().then(res => {
+        if(res) {
+          downEmployeeTemplate()
+        }
+      })
+  },
+   zipExcelToggle() {
+     if(this.zipShow) {
+       this.zipShow = false
+       this.excelShow = true
+       this.importActive = 2
+     } else if(this.excelShow) {
+       this.zipShow = true
+       this.excelShow = false
+       this.importActive = 1
+     }
+   },
+  open1(zipName, statusName, status) {
+        this.$notify({
+          title: statusName,
+          message: zipName,
+          type: status
+        })
+      },
+
+// 导入失败信息操作
     changeStatus() {
       let p = this.pagingQuery
           p['isDelete'] = p['states'] === 'isDelete' ? 1 : null
@@ -557,6 +708,9 @@ export default {
     refreshPagingQuery() {
       this.pagingQuery = {}
       this.onSearch()
+    },
+    goBack() {
+      this.$router.go(-1)
     }
   },
   created() {

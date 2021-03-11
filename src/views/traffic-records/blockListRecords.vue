@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 19:19:02
+ * @LastEditTime: 2021-03-11 19:18:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -86,7 +86,7 @@ import moment from 'moment'
 let vm
 
 export default {
-  name: 'StaffRecords',
+  name: 'blockListRecords',
   data() {
     return {
       date: null,
@@ -106,7 +106,7 @@ export default {
         gateCardId: null,
         icCardId: null,
         idNum: null,
-        personType: 'stranger',
+        personType: 'blocklist',
 
         current: 1,
         size: 100,

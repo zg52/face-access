@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-11 10:47:59
+ * @LastEditTime: 2021-03-11 16:40:01
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -138,8 +138,8 @@ const passWayArr = [
 ],
  issuePersonStatus = [
    { id: 'normal',value: '已下发' },
-   { id: 'issuing', value: '下发中...' },
-   { id: 'removing', value: '已删除' }
+   { id: 'issuing', value: '下发中' },
+   { id: 'removing', value: '删除中' }
  ]
  
 /**

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-10 16:02:17
+ * @LastEditTime: 2021-03-11 18:40:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -90,7 +90,7 @@
       <el-table-column align="center" label="通行星期" width="135"><template v-slot="scope">{{ scope.row.week | weekComput }}</template></el-table-column>
       <el-table-column align="center" label="通行时间" width="300"><template v-slot="scope">{{ `${ scope.row.startDate } ${ scope.row.startTime } ~ ${ scope.row.endDate } ${ scope.row.endTime }` | dateTime }}</template></el-table-column>
       <el-table-column align="center" label="规则描述"><template v-slot="scope">{{ scope.row.description }}</template> </el-table-column> 
-      <el-table-column align="center" label="创建时间" width="152"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
+      <el-table-column align="center" label="创建时间" width="152" fixed="right"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
       <!-- <el-table-column align="center" label="修改时间" width="108"><template v-slot="scope">{{ scope.row.lastUpdateTime | filterDate }}</template></el-table-column> -->
 
       <!-- <el-table-column align="center" label="创建人"><template v-slot="scope">{{ scope.row.userId }}</template></el-table-column> -->
@@ -237,7 +237,7 @@ export default {
        endTime: null,
 
        current: 1,
-       size: 20,
+       size: 100,
        total: 10,
        status: ''
       },
@@ -245,24 +245,21 @@ export default {
       been_person_rule_param: null
     }
   },
-  computed: {
-   
-  },
   filters: {
     weekComput(value) {
           let weekStr = []
           weekParams().forEach((item, index) => {
             value.includes(item?.id) ? weekStr.push(`${ item?.value }`) : ''
             })
-         if(value.length === 11) {
+         if(value.length === 13) {
            return '周一至周日'
-         } else if(value.includes('1,2,3,4,5,6')) {
+         } else if(value.includes('1,2,3,4,5,6') && value.length === 11) {
             return '周一 至 周六'
-         } else if(value.includes('1,2,3,4,5')) {
+         } else if(value.includes('1,2,3,4,5') && value.length === 9) {
             return '周一 至 周五'
-         } else if(value.includes('1,2,3,4')) {
+         } else if(value.includes('1,2,3,4') && value.length === 7) {
             return '周一 至 周四'
-         } else if(value.includes('1,2,3')) {
+         } else if(value.includes('1,2,3') && value.length === 5) {
             return '周一 至 周三'
          } else {
             return '周' + weekStr.join('、')
@@ -342,10 +339,11 @@ export default {
            params.size = res.data.size
            params.current = res.data.current
            params.total = res.data.total
-           this.ruleList = res.data.records.reverse()
+           if(res.data.records.length != 0 ) {
+           this.ruleList = res.data.records
                
 // 获取查询所需规则名称
-               new Promise((resolved) => {
+            new Promise((resolved) => {
                  if(this.ruleList.length !== 0) resolved()
                }).then((res1) => {
                  this.ruleList.map((item) => {
@@ -353,14 +351,14 @@ export default {
                      name: item.name
                    })
                  })
-               })
+               })             
+           }
             } else {
                this.$message.error(res.msg)
                this.table_loading = false
             }
       })
     },
-
     handleDelete(x, y) {
       deleteRules({ids: y.id}).then((res) => {
         if (res.code == 0 && res.data) {
@@ -432,15 +430,20 @@ export default {
           getDate()
           function getDate() {
            dateItem.map((item, index) => { 
-             index <= 1 ? date[dateItem[index]] = moment(_this.date[index]).format('YYYY-MM-DD') : date[dateItem[index]] =  moment(_this.date[index]).format('hh:mm')
+             index <= 1 
+             ? date[dateItem[index]] = moment(_this.date[index]).format('YYYY-MM-DD') : 
+               (
+                 date[dateItem[2]] =  moment(_this.date[0]).format('HH:mm'),
+                 date[dateItem[3]] =  moment(_this.date[1]).format('HH:mm')
+               )
             })
           }
     },
     changeDate2() {
       let _p = this.pagingQuery
       this.date1 && this.date1.length
-        ? ((_p.createTimeFrom = moment( this.date1[0]).format("YYYY-MM-DD")),
-          (_p.createTimeTo = moment( this.date1[1]).format("YYYY-MM-DD")))
+        ? ((_p.createTimeFrom = moment( this.date1[0]).format("YYYY-MM-DD: HH:mm")),
+          (_p.createTimeTo = moment( this.date1[1]).format("YYYY-MM-DD: HH:mm")))
         :  _p.createTimeFrom = _p.createTimeTo = null
     },
     refreshPagingQuery() {

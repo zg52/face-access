@@ -242,6 +242,17 @@ height: 6px;
 vertical-align: middle;
 border-radius: 50%;
 }
+
+// 状态查询下拉样式
+.statusStyle {
+  label, input,.el-select__caret {
+    color: #a145ff!important;
+  }
+  input {
+    border-color: #a145ff;
+  }
+}
+
 .lis_tit {
   margin-bottom: 20px;
   i {

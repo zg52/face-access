@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-10 16:47:13
+ * @LastEditTime: 2021-03-11 17:53:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -67,13 +67,7 @@ position: absolute;
     display: flex;
     margin-top: -22px;
   }
-  .import {
-    margin-top:30px;
-        width: 40%;
-    .el-upload__tip {
-      margin-top:20px;
-    }
-  }
+
 </style>
 <template>
   <div class="app-container">
@@ -124,64 +118,13 @@ position: absolute;
        </div>
       </el-form-item><br>
      <el-form-item class="save_staff">
-        <el-button type="primary" v-show="!btn_el.includes('edit')" @click.prevent="bulkImport"><i class="el-icon-folder-add" /> 批量导入</el-button>
+       <router-link to="/people-manage/staff-manage/staff-add/bulkImportStaff"><el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button></router-link>
         <el-button @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveStaffHandle('addStaffFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
         <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
         <el-button @click="cancelEdit" v-show="!btn_el.includes('add')"><span>取 消</span></el-button>
      </el-form-item>
      </el-form>
-
-<!-- 批量导入 -->
-    <el-dialog
-      title="批量导入员工信息"
-      :visible.sync="import_dialogVisible"
-      width="51%"
-      >
-     <el-steps :active="importActive" align-center>
-      <el-step v-for="(step, index) of steps" :key="index" :title="step.tit" :description="step.des"></el-step>
-    </el-steps>
-  <div class="import">
-    <div class="zip" v-show="zipShow">
-      <el-upload
-        class="avatar-uploader"
-        ref="uploadZip"
-        :action="employeeZip"
-        :file-list="zipList"
-        :on-change="zipChange"
-        :before-upload="beforeZipUpload"
-        :on-error="zipError"
-        :on-success="handleZipSuccess"
-        >
-      <el-button slot="trigger" size="small" type="primary"><svg-icon icon-class="zip" /> 上传 zip 文件</el-button>
-      <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
-      <div slot="tip" class="el-upload__tip">zip文件列表：</div>
-    </el-upload>
-     </div>
-     
-     <div class="xls" v-show="excelShow">
-      <el-upload
-        class="importUpload"
-        ref="uploadExcel"
-        :action="employeeExcel"
-        :before-upload="beforeExcelUpload"
-        :on-error="excelError"
-        :on-success="handleExcelSuccess"
-        >
-      <el-button slot="trigger" size="small" type="primary"><svg-icon icon-class="excel" /> 上传表格文件</el-button>
-      <el-button size="small" @click="getEmployeeTemplate" class="ml10"><i class="el-icon-download"></i> 下载示例模板</el-button>
-      <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadZip">上传到服务器</el-button> -->
-      <div slot="tip" class="el-upload__tip">表格文件列表：</div>
-    </el-upload>
-     </div>
-  </div>
-  <span slot="footer" class="dialog-footer">
-    <el-button class="xia" :disabled="this.zipShow ? true : false" @click.prevent="zipExcelToggle">{{ this.zipShow ? '下一步' : '上一步' }}</el-button>
-    <el-button @click="import_dialogVisible = false">取 消</el-button>
-    <!-- <el-button type="primary" @click="import_dialogVisible = false">确 定</el-button> -->
-  </span>
-</el-dialog>
- <el-button plain @click="open1" class="none"></el-button>
   </div>
 </template>
 <script>
@@ -265,25 +208,6 @@ export default {
           ],
           enrollTime: notNull('入职时间')
         },
-
-// 批量导入
-        zipList: [],
-        import_dialogVisible: false,
-        importActive: 1,
-        steps: [
-          {
-            tit: '步骤一',
-            des: '图片命名格式为姓名（张三.jpg/png/bmp），单个图片大小不能超过500KB，批量压缩图片为zip格式上传'
-          },
-          {
-            tit: '步骤二',
-            des: '上传员工信息表格文件（xls、excel、xlsx）'
-          }
-        ],
-        employeeZip: employeeZip(),
-        employeeExcel: employeeExcel(),
-        zipShow: true,
-        excelShow: false
     }
   },
   computed: {
@@ -420,121 +344,6 @@ export default {
     cancelEdit() {
         this.$emit('cacelEdit')
     },
-
-// -----------------------------------------批量导入图片zip和xls----------------------------
-   bulkImport() {
-     this.import_dialogVisible = true
-   },
-   submitUploadZip() {
-     this.$refs.uploadZip.submit();
-   },
-  beforeZipUpload(file) {
-    return this.zipRule(file.type, file.size, file)
-  },
-   handleZipSuccess(res, file) {
-    //  console.log(this.zipList)
-     if(res === 'success') {
-       this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
-       this.zipExcelToggle()
-     } else{
-       this.$message.error(res.msg)
-       this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
-     }
-    },
-  zipError(err, file, fileList) {
-    if(this.zipType(file.raw.type, file.raw.name)) {
-       this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
-    }
-  },
-  zipType(fileName, fileType) {
-     let zipFormat = (fileName).lastIndexOf('.')
-   return fileType === 'application/zip' || (fileName).substr(zipFormat + 1).includes('zip')
-  },
-  zipRule(fileType, fileSize, fileRaw) {
-     const isLt1M = fileSize / 1024 / 1024 < 500
-        if (!this.zipType(fileType, fileRaw.name)) { 
-          this.$message.error('上传压缩包只能是 zip 格式！', 4000)
-          } else if (this.zipType(fileType, fileRaw.name) && !isLt1M) {
-             this.$message.error('上传zip大小不能超过500MB！', 4000)
-          } else if (!this.zipType(fileType, fileRaw.name) && !isLt1M) {
-             this.$message.error('上传zip大小不能超过20MB,只能是 zip 格式！', 4000)
-          }
-        return this.zipType(fileType, fileRaw.name) && isLt1M
-    },
-  zipChange(file, fileList) {
-  // console.log("🚀 ~ file: StaffFromHandle.vue ~ line 467 ~ zipChange ~ fileList", fileList)
-
-  },
-
-// 导入表格
-  beforeExcelUpload(file) {
-    return this.excelRule(file.type, file.size, file)
-  },
-  excelRule(fileType, fileSize, fileRaw) {
-     function excelType () { return fileType.indexOf('sheet') !== -1 }
-     const isLt1M = fileSize / 1024 / 1024 < 3
-        if (!excelType()) { 
-          this.$message.error('上传表格文件只能是 xls、excel、xlsx 格式！', 4000)
-          } else if (excelType() && !isLt1M) {
-             this.$message.error('上传表格文件大小不能超过20MB！', 4000)
-          } else if (!excelType() && !isLt1M) {
-             this.$message.error('上传表格文件大小不能超过20MB,只能是 xls、excel、xlsx 格式！', 4000)
-          }
-        return excelType() && isLt1M
-    },
-   handleExcelSuccess(res, file) {
-     getImportStatus().then(res => {
-     if(res.code === 0) {
-       if(res.data.status === 'ok') {
-          this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
-          this.cancelEdit()
-          getReslut(
-            { serialNumber: res.serialNumber }
-          ).then((res) =>{})
-          getSerialList().then((res) =>{})
-       }
-       
-       getReslut(
-         { serialNumber: res.data.serialNumber }
-       ).then((res) =>{})
-          getSerialList().then((res) =>{})
-     } else {
-       this.$message.error(res.msg)
-     }
-     })
-    },
-  excelError(err, file, fileList) {
-    if(file.raw.type.indexOf('sheet') !== -1) {
-     this.open1(`${ file.raw.name } 上传失败，请重试`, '失败', 'error')
-    }
-  },
-
-// 下载员工录入模板
-  getEmployeeTemplate() {
-     getEmployeeTemplate().then(res => {
-        if(res) {
-          downEmployeeTemplate()
-        }
-      })
-  },
-   zipExcelToggle() {
-     if(this.zipShow) {
-       this.zipShow = false
-       this.excelShow = true
-       this.importActive = 2
-     } else if(this.excelShow) {
-       this.zipShow = true
-       this.excelShow = false
-       this.importActive = 1
-     }
-   },
-  open1(zipName, statusName, status) {
-        this.$notify({
-          title: statusName,
-          message: zipName,
-          type: status
-        })
-      },
   },
   created() {
     vm = this

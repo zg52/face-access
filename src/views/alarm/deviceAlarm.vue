@@ -1,16 +1,11 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-10 14:57:38
+ * @LastEditTime: 2021-03-11 11:31:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
-<style lang="scss" scoped>
- 
- 
-  
-</style>
 <template>
   <div class="app-container">
 
@@ -42,7 +37,7 @@
     </el-button>
   </el-form>
 
-  <el-table :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading">
+  <el-table border :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
     <el-table-column width="50" type="selection" fixed>
     </el-table-column>
@@ -72,7 +67,6 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagingQuery['total']">
     </el-pagination> 
-
   </div>
 </template>
 <script>

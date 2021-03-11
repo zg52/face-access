@@ -152,6 +152,13 @@ export const asyncRoutes = [
             name: 'staffAdd',
             meta: { title: '新增员工' }
          },
+        {
+          path: 'staff-add/bulkImportStaff',
+          component: () => import('@/views/people-manage/staff-manage/staff-add/bulkImportStaff'),
+          name: 'bulkImportStaff',
+          meta: { title: '批量导入员工' },
+          hidden: true
+       },
         ]
       },
       {
@@ -232,12 +239,12 @@ export const asyncRoutes = [
         name: 'rules',
         meta: { title: '已下发规则', icon: 'list1' }
      },
-  //    {
-  //     path: 'person',
-  //     component: () => import('@/views/traffic-rules/person/index'),
-  //     name: 'person',
-  //     meta: { title: '可通行人员', icon: 't_person' }
-  //  }
+    //    {
+    //     path: 'person',
+    //     component: () => import('@/views/traffic-rules/person/index'),
+    //     name: 'person',
+    //     meta: { title: '可通行人员', icon: 't_person' }
+    //  }
   ]
   },
   {
@@ -322,7 +329,8 @@ export const asyncRoutes = [
                 path: 'role',
                 component: () => import('@/views/system-manage/permission/role'),
                 name: 'role',
-                meta: { title: '角色权限', roles: ['1','admin'] } 
+                meta: { title: '角色权限', roles: ['1','admin'] },
+                hidden: true
               }
             ]
           },
