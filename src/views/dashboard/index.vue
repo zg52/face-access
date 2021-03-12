@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-28 11:08:53
+ * @LastEditTime: 2021-03-12 15:50:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\index.vue
@@ -31,11 +31,11 @@ export default {
     ])
   },
   created() {
-    if (
-      // !this.roles.includes('admin')||
-        !this.roles.includes('1')) {
-      this.currentRole = 'editorDashboard'
-    }
+    // if (
+    //   // !this.roles.includes('admin')||
+    //     !this.roles.includes('1,2')) {
+    //   this.currentRole = 'editorDashboard'
+    // }
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-09 14:23:09
+ * @LastEditTime: 2021-03-12 11:20:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -306,7 +306,7 @@ export default {
           })
         })
         this.isDeletes = satatusArr
-      this.tableData = this.tableData.reverse()
+      this.tableData = this.tableData
        }
       })
     },

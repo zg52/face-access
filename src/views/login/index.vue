@@ -176,8 +176,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: null,
+        password: null
       },
       loginRules: {
         username: [{ required: true, message: '用户名不能为空', trigger: 'blur',}],
@@ -242,7 +242,6 @@ export default {
               this.loading = false
             })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

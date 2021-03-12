@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 17:53:47
+ * @LastEditTime: 2021-03-12 18:06:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -119,7 +119,7 @@ position: absolute;
       </el-form-item><br>
      <el-form-item class="save_staff">
        <router-link to="/people-manage/staff-manage/staff-add/bulkImportStaff"><el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button></router-link>
-        <el-button @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
+        <el-button class="ml10" @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveStaffHandle('addStaffFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
         <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
         <el-button @click="cancelEdit" v-show="!btn_el.includes('add')"><span>取 消</span></el-button>
@@ -129,12 +129,12 @@ position: absolute;
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveStaff, editStaff, employeeZip, employeeExcel, getEmployeeTemplate, getImportStatus, getReslut, getSerialList } from '@/api/people-manage/staffManage'
+import { saveStaff, editStaff } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard } from '@/utils/validate.js'
 import { getGender, getFaceType} from '@/utils/business'
-import {proxyUrl_1, imgUrl, downEmployeeTemplate } from '@/api/public'
+import {proxyUrl_1, imgUrl } from '@/api/public'
 // import { pickerOptions } from '@/utils'
 
 let vm
@@ -200,11 +200,11 @@ export default {
           ],
            icCardId: [
               notNull('IC卡号')[0],
-              { validator: numbers('Ic卡'), trigger: "blur" },
+              // { validator: numbers('Ic卡'), trigger: "blur" },
           ],
            gateCardId: [
               notNull('门禁卡号')[0],
-              { validator: numbers('门禁卡'), trigger: "blur" },
+              // { validator: numbers('门禁卡'), trigger: "blur" },
           ],
           enrollTime: notNull('入职时间')
         },
@@ -349,7 +349,6 @@ export default {
     vm = this
    this.imageUrl = ''
    this.imageUrl = this.btn_el.includes('edit') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
-
   },
   mounted() {
   },

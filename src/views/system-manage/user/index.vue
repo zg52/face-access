@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-03-01 17:53:55
+ * @LastEditTime: 2021-03-12 15:15:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -58,7 +58,7 @@
       <el-form :model="pagingParams" :inline="true">
       <el-form-item label="用户名"> <el-input v-model.trim="pagingParams.name" placeholder="输入用户名搜索"></el-input> </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="pagingParams.status" clearable="true">
+        <el-select v-model="pagingParams.status" clearable>
           <el-option v-for='(item, index) in statusType' :key='index' :label='item.label' :value='item.value'>
             <span style="float: right;color:yello;">
               <i class="el-icon-check"></i>
@@ -92,44 +92,16 @@
     <el-table :data="userList" class="user_list" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
      <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" width="60"> <template slot-scope="scope">{{ scope.row.index }}</template></el-table-column>
-      <el-table-column align="center" label="用户名" width="150">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="昵称"  width="120">
-        <template slot-scope="scope">
-          {{ scope.row.nickName }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="邮箱"  width="220">
-        <template slot-scope="scope">
-          {{ scope.row.email }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="手机">
-        <template slot-scope="scope">
-       {{ scope.row.phone }}
-        </template>
-      </el-table-column>
-       <el-table-column align="center" label="角色"  width="120">
-        <template slot-scope="scope" :data="roles">
-        {{roles[scope.row.roleId-1].roleName}}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="创建时间"  width="150">
-        <template slot-scope="scope">
-        {{ scope.row.createTime }}
-        </template>
-      </el-table-column>
-       <el-table-column align="center" label="修改时间" width="150">
-        <template slot-scope="scope">
-        {{ scope.row.updataTime }}
-        </template>
-      </el-table-column>
-       <el-table-column align="center" label="状态"  width="160">
+      <el-table-column align="center" label="用户名" width="150"> <template slot-scope="scope"> {{ scope.row.name }} </template> </el-table-column>
+      <el-table-column align="center" label="昵称"  width="120"> <template slot-scope="scope"> {{ scope.row.nickName }} </template> </el-table-column>
+      <el-table-column align="center" label="邮箱"  width="220"> <template slot-scope="scope"> {{ scope.row.email }} </template> </el-table-column>
+      <el-table-column align="center" label="手机"> <template slot-scope="scope"> {{ scope.row.phone }} </template> </el-table-column>
+       <el-table-column align="center" label="角色"  width="120"> <template slot-scope="scope" :data="roles"> {{roles[scope.row.roleId-1].roleName}} </template> </el-table-column>
+      <el-table-column align="center" label="创建时间"  width="150"> <template slot-scope="scope"> {{ scope.row.createTime }} </template> </el-table-column>
+       <el-table-column align="center" label="修改时间" width="150"> <template slot-scope="scope"> {{ scope.row.updataTime }} </template> </el-table-column>
+         <el-table-column align="center" label="状态"  width="160">
         <template v-slot="scope">
-         <el-switch class="switchStyle" v-model="scope.row.status" disabled="false" active-value="VALID" inactive-value="INVALID" active-text="激活" inactive-text="禁用" active-color="#00A854" inactive-color="#F04134"></el-switch>
+         <el-switch class="switchStyle" v-model="scope.row.status" disabled active-value="VALID" inactive-value="INVALID" active-text="激活" inactive-text="禁用" active-color="#00A854" inactive-color="#F04134"></el-switch>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -158,22 +130,13 @@
     <el-dialog title="新建用户" :visible.sync="userFormVisible" width="558px">
       <div v-loading="addSave_loading"  element-loading-text="拼命保存中"  element-loading-spinner="el-icon-loading">
         <el-form :model="addUserForm" label-width="auto" :rules="addUserRule" ref="addUserForm" class="addUserForm" :inline="true">
-          <el-form-item label="用户名：" prop="name">
-            <el-input v-model="addUserForm.name" style="width: 160px" placeholder="用户名"></el-input>
-          </el-form-item>
-          <el-form-item label="昵称：" prop="nickName">
-            <el-input v-model="addUserForm.nickName" style="width: 160px" placeholder="昵称"></el-input>
-          </el-form-item>
-          <el-form-item label="邮箱：" prop="email">
-            <el-input v-model="addUserForm.email" style="width: 160px" placeholder="邮箱"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号：" prop="phone">
-            <el-input v-model="addUserForm.phone" style="width: 160px" placeholder="手机号"></el-input>
-          </el-form-item>
+          <el-form-item label="用户名：" prop="name"> <el-input v-model="addUserForm.name" style="width: 160px" placeholder="用户名"></el-input> </el-form-item>
+          <el-form-item label="昵称：" prop="nickName"> <el-input v-model="addUserForm.nickName" style="width: 160px" placeholder="昵称"></el-input> </el-form-item>
+          <el-form-item label="邮箱：" prop="email"> <el-input v-model="addUserForm.email" style="width: 160px" placeholder="邮箱"></el-input> </el-form-item>
+          <el-form-item label="手机号：" prop="phone"> <el-input v-model="addUserForm.phone" style="width: 160px" placeholder="手机号"></el-input> </el-form-item>
           <el-form-item label="角色：" prop="role">
             <el-select v-model="addUserForm.roleId" placeholder="选择角色" style="width: 160px">
-              <el-option label="超级管理员" value=1></el-option>
-              <el-option label="管理员" value=2></el-option>
+             <el-option v-for="(role, index) of getUserRoles" :key="index" :label="role.name" :value="role.id"></el-option>
           </el-select>
           </el-form-item>
          <el-form-item label="状态：" prop="status">
@@ -228,15 +191,15 @@
         </div>
       </div>
     </el-dialog>
-
   </div>
 </template>
 <script>
-// com.hjimi.wisdompark:user:token:FZC9FGPT
 import { searchUser, addUser, editUser, deleteUser } from '@/api/system-manage/userManage'
 import { validEmail, validPhone } from '@/utils/validate.js'
 import { pickerOptions } from '@/utils'
-import moment from "moment"
+import { getUserRoles } from '@/utils/business'
+import moment from 'moment'
+
 export default {
   data() {
     var validateEmail = (rule, value, callback) => {
@@ -254,7 +217,6 @@ export default {
         callback();
       }
     }
-
     return {
       userFormVisible: false,
       editUserVisible: false,
@@ -262,7 +224,10 @@ export default {
       editSave_loading: false,
       multipleSelection: [], //多选删除
       pickerOptions: pickerOptions(),
-      queryDate: "",
+      getUserRoles: getUserRoles,
+
+      
+      queryDate: '',
       addUserForm: {
         name: null,
         email: null,
@@ -272,6 +237,7 @@ export default {
         status: null,
         remark: null,
       },
+
       editUserForm: {
         id: null,
         name: null,
@@ -338,7 +304,6 @@ export default {
              }
             })
   },
-
   methods: {
     setValueNull(val) {
       this.value_ = null;
@@ -353,11 +318,8 @@ export default {
     },
     resetForm(val) {
       let _this = this;
-      console.log("before");
-      console.log(_this.addUserForm);
       _this.$refs[val].resetFields();
       _this.addUserForm.roleId = undefined;
-      console.log("after");
       console.log(_this.addUserForm);
     },
     saveUserForm(val) {
@@ -473,6 +435,9 @@ export default {
           type: "warning"
         })
       }
+    },
+    onExport() {
+
     },
   handleSizeChange(val) {
       this.pagingParams.size = val

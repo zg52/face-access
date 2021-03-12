@@ -108,7 +108,7 @@ export const asyncRoutes = [
   //               path: 'role',
   //               component: () => import('@/views/system-manage/permission/role'),
   //               name: 'role',
-  //               meta: { title: '角色权限', roles: ['1','admin'] } 
+  //               meta: { title: '角色权限', roles: ['1','admin'] }
   //             }
   //           ]
   //         },
@@ -308,14 +308,14 @@ export const asyncRoutes = [
     path: '/system-manage',
     component: Layout,
     name: 'system-manage',
-    meta: { title: '系统管理', icon: 'el-icon-setting', noCache: true },
+    meta: { title: '系统管理', icon: 'el-icon-setting', noCache: true, roles: ['1','superadmin','viewer'] },
     redirect: '/system-manage/user',
     children: [
           {
             path: 'user',
             component: () => import('@/views/system-manage/user'),
             name: 'user',
-            meta: { title: '用户管理', icon: 'user', roles: ['1','admin','viewer'] }
+            meta: { title: '用户管理', icon: 'user' }
           },
           {
             path: 'permission',
@@ -323,13 +323,13 @@ export const asyncRoutes = [
             redirect: '/system-manage/permission/role',
             alwaysShow: true,
             name: 'permission',
-            meta: { title: '权限管理', icon: 'lock', roles: ['1','admin', 'editor'] },
+            meta: { title: '权限管理', icon: 'lock' },
             children: [
               {
                 path: 'role',
                 component: () => import('@/views/system-manage/permission/role'),
                 name: 'role',
-                meta: { title: '角色权限', roles: ['1','admin'] },
+                meta: { title: '角色权限' },
                 hidden: true
               }
             ]
@@ -338,7 +338,7 @@ export const asyncRoutes = [
             path: 'ulog',
             component: () => import('@/views/system-manage/ulog'),
             name: 'ulog',
-            meta: { title: '操作日志', icon: 'clipboard', roles: ['1','admin', 'editor'] },
+            meta: { title: '操作日志', icon: 'clipboard' },
           }
     ]
   },

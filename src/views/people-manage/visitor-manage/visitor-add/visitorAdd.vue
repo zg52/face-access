@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-02-22 17:51:58
+ * @LastEditTime: 2021-03-12 11:25:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\views\people-manage\visitor-manage\visitor-add\index.vue
@@ -23,16 +23,16 @@ export default {
            operator: this.$store.getters.username,
            gender: 'male', // 默认性别男
            faceType: 'id', // 默认证件照
-           phone: '15652545652',
-           intervieweePhone: '15652985625',
-           name: '艾米',
-           intervieweeName: '很好',
-           idNum: '622826229811192711',
-           address: 'w',
-           reason: '233',
-           remark: '面试',
+           phone: null,
+           intervieweePhone: null,
+           name: null,
+           intervieweeName:null,
+           idNum: null,
+           address: null,
+           reason: null,
+           remark: null,
            orgId: 1,
-           visitorCompany: '1',
+           visitorCompany: null,
            status: 'auth',
 
            visitStartTime: null,

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 18:58:37
+ * @LastEditTime: 2021-03-12 14:22:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -94,7 +94,7 @@
 }
 .import {
     margin-top:30px;
-        width: 25%;
+        width: 35%;
     .el-upload__tip {
       margin-top:20px;
     }
@@ -116,6 +116,7 @@
   <div class="app-container">
 <el-page-header @back="goBack" content=""></el-page-header>
 <!-- 批量导入 -->
+<div>
   <el-steps :active="importActive" direction="vertical" class="importActive">
     <el-step v-for="(step, index) of steps" :key="index" :title="step.tit" :description="step.des"></el-step>
   </el-steps>
@@ -155,18 +156,20 @@
     <div class="xia">
       <el-button @click="searchFailRecodrs"><i class="el-icon-view"></i> 最近导入失败记录</el-button>
      <el-button :disabled="zipShow ? true : false" @click.prevent="zipExcelToggle">{{ this.zipShow ? '下一步' : '上一步' }}</el-button>
+     <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
     </div>
   </div>
  <el-button plain @click="open1" class="none"></el-button>
+</div>
 
 <!-- 导入出错的信息, 提出单个修改 -->
     <el-dialog
-      title="员工导入失败记录）"
+      title="员工导入失败记录"
       :visible.sync="dialogVisible_editStaff"
-      width="70%"
+      width="76%"
       top="0"
      >
-       <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
+      <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
       <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
@@ -214,6 +217,7 @@
       <el-table-column align="center" label="邮箱" width="180"> <template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"> <template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
       <el-table-column align="center" label="身份证号" width="auto"> <template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
+      <el-table-column align="center" label="导入失败原因" width="200"> <template v-slot="scope"> <span class="red">{{ scope.row.errMsg }}</span> </template></el-table-column>
       <el-table-column align="left" label="操作" width="90" fixed="right">
         <template v-slot="scope">
       <div v-show="scope.row.isDelete == 1 ? false : true">
@@ -225,7 +229,7 @@
                 <sup v-show="expiredDateTip" class="expireDateTip">请选择离职日期</sup>
               </el-form>
         </el-popover>
-          <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
+          <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>修改</span></el-button>
       </div>
          </template>
       </el-table-column>
@@ -245,8 +249,9 @@
            :visible.sync="dialogVisible1"
            width="80%"
            top="0"
+           :modal="false"
           >
-          <StaffFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEditHandle" />
+          <StaffFromHandle v-if="dialogVisible1" :btn_el="btn_el" :addStaffForm="addStaffForm" @cacelEdit="cacelEditHandle"/>
       </el-dialog>
       <div slot="footer">
         <el-button @click="dialogVisible_editStaff = false">取 消</el-button>
@@ -257,7 +262,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { getStaffList, deleteStaff, StaffState, downloadEmployee, employeeZip, employeeExcel, getEmployeeTemplate, getImportStatus, getReslut, getSerialList } from '@/api/people-manage/staffManage'
+import { deleteStaff, StaffState, downloadEmployee, employeeZip, employeeExcel, getEmployeeTemplate, getImportStatus, getReslut, getSerialList } from '@/api/people-manage/staffManage'
 import {imgUrl, downEmployeeTemplate } from '@/api/public'
 import { pickerOptions } from '@/utils'
 import { getGender, getFaceType} from '@/utils/business'
@@ -441,17 +446,16 @@ export default {
      if(res.code === 0) {
        if(res.data.status === 'ok') {
           this.open1(`${ file.raw.name } 上传成功`, '成功', 'success')
-          this.cancelEdit()
-          getReslut(
-            { serialNumber: res.serialNumber }
-          ).then((res) =>{})
-          getSerialList().then((res) =>{})
+          // getReslut(
+          //   { serialNumber: res.serialNumber }
+          // ).then((res) =>{})
+          // getSerialList().then((res) =>{})
        }
+      //  getReslut(
+      //    { serialNumber: res.data.serialNumber }
+      //  ).then((res) =>{})
        
-       getReslut(
-         { serialNumber: res.data.serialNumber }
-       ).then((res) =>{})
-          getSerialList().then((res) =>{})
+      // getSerialList().then((res) =>{})
      } else {
        this.$message.error(res.msg)
      }
@@ -464,6 +468,7 @@ export default {
   },
   searchFailRecodrs() {
     this.dialogVisible_editStaff = true
+    this.onSearch()
   },
 
 // 下载员工录入模板
@@ -502,7 +507,7 @@ export default {
       let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
       this.table_loading = true
 
-      getStaffList(this.pagingQuery).then((res) => {
+    getReslut(this.pagingQuery).then((res) => {
         this.tableData = []
         if(res.code === 0) {
         params.size = res.data.size
@@ -535,7 +540,7 @@ export default {
         }
         this.table_loading = false
         }
-      })
+    })
     },
     onSearch() {
       let params = this.pagingQuery
@@ -543,6 +548,9 @@ export default {
       this.getStaffList()
     },
     handleEdit(x, y) {
+    setTimeout(()=>{
+      vm.globalClick(vm.clickDocument)
+    },1)
       this.dialogVisible1 = true
       this.addStaffForm = y
 
@@ -717,7 +725,5 @@ export default {
     vm = this
     this.onSearch()
   },
-  mounted() {
-  },
-};
+}
 </script>

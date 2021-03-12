@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-15 17:56:08
- * @LastEditTime: 2021-03-11 19:27:43
+ * @LastEditTime: 2021-03-12 11:35:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\device-manage\personnel\index.vue
@@ -20,7 +20,7 @@
          <staffRecords v-if="isShow1"/>
          <visitorRecords v-if="isShow2"/>
          <strangerRecords v-if="isShow3"/>
-          <strangerRecords v-if="isShow4"/>
+         <blockListRecords v-if="isShow4"/>
     </el-tab-pane>
     <!-- <el-tab-pane label="其他" disabled>其他</el-tab-pane> -->
   </el-tabs>
@@ -65,7 +65,8 @@ import blockListRecords from './blockListRecords'
         isShow0: true,
         isShow1: false,
         isShow2: false,
-        isShow3: false
+        isShow3: false,
+        isShow4: false
       };
     },
     watch: {
@@ -79,7 +80,7 @@ import blockListRecords from './blockListRecords'
          } else if(val == 2) {
            this.isShow0 = false, this.isShow1 = false, this.isShow3 = false,this.isShow4 = false, this.isShow2 = true
          } else if(val == 3) {
-           this.isShow0 = false, this.isShow1 = false, this.isShow3 = false,this.isShow4 = false, this.isShow3 = true
+           this.isShow0 = false, this.isShow1 = false, this.isShow2 = false,this.isShow4 = false, this.isShow3 = true
          } else {
            this.isShow0 = false, this.isShow1 = false, this.isShow2 = false, this.isShow3 = false, this.isShow4 = true
          }

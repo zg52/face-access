@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 15:09:04
+ * @LastEditTime: 2021-03-12 11:20:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -362,7 +362,7 @@ export default {
          res.data.records.map((item, index) => {
            if(item.isDelete != 1) {
               filterData.push(item)
-              this.tableData = filterData.reverse()
+              this.tableData = filterData
 
 // 设置visible解决elemenui pover 弹出异常缺陷
               this.tableData.forEach(function (item) {
