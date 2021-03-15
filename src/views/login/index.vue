@@ -129,6 +129,23 @@ $light_gray:#eee;
   padding: 12px 0!important;font-size: 20px!important;font-family: cursive!important;font-weight: bold;
 }
 </style>
+<style lang="scss">
+.login-container {
+  .el-checkbox__label {
+  color: #C0C4CC;
+}
+.el-checkbox__inner {
+  background: #C0C4CC;
+}
+.el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #b973ff;
+}
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background: #b973ff;
+  border-color: #b973ff;
+}
+}
+</style>
 <template>
   <div class="login-container">
     <div class="container_tit"><img src="../../assets/image/home-logo.png"><span>智能安防 · 监控门禁系统 <svg-icon class="ml4" icon-class="sys-tit"/></span></div>
@@ -138,16 +155,17 @@ $light_gray:#eee;
       <div class="title-container"><h3 class="title">人脸辨识云·门禁系统</h3></div>
       <el-form-item prop="username">
         <span class="svg-container"><svg-icon icon-class="user" /></span>
-        <el-input ref="username" v-model="loginForm.username" placeholder="用户名" name="username" type="text" tabindex="1" autocomplete="on" />
+        <el-input ref="username" v-model="loginForm.username" placeholder="用户名" name="username" type="text" tabindex="1" autocomplete="on" clearable />
       </el-form-item>
 
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
           <span class="svg-container"><svg-icon icon-class="password" /></span>
-          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="密码" name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false" @keyup.enter.native="handleLogin" />
+          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="密码" name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false" @keyup.enter.native="handleLogin" clearable />
           <span class="show-pwd" @click="showPwd"><svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" /></span>
         </el-form-item>
       </el-tooltip>
+       <el-checkbox v-model="checked">记住密码</el-checkbox>
       <el-button class="handle_login" :loading="loading" type="primary" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
       </div>
@@ -156,6 +174,8 @@ $light_gray:#eee;
   </div>
 </template>
 <script>
+
+import Cookies from 'js-cookie'
 
 export default {
   name: 'Login',
@@ -175,6 +195,8 @@ export default {
       }
     }
     return {
+      checked: false,
+      checkedStatus: false,
       loginForm: {
         username: null,
         password: null
@@ -231,14 +253,22 @@ export default {
       })
     },
     handleLogin() {
+      let user = this.loginForm
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          this.$store.dispatch('user/login',user).then(() => {
+           if(this.checked) {
+              Cookies.set('username',user['username'], {expires: 10})
+             Cookies.set('password',user['password'], {expires: 10})
+             Cookies.set('checkedStatus', true)
+           } else {
+             Cookies.remove('username')
+             Cookies.remove('checkedStatus')
+           }
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
-            })
-            .catch(() => {
+            }).catch(() => {
               this.loading = false
             })
         } else {
@@ -256,6 +286,12 @@ export default {
     }
   },
   mounted() {
+    let user = this.loginForm
+   if(Cookies.get('username') && Cookies.get('checkedStatus')) {
+     user['username'] = Cookies.get('username')
+     user['password'] = Cookies.get('password')
+     this.checked = true
+   }
   }
 }
 </script>

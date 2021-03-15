@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-10 17:41:21
+ * @LastEditTime: 2021-03-13 10:41:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -99,7 +99,7 @@
 </template>
 <script>
 
-import {getDirection, getTrafficResult, getRuleNames, getDeviceNames } from '@/utils/business'
+import { getDirection, getTrafficResult, getRuleNames, getDeviceNames } from '@/utils/business'
 import { trafficRecords } from '@/api/traffic-records'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'

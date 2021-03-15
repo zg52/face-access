@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-01 18:09:50
+ * @LastEditTime: 2021-03-13 10:34:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\Navbar.vue
@@ -97,6 +97,13 @@
   float: left;
   margin-left: 4%;
 }
+.name {
+  color: #888;
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: text-bottom;
+  position: relative;
+}
 </style>
 
 <template>
@@ -123,7 +130,7 @@
         <lang-select class="right-menu-item hover-effect" />
 
       </template>
-
+      <span class="name">{{ username }}</span>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img :src="avatar" class="user-avatar"> -->
@@ -161,7 +168,6 @@ import LangSelect from '@/components/LangSelect'
 import Search from '@/components/HeaderSearch'
 import News from '@/components/News'
 
-
 export default {
   components: {
     Breadcrumb,
@@ -177,7 +183,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'username'
     ])
   },
   methods: {
@@ -188,6 +195,8 @@ export default {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
+  },
+  created() {
   }
 }
 </script>
