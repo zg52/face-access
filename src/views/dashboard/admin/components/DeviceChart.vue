@@ -28,20 +28,11 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      online: [1,2,3,40,0,0,0],
+      offline: [1,2,3,40,0,0,0],
+      Xvalue: ['03-01', '03-02', '03-03', '03-04', '03-05', '03-06', '今日']
     }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.initChart()
-    })
-  },
-  beforeDestroy() {
-    if (!this.chart) {
-      return
-    }
-    this.chart.dispose()
-    this.chart = null
   },
   methods: {
     initChart() {
@@ -49,16 +40,16 @@ export default {
 
   this.chart.setOption({
     title: {
-        text: '设备在线/离线实施监控',
+        text: '设备在线/离线实时监控（近7天记录）',
         textStyle: {
-          color: '#333',
+          color: '#8a16ff',
           fontSize: 14
         }
     },
     textStyle: {
       color: '#8a16ff'
     },
-    color:['#8a16ff','#d1a9fb',],
+    color:['#8a16ff','#d1a9fb'],
     tooltip: {
         trigger: 'axis'
     },
@@ -111,21 +102,31 @@ export default {
     xAxis: [
         {
             type: 'category',
-            name: '星期',
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+            name: '日期',
+            data: this.Xvalue,
+            axisLine: {
+            lineStyle: {
+            color: '#8a16ff' ,
+            }
+       },
         }
     ],
     yAxis: [
         {
             type: 'value',
             name: '数量',
+            axisLine: {
+            lineStyle: {
+            color: '#8a16ff' ,
+            }
+       },
         }
     ],
     series: [
         {
             name: '在线',
             type: 'bar',
-            data: [1,2,3,4,5,6,7],
+            data: this.online,
             markLine: {
                 data: [
                     {type: 'average', name: '平均值'}
@@ -135,7 +136,7 @@ export default {
         {
             name: '离线',
             type: 'bar',
-            data: [1,1,2,0,0,0,1],
+            data: this.offline,
             markLine: {
                 data: [
                     {type: 'average', name: '平均值'}
@@ -146,6 +147,22 @@ export default {
 }
 )
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.initChart()
+// 3ofeng轮询获取在线/离线个数 
+  setInterval(() => {
+    
+  }, 1800);
+    })
+  },
+  beforeDestroy() {
+    if (!this.chart) {
+      return
+    }
+    this.chart.dispose()
+    this.chart = null
   }
 }
 </script>

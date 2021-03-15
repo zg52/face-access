@@ -47,22 +47,30 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
 
-  this.chart.setOption( {
-      title: {
-        text: '今日开门施监控',
+  this.chart.setOption({
+    color: ['#80FFA5', '#37A2FF', '#FF0087', '#FFBF00'],
+    title: {
+        text: '进门人数施时监控（近30天记录）',
         textStyle: {
-          color: '#333',
           fontSize: 14
         }
     },
- textStyle: {
-      color: '#8a16ff'
-    },
     tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross',
+            label: {
+                backgroundColor: '#6a7985'
+            }
+        }
     },
     legend: {
         data: ['刷脸', '刷卡', '二维码', '指纹']
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
     },
     grid: {
         left: '3%',
@@ -70,7 +78,7 @@ export default {
         bottom: '3%',
         containLabel: true
     },
-    toolbox: {
+        toolbox: {
         show: true,
         feature: {
             dataView: {
@@ -78,7 +86,7 @@ export default {
               readOnly: false,
                emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                  //  borderColor: '#8a16ff'
                  }
                }
                },
@@ -87,7 +95,7 @@ export default {
              type: ['line', 'bar', 'red'],
               emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                  //  borderColor: '#8a16ff'
                  }
                }
              },
@@ -95,7 +103,7 @@ export default {
               show: true,
                emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                  //  borderColor: '#8a16ff'
                  }
                }
             },
@@ -103,50 +111,128 @@ export default {
               show: true,
                emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                  //  borderColor: '#8a16ff'
                  }
                }
             }
         },
         iconStyle: {
-          borderColor:'#d1a9fb',
+          // borderColor:'#d1a9fb',
         }
     },
-    xAxis: {
-        type: 'category',
-        name: '时间',
-        boundaryGap: false,
-        data: ['0时', '1时', '2时', '3时', '4时', '5时', '6时', '7时', '8时', '9时', '10时', '11时', '12时', '13时', '14时', '15时', '16时', '17时', '18时', '19时', '20时', '21时', '22时', '23时']
-    },
-    yAxis: {
-        type: 'value',
-        name: '人数'
-    },
+    xAxis: [
+        {
+            type: 'category',
+            boundaryGap: false,
+        data: ['3-01', '3-02', '3-03', '3-05', '3-06', '3-07', '3-08', '3-09', '3-10', '3-11', '3-12', '3-13', '3-14', '3-15', '3-16', '3-17', '3-18', '3-19', '3-20', '3-21', '3-22', '3-23', '3-24', '3-25','3-26','03-27','03-28','03-29','03-30','今日']
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value'
+        }
+    ],
     series: [
         {
             name: '刷脸',
             type: 'line',
             stack: '总量',
-            data: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
+            smooth: true,
+            lineStyle: {
+                width: 0
+            },
+            showSymbol: false,
+            areaStyle: {
+                opacity: 0.8,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#6EA5FF'
+                }, {
+                    offset: 1,
+                    color: '#6ea5ffd1'
+                }])
+            },
+            emphasis: {
+                focus: 'series'
+            },
+            data: [1000, 300, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 300, 210,0,20,349,20,20,20,20,20,1000]
         },
         {
             name: '刷卡',
             type: 'line',
             stack: '总量',
-            data: [220, 182, 191, 234, 290, 330, 310,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
+            smooth: true,
+            lineStyle: {
+                width: 0
+            },
+            showSymbol: false,
+            areaStyle: {
+                opacity: 0.8,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#F75B77'
+                }, {
+                    offset: 1,
+                    color: '#F75B77'
+                }])
+            },
+            emphasis: {
+                focus: 'series'
+            },
+            data: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20]
         },
         {
             name: '二维码',
             type: 'line',
             stack: '总量',
-            data: [150, 232, 201, 154, 190, 330, 410,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
+            smooth: true,
+            lineStyle: {
+                width: 0
+            },
+            showSymbol: false,
+            areaStyle: {
+                opacity: 0.8,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#71D088'
+                }, {
+                    offset: 1,
+                    color: '#71D088'
+                }])
+            },
+            emphasis: {
+                focus: 'series'
+            },
+            data: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20]
         },
         {
             name: '指纹',
             type: 'line',
             stack: '总量',
-            data: [320, 332, 301, 334, 390, 330, 320,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20]
-        },
+            smooth: true,
+            lineStyle: {
+                width: 0
+            },
+            showSymbol: false,
+            label: {
+                show: true,
+                position: 'top'
+            },
+            areaStyle: {
+                opacity: 0.8,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#FFBC6E'
+                }, {
+                    offset: 1,
+                    color: '#FFBC6E'
+                }])
+            },
+            emphasis: {
+                focus: 'series'
+            },
+            data: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20]
+        }
     ]
 }
 )

@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-01-21 10:35:12
+ * @LastEditTime: 2021-03-15 18:14:48
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
+-->
 <template>
     <div :class="className" :style="{height:height,width:width}" />
   </div>
@@ -31,6 +39,108 @@ export default {
       chart: null
     }
   },
+  methods: {
+    initChart() {
+      this.chart = echarts.init(this.$el, 'macarons')
+ 
+  this.chart.setOption({
+    title: {
+        text: '设备通行人数排行',
+        textStyle: {
+          color: '#FC7D02',
+          fontSize: 14
+        }
+    },
+    color:['#FC7D02'],
+    textStyle: {
+      color: '#FC7D02'
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    legend: {
+        data: ['人数']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+        toolbox: {
+        show: true,
+        feature: {
+            dataView: {
+              show: true, 
+              readOnly: false,
+               emphasis: {
+                 iconStyle: {
+                   borderColor: '#FC7D02'
+                 }
+               }
+               },
+            magicType: {
+              show: true,
+             type: ['line', 'bar', 'red'],
+              emphasis: {
+                 iconStyle: {
+                   borderColor: '#FC7D02'
+                 }
+               }
+             },
+            restore: {
+              show: true,
+               emphasis: {
+                 iconStyle: {
+                   borderColor: '#FC7D02'
+                 }
+               }
+            },
+            saveAsImage: {
+              show: true,
+               emphasis: {
+                 iconStyle: {
+                   borderColor: '#FC7D02'
+                 }
+               }
+            }
+        },
+        iconStyle: {
+          borderColor:'#fc7d027a',
+        }
+    },
+    xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01],
+          axisLine: {
+            lineStyle: {
+            color: '#FC7D02' ,
+            }
+       },
+    },
+    yAxis: {
+        type: 'category',
+        data: ['前门', '后门', '负一层'],
+            axisLine: {
+            lineStyle: {
+            color: '#FC7D02' ,
+            }
+       },
+    },
+    series: [
+        {
+            name: '人数',
+            type: 'bar',
+            data: [3, 29, 20]
+        },
+    ]
+}
+)
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this.initChart()
@@ -43,56 +153,5 @@ export default {
     this.chart.dispose()
     this.chart = null
   },
-  methods: {
-    initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
- 
-  this.chart.setOption( {
- title: {
-        text: '一周来访人数统计',
-        left:'center',
-        textStyle: {
-          color: '#333',
-          fontSize: 14
-        }
-    },
-    tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
-    },
-    legend: {
-        orient: 'vertical',
-        left: 'left',
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-    },
-    series: [
-        {
-            name: '访问来源',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: [
-                {value: 335, name: '周一'},
-                {value: 310, name: '周二'},
-                {value: 234, name: '周三'},
-                {value: 135, name: '周四'},
-                {value: 1548, name: '周五'},
-                {value: 1548, name: '周六'},
-                {value: 1548, name: '周日'}
-            ],
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-            }
-        }
-    ]
-}
-)
- 
-    }
-  }
 }
 </script>
