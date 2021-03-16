@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-15 17:56:08
- * @LastEditTime: 2021-03-12 11:35:55
+ * @LastEditTime: 2021-03-16 14:07:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\device-manage\personnel\index.vue
@@ -48,16 +48,16 @@ import blockListRecords from './blockListRecords'
             value: '全部',
           },
           {
-            value: '员工通行记录',
+            value: '员工',
           },
           {
-            value: '访客通行记录',
+            value: '访客',
           },
           {
             value: '陌生人',
           },
           {
-            value: '黑名单',
+            value: '黑名单人员',
           }
         ],
         tabPosition: 'top',

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 14:43:58
+ * @LastEditTime: 2021-03-15 18:28:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -292,8 +292,8 @@ export default {
    let a = this.addVisitorForm,
        date = a['date']
        date && date.length
-        ? ((a['visitStartTime'] = moment(a.date[0]).format("YYYY-MM-DD hh:mm:ss")),
-          (a['visitEndTime'] = moment(a.date[1]).format("YYYY-MM-DD hh:mm:ss")))
+        ? ((a['visitStartTime'] = moment(a.date[0]).format("YYYY-MM-DD HH:mm:ss")),
+          (a['visitEndTime'] = moment(a.date[1]).format("YYYY-MM-DD HH:mm:ss")))
         :  (a['visitStartTime'] = a['visitEndTime'] = null)
   },
   changeImgType() {

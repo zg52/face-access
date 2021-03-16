@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-12 17:31:47
+ * @LastEditTime: 2021-03-16 13:55:35
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -75,7 +75,9 @@ const
     ],
     personTypes = [
       { id: 'employee', name: '员工' },
-       { id: 'visitor', name: '访客' }
+      { id: 'visitor', name: '访客' },
+      { id: 'blocklist', name: '黑名单人员' },
+      { id: 'stranger', name: '陌生人' }
     ],
     genders = [
       { id: 'male' , value: '男' },

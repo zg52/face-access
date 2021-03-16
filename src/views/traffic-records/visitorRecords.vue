@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-10 15:54:17
+ * @LastEditTime: 2021-03-16 16:37:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -67,7 +67,7 @@
     <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-      <el-table-column align="center" label="姓名" width="100"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
+      <el-table-column align="center" label="姓名" width="100"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
       <el-table-column align="center" label="已抓拍人脸" width="95" class="ppp">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
@@ -75,11 +75,11 @@
       <el-table-column align="center" label="通行结果" width="110"> <template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
       <span v-show="scope.row.result !== 'success'" class="red">（{{ scope.row.reason }}）</span></template></el-table-column>
       <el-table-column align="center" label="体温" width="90"> <template v-slot="scope"><span :class="scope.row.temperature >= 37.5 ? 'red' : ''">{{ scope.row.temperature }}℃</span></template></el-table-column>
-      <el-table-column align="center" label="身份证号" width="120"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
+      <el-table-column align="center" label="身份证号" width="auto"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
       <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>
-      <el-table-column align="center" label="通行时间" width="160" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
+      <el-table-column align="center" label="通行时间" width="auto" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>
 
     <el-pagination
@@ -104,7 +104,7 @@ import moment from 'moment'
 let vm
 
 export default {
-  name: 'StaffRecords',
+  name: 'staffRecords',
   data() {
     return {
       date: null,
@@ -179,8 +179,8 @@ export default {
    changeDate() {
     let _p = this.pagingQuery
       this.date && this.date.length
-        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD hh:mm:ss")),
-          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD hh:mm:ss")))
+        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD HH:mm:ss")),
+          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD HH:mm:ss")))
         :  _p.createTimeFrom = _p.createTimeTo = null
     },
     handleSizeChange(val) {

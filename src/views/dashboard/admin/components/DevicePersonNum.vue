@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-01-21 10:35:12
+ * @LastEditTime: 2021-03-16 16:03:14
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
+-->
 <template>
     <div :class="className" :style="{height:height,width:width}" />
   </div>
@@ -29,34 +37,42 @@ export default {
   data() {
     return {
       chart: null,
-      online: [1,2,3,40,0,0,0],
-      offline: [1,2,3,40,0,0,0],
-      Xvalue: ['03-01', '03-02', '03-03', '03-04', '03-05', '03-06', '今日']
+      xValue: [3, 29, 20],
+      yValue: ['前门', '后门', '负一层']
     }
   },
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-
+ 
   this.chart.setOption({
     title: {
-        text: '设备在线/离线实时监控（近7天记录）',
+        text: '设备通行人数排行',
         textStyle: {
-          color: '#8a16ff',
+          color: '#FC7D02',
           fontSize: 14
         }
     },
+    color:['#FC7D02'],
     textStyle: {
-      color: '#8a16ff'
+      color: '#FC7D02'
     },
-    color:['#8a16ff','#d1a9fb'],
     tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
     },
     legend: {
-        data: ['在线', '离线']
+        data: ['人数']
     },
-    toolbox: {
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+        toolbox: {
         show: true,
         feature: {
             dataView: {
@@ -64,7 +80,7 @@ export default {
               readOnly: false,
                emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                   borderColor: '#FC7D02'
                  }
                }
                },
@@ -73,7 +89,7 @@ export default {
              type: ['line', 'bar', 'red'],
               emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                   borderColor: '#FC7D02'
                  }
                }
              },
@@ -81,7 +97,7 @@ export default {
               show: true,
                emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                   borderColor: '#FC7D02'
                  }
                }
             },
@@ -89,60 +105,40 @@ export default {
               show: true,
                emphasis: {
                  iconStyle: {
-                   borderColor: '#8a16ff'
+                   borderColor: '#FC7D02'
                  }
                }
             }
         },
         iconStyle: {
-          borderColor:'#d1a9fb',
+          borderColor:'#fc7d027a',
         }
     },
-    calculable: true,
-    xAxis: [
-        {
-            type: 'category',
-            name: '日期',
-            data: this.Xvalue,
-            axisLine: {
+    xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01],
+          axisLine: {
             lineStyle: {
-            color: '#8a16ff' ,
+            color: '#FC7D02' ,
             }
        },
-        }
-    ],
-    yAxis: [
-        {
-            type: 'value',
-            name: '数量',
+    },
+    yAxis: {
+        type: 'category',
+        data: this.yValue,
             axisLine: {
             lineStyle: {
-            color: '#8a16ff' ,
+            color: '#FC7D02' ,
             }
        },
-        }
-    ],
+    },
     series: [
         {
-            name: '在线',
+            name: '人数',
             type: 'bar',
-            data: this.online,
-            markLine: {
-                data: [
-                    {type: 'average', name: '平均值'}
-                ]
-            }
+            data: this.xValue,
+            barWidth: '45%',
         },
-        {
-            name: '离线',
-            type: 'bar',
-            data: this.offline,
-            markLine: {
-                data: [
-                    {type: 'average', name: '平均值'}
-                ]
-            }
-        }
     ]
 }
 )
@@ -151,7 +147,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.initChart()
-      
+
 // 每30分刷新
   setInterval(() => {
         
@@ -164,6 +160,6 @@ export default {
     }
     this.chart.dispose()
     this.chart = null
-  }
+  },
 }
 </script>
