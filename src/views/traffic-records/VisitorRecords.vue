@@ -1,15 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
-<<<<<<< HEAD
-<<<<<<< HEAD
- * @LastEditTime: 2021-03-16 16:27:06
-=======
- * @LastEditTime: 2021-03-16 16:37:13
->>>>>>> zhanglong
-=======
- * @LastEditTime: 2021-03-16 16:37:13
->>>>>>> zhanglong
+ * @LastEditTime: 2021-03-16 16:37:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -36,7 +28,7 @@
 <template>
   <div class="app-container1">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
+      <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.personName" clearable></el-input></el-form-item>
       <el-form-item label="通行设备">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
@@ -51,8 +43,6 @@
       <el-form-item label="通行结果"><el-select v-model="pagingQuery.result" placeholder="请选择" filterable clearable>
          <el-option v-for="(result, index) of getTrafficResult" :key="index" :label="result.value" :value="result.id"></el-option>
        </el-select></el-form-item>
-      <el-form-item label="门禁卡号"><el-input v-model.trim="pagingQuery.gateCardId" clearable></el-input></el-form-item>
-      <el-form-item label="IC卡号"><el-input v-model.trim="pagingQuery.icCardId" clearable></el-input></el-form-item>
        <el-form-item label="身份证号"><el-input class="w200" v-model.trim="pagingQuery.idNum" clearable></el-input></el-form-item>
        <el-form-item label="通行时间">
         <el-date-picker
@@ -78,21 +68,18 @@
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="姓名" width="100"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
-      <el-table-column align="center" label="已抓拍人脸" width="95" class="ppp"> 
+      <el-table-column align="center" label="已抓拍人脸" width="95" class="ppp">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-      <el-table-column align="center" label="人员类型" width="92"> <template v-slot="scope"><span :class="scope.row.personType == null ? 'red' : ''">{{ scope.row.virtualPersonType | filterPesonType(scope.row) }}</span></template></el-table-column>
-      <el-table-column align="center" label="通行设备" width="200"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
-      <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
-      <span v-show="scope.row.result !== 'success'" class="red"><i v-if="scope.row.reason ? true : false">（{{ scope.row.reason }}）</i></span></template></el-table-column>
+      <el-table-column align="center" label="通行设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
+      <el-table-column align="center" label="通行结果" width="110"> <template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
+      <span v-show="scope.row.result !== 'success'" class="red">（{{ scope.row.reason }}）</span></template></el-table-column>
       <el-table-column align="center" label="体温" width="90"> <template v-slot="scope"><span :class="scope.row.temperature >= 37.5 ? 'red' : ''">{{ scope.row.temperature }}℃</span></template></el-table-column>
-      <el-table-column align="center" label="身份证号" width="120"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
-      <el-table-column align="center" label="门禁卡" width="120"> <template v-slot="scope"> {{ scope.row.gateCardId }}</template></el-table-column>
-      <el-table-column align="center" label="IC卡" width="120"> <template v-slot="scope"> {{ scope.row.icCardId }}</template></el-table-column>
+      <el-table-column align="center" label="身份证号" width="auto"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
       <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>
-      <el-table-column align="center" label="通行时间" width="160" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
+      <el-table-column align="center" label="通行时间" width="auto" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>
 
     <el-pagination
@@ -132,7 +119,7 @@ export default {
       multipleSelection: [],
       
       pagingQuery: {
-        name: null,
+        personName: null,
         deviceId: null,
         ruleName: null,
         direction: null,
@@ -142,7 +129,7 @@ export default {
         gateCardId: null,
         icCardId: null,
         idNum: null,
-        // personType: 'employee',
+        personType: 'visitor',
 
         current: 1,
         size: 100,
@@ -221,9 +208,6 @@ export default {
        this.getRuleNames = res
     })
     this.onSearch()
-    setInterval(() => {
-      this.onSearch()
-    },360_0000)
   },
   mounted() {},
 }

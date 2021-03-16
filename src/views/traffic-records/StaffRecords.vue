@@ -1,15 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
-<<<<<<< HEAD
-<<<<<<< HEAD
- * @LastEditTime: 2021-03-16 16:27:06
-=======
- * @LastEditTime: 2021-03-16 16:37:13
->>>>>>> zhanglong
-=======
- * @LastEditTime: 2021-03-16 16:37:13
->>>>>>> zhanglong
+ * @LastEditTime: 2021-03-16 16:37:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -81,10 +73,9 @@
       <el-table-column align="center" label="已抓拍人脸" width="95" class="ppp"> 
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-      <el-table-column align="center" label="人员类型" width="92"> <template v-slot="scope"><span :class="scope.row.personType == null ? 'red' : ''">{{ scope.row.virtualPersonType | filterPesonType(scope.row) }}</span></template></el-table-column>
       <el-table-column align="center" label="通行设备" width="200"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
       <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
-      <span v-show="scope.row.result !== 'success'" class="red"><i v-if="scope.row.reason ? true : false">（{{ scope.row.reason }}）</i></span></template></el-table-column>
+      <span v-show="scope.row.result !== 'success'" class="red">（{{ scope.row.reason }}）</span></template></el-table-column>
       <el-table-column align="center" label="体温" width="90"> <template v-slot="scope"><span :class="scope.row.temperature >= 37.5 ? 'red' : ''">{{ scope.row.temperature }}℃</span></template></el-table-column>
       <el-table-column align="center" label="身份证号" width="120"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
       <el-table-column align="center" label="门禁卡" width="120"> <template v-slot="scope"> {{ scope.row.gateCardId }}</template></el-table-column>
@@ -108,7 +99,7 @@
 </template>
 <script>
 
-import {getDirection, getTrafficResult, getRuleNames, getDeviceNames } from '@/utils/business'
+import { getDirection, getTrafficResult, getRuleNames, getDeviceNames } from '@/utils/business'
 import { trafficRecords } from '@/api/traffic-records'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -142,7 +133,7 @@ export default {
         gateCardId: null,
         icCardId: null,
         idNum: null,
-        // personType: 'employee',
+        personType: 'employee',
 
         current: 1,
         size: 100,
