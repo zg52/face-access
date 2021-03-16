@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-21 10:35:12
- * @LastEditTime: 2021-03-15 18:14:48
+ * @LastEditTime: 2021-03-16 16:03:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
@@ -36,7 +36,9 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      xValue: [3, 29, 20],
+      yValue: ['前门', '后门', '负一层']
     }
   },
   methods: {
@@ -123,7 +125,7 @@ export default {
     },
     yAxis: {
         type: 'category',
-        data: ['前门', '后门', '负一层'],
+        data: this.yValue,
             axisLine: {
             lineStyle: {
             color: '#FC7D02' ,
@@ -134,7 +136,8 @@ export default {
         {
             name: '人数',
             type: 'bar',
-            data: [3, 29, 20]
+            data: this.xValue,
+            barWidth: '45%',
         },
     ]
 }
@@ -144,6 +147,11 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.initChart()
+
+// 每30分刷新
+  setInterval(() => {
+        
+      },(1000 * 60) * 30)
     })
   },
   beforeDestroy() {

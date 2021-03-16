@@ -9,7 +9,7 @@
 
     <el-row :gutter="32">
          <el-col :xs="24" :sm="24" :lg="12"><div class="chart-wrapper"><DeviceChart /></div></el-col>
-          <el-col :xs="24" :sm="24" :lg="12"><div class="chart-wrapper"><Visitor /></div></el-col>
+          <el-col :xs="24" :sm="24" :lg="12"><div class="chart-wrapper"><DevicePersonNum /></div></el-col>
     </el-row>
      <el-row :gutter="32">
         <el-col :xs="24" :sm="24" :lg="32"><div class="chart-wrapper"><OpenDoor /></div></el-col>
@@ -32,7 +32,7 @@
 <script>
 import DeviceChart from './components/DeviceChart'
 import OpenDoor from './components/OpenDoor'
-import Visitor from './components/Visitor'
+import DevicePersonNum from './components/DevicePersonNum'
 
 import GithubCorner from '@/components/GithubCorner'
 import PanelGroup from './components/PanelGroup'
@@ -66,7 +66,7 @@ export default {
   components: {
     DeviceChart,
     OpenDoor,
-    Visitor,
+    DevicePersonNum,
     GithubCorner,
     PanelGroup,
     LineChart,

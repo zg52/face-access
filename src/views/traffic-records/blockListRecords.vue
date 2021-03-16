@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 19:18:41
+ * @LastEditTime: 2021-03-16 10:15:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -149,8 +149,8 @@ export default {
    changeDate() {
     let _p = this.pagingQuery
       this.date && this.date.length
-        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD hh:mm:ss")),
-          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD hh:mm:ss")))
+        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD HH:mm:ss")),
+          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD HH:mm:ss")))
         :  _p.createTimeFrom = _p.createTimeTo = null
     },
     handleSizeChange(val) {

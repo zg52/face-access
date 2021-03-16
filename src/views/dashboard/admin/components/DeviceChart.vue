@@ -151,10 +151,11 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.initChart()
-// 3ofeng轮询获取在线/离线个数 
+      
+// 每30分刷新
   setInterval(() => {
-    
-  }, 1800);
+        
+      },(1000 * 60) * 30)
     })
   },
   beforeDestroy() {

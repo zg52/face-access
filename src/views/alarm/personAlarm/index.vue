@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 18:50:14
+ * @LastEditTime: 2021-03-16 13:58:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -83,7 +83,7 @@ export default {
       date: null,
       getImgUrl: imgUrl(),
       tableData: [],
-      personTypes: getPersonTypes,
+      personTypes: getPersonTypes.slice(0,2),
       pagingQuery: {
         personName: null,
         personType: null,
@@ -152,8 +152,8 @@ export default {
       let _this = this,
           date = _this.date
       date && date.length
-        ? ((_this.pagingQuery.createTimeFrom = moment(date[0]).format("YYYY-MM-DD hh:mm")),
-          (_this.pagingQuery.createTimeTo = moment(date[1]).format("YYYY-MM-DD hh:mm")))
+        ? ((_this.pagingQuery.createTimeFrom = moment(date[0]).format("YYYY-MM-DD HH:mm")),
+          (_this.pagingQuery.createTimeTo = moment(date[1]).format("YYYY-MM-DD HH:mm")))
         :  _this.pagingQuery.createTimeFrom = _this.pagingQuery.createTimeTo = null
     },
      refreshPagingQuery() {
