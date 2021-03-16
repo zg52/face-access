@@ -91,7 +91,7 @@ import moment from 'moment'
 let vm
 
 export default {
-  name: 'StaffRecords',
+  name: 'staffRecords',
   data() {
     return {
       date: null,
