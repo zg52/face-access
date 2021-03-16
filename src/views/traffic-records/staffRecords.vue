@@ -1,7 +1,11 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
+<<<<<<< HEAD:src/views/traffic-records/staffRecords.vue
  * @LastEditTime: 2021-03-16 16:29:25
+=======
+ * @LastEditTime: 2021-03-16 16:37:02
+>>>>>>> zhanglong:src/views/traffic-records/StaffRecords.vue
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
