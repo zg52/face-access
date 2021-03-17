@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-16 14:26:57
+ * @LastEditTime: 2021-03-17 10:50:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -76,7 +76,7 @@ export function uppercaseFirst(string) {
 }
 
 /**
- * @description: 处理日期
+ * @description: 处理日期 'T'
  * @param {*} string
  */
 export function filterDate(string) {

@@ -44,7 +44,7 @@ export default {
   this.chart.setOption({
     color: ['#6EA5FF', '#F75B77', '#71D088', '#FFBC6E'],
     title: {
-        text: '进门人数实时监控（近30天记录）',
+        text: '近30天进门人数实时监控',
         textStyle: {
           fontSize: 14
         }

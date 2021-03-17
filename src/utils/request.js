@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-03 10:25:04
+ * @LastEditTime: 2021-03-17 17:07:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\utils\request.js
@@ -9,8 +9,10 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, removeToken } from '@/utils/auth'
 import qs from 'qs'
+import router from "../router"
+
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true,
@@ -44,39 +46,51 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    const res = response.data
-    console.log(response)
-    // if (res.code !== 20000) {
-    //   Message({
-    //     message: res.message || 'Error',
-    //     type: 'error',
-    //     duration: 5 * 1000
-    //   })
-
-    //   if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-    //     MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-    //       confirmButtonText: 'Re-Login',
-    //       cancelButtonText: 'Cancel',
-    //       type: 'warning'
-    //     }).then(() => {
-    //       store.dispatch('user/resetToken').then(() => {
-    //         location.reload()
-    //       })
-    //     })
-    //   }
-    //   return Promise.reject(new Error(res.message || 'Error'))
-    // } else {
-    //   return res
-    // }
-    return res
+    const {code, msg } = response.data
+    
+    if(code === 10009) {
+      removeToken(), router.push({path:'/login'})
+    }
+    return response.data
   },
   error => {
-    console.log('err' + error)
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    
+/**
+ * @description: 处理http状态码————页面提示
+ */
+       if (error && error.response) {
+        const errRes = error.response
+        switch (errRes.status) {
+          case 400:
+            Message({
+              message: "参数有误（400）,请重试",
+              type: "warning",
+              duration: 5 * 1000
+            })
+            break
+          case 404:
+            Message({
+              message: `请求地址：${ errRes.data.path } 不存在（404）`,
+              type: "error",
+              duration: 5 * 1000
+            })
+            break
+          case 401:
+            router.push({path:'/login'}),  Message(请登录, 5000)
+            break
+          case 500:
+            Message({
+              message: `请求地址：${ errRes.data.path } 服务器异常（500）`,
+              type: "error",
+              duration: 10 * 1000
+            })
+            break
+            default: Message.error(error.message, 5000)
+        }
+      }
+      if (error.toString().indexOf('Error: timeout') !== -1) {  // 请求超时提示
+        Message.error('请求超时，请刷新重试！', 60000)
+      }
     return Promise.reject(error)
   }
 )

@@ -2,6 +2,7 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import { Message } from 'element-ui'
+import md5 from 'js-md5'
 
 const state = {
   token: getToken(),
@@ -41,12 +42,8 @@ const actions = {
           setToken(data.token)
           resolve()
         } else {
-          // reject(msg)
-          Message({
-            message: msg,
-            type: 'error',
-            duration: 5 * 1000
-          })
+          reject(msg)
+          Message.error(msg, 5000)
         }
       }).catch(error => {
         reject(error)

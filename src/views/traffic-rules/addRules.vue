@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-10 12:39:18
+ * @LastEditTime: 2021-03-17 15:20:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -373,6 +373,9 @@ export default {
     handleCheckAllChange(val) {
        this.checkedWeeks = val ? weekOptions : []
        this.isIndeterminate = false
+       if(this.checkedWeeks.length === 0) {
+         this.addRules.week = null
+       }
     },
     handleWeekChange(value) {
         let [checkedCount, weekId] = [value.length, []]

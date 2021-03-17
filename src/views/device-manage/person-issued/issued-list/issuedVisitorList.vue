@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 16:55:40
+ * @LastEditTime: 2021-03-17 13:03:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -151,16 +151,17 @@ export default {
       let params = this.pagingQuery
       beenIssuedVisitor(this.pagingQuery).then((res) => {
          if(res.code === 0) {
-          if(res.data.records != null) {
+           let records = res.data.records
            this.painingQueryList = []
            this.table_loading = false
            params.size = res.data.size
            params.current = res.data.current
            params.total = res.data.total
-           this.painingQueryList = res.data.records
-            } else {
-            this.table_loading = false
-            }
+           if(records) {
+             if(records.length !== 0) {
+             this.painingQueryList = res.data.records
+           }
+           }
          } else {
             this.$message.error(res.msg)
             this.table_loading = false

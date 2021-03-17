@@ -83,43 +83,6 @@ export const constantRoutes = [
   // },
 ]
 export const asyncRoutes = [
-  // {
-  //   path: '/system-manage',
-  //   component: Layout,
-  //   name: 'system-manage',
-  //   meta: { title: '系统管理', icon: 'el-icon-setting', noCache: true },
-  //   redirect: '/system-manage/user',
-  //   children: [
-  //         {
-  //           path: 'user',
-  //           component: () => import('@/views/system-manage/user'),
-  //           name: 'user',
-  //           meta: { title: '用户管理', icon: 'user', roles: ['1','admin','viewer'] }
-  //         },
-  //         {
-  //           path: 'permission',
-  //           component: () => import('@/views/system-manage/'),
-  //           redirect: '/system-manage/permission/role',
-  //           alwaysShow: true,
-  //           name: 'permission',
-  //           meta: { title: '权限管理', icon: 'lock', roles: ['1','admin', 'editor'] },
-  //           children: [
-  //             {
-  //               path: 'role',
-  //               component: () => import('@/views/system-manage/permission/role'),
-  //               name: 'role',
-  //               meta: { title: '角色权限', roles: ['1','admin'] }
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           path: 'ulog',
-  //           component: () => import('@/views/system-manage/ulog'),
-  //           name: 'ulog',
-  //           meta: { title: '操作日志', icon: 'clipboard', roles: ['1','admin', 'editor'] },
-  //         }
-  //   ]
-  // },
   {
     path: '/people-manage',
     component: Layout,
@@ -342,23 +305,6 @@ export const asyncRoutes = [
           }
     ]
   },
-  {
-    path: '/pdf/download',
-    component: () => import('@/views/pdf/download'),
-    hidden: true
-  },
-  // {
-  //   path: '/tab',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/tab/index'),
-  //       name: 'Tab',
-  //       meta: { title: 'tab', icon: 'tab' }
-  //     }
-  //   ]
-  // },
   { path: '*', redirect: '/404', hidden: true }
 ]
 const createRouter = () => new Router({

@@ -41,7 +41,7 @@ export default {
 
   this.chart.setOption({
     title: {
-        text: '设备在线/离线实时监控（近7天记录）',
+        text: '设备在线/离线/故障实时监控',
         textStyle: {
           color: '#8a16ff',
           fontSize: 14
