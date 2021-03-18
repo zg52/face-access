@@ -21,7 +21,6 @@ import RightPanel from '@/components/RightPanel'
 import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
-import { getToken } from '@/utils/auth'
 
 export default {
   name: 'Layout',
@@ -49,17 +48,6 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
-    }
-  },
-    watch: {
-    $route: {
-      handler(val) {
-        let token = getToken()
-        if (!token) {
-            this.$router.push({ path: "/login" })
-        }
-      },
-      deep: true
     }
   },
   methods: {

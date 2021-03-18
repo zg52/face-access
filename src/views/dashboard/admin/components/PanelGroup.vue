@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-03-16 18:29:17
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\PanelGroup.vue
+-->
 
 <style lang="scss" scoped>
 .panel-group {
@@ -195,7 +203,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            今日设备离线
+            今日离线设备
           </div>
           <count-to :start-val="0" :end-val="0" :duration="3200" class="card-panel-num" />
         </div>
@@ -210,7 +218,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            今日设备故障
+            今日故障设备
           </div>
           <count-to :start-val="0" :end-val="0" :duration="3200" class="card-panel-num" />
         </div>

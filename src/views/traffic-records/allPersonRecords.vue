@@ -2,10 +2,20 @@
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> dev
  * @LastEditTime: 2021-03-16 16:27:06
 =======
  * @LastEditTime: 2021-03-16 16:37:13
 >>>>>>> zhanglong
+<<<<<<< HEAD
+=======
+=======
+ * @LastEditTime: 2021-03-16 16:37:13
+>>>>>>> zhanglong
+>>>>>>> dev
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue

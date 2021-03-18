@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 16:54:45
+ * @LastEditTime: 2021-03-18 10:24:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -62,14 +62,15 @@
       <el-table-column align="center" label="门禁卡" width="260"><template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
       <el-table-column align="center" label="IC卡" width="260"><template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
       <el-table-column align="center" label="创建日期" width="230"> <template v-slot="scope"> {{ scope.row.createTime | filterDate}} </template></el-table-column>
-       <el-table-column align="left" label="操作" width="auto" fixed="right">
+       <el-table-column align="left" label="操作" width="202" fixed="right">
         <template v-slot="scope">
+         <el-button  class="radius_45 mt10" size="mini" type="primary" @click.prevent="handleIssuedPerson(scope.row, scope.$index)" :loading="scope.row.issueSateLoading"> <span>重新下发</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
             title="确定要删除该通行人员？"
             @onConfirm="handleDelete(scope.$index, scope.row)">
-            <el-button  class="radius_45 mt10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
+            <el-button  class="radius_45 ml10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
           </el-popconfirm>
           </template>
       </el-table-column>    
@@ -90,6 +91,7 @@
 
 import { getDeviceNames, get_issuePersonStatus } from '@/utils/business'
 import { beenIssuedEmployee, deleteDevicePerson } from '@/api/person-issued/index'
+import { issuedEmployee } from '@/api/person-issued'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
 import moment from 'moment'
@@ -145,12 +147,20 @@ export default {
       let params = this.pagingQuery
       beenIssuedEmployee(this.pagingQuery).then((res) => {
          if(res.code === 0) {
+           let records = res.data.records
            this.painingQueryList = []
            this.table_loading = false
            params.size = res.data.size
            params.current = res.data.current
            params.total = res.data.total
-           this.painingQueryList = res.data.records
+           if(records) {
+             if(records.length !== 0) {
+             this.painingQueryList = res.data.records
+             for(let i = 0; i <  this.painingQueryList.length; i++) {
+              this.$set(this.painingQueryList[i], 'issueSateLoading', false)
+             }
+           }
+           }
          } else {
             this.$message.error(res.msg)
             this.table_loading = false
@@ -181,7 +191,7 @@ export default {
             personIds.push(_this.multipleSelection[i].id)
           }
           deleteDevicePerson({ids: personIds}).then((res) => {
-              if (res.code == 0) {
+              if(res.code == 0) {
                   this.onSearch()
                   this.$message.success(res.msg)
                 } else {
@@ -195,6 +205,31 @@ export default {
       } else {
         this.$message.warning('请在列表中勾选要删除的设备通行人员')
       }
+    },
+
+// 重新下发
+    handleIssuedPerson(row, index) {
+      let _this = this
+      HandleIssued(row)
+     function HandleIssued(row) {
+          let [deviceIds, personIds] =[[], []]
+              deviceIds.push(row.deviceId)
+              personIds.push(row.personId)
+          if(personIds.length !== 0) {
+            _this.$set(_this.painingQueryList[index], 'issueSateLoading', true)
+             issuedEmployee(deviceIds, personIds).then((res) => {
+                if (res.code == 0) {
+                  _this.onSearch()
+                  _this.$message.success( `员工${ row.personName } 已重新下发`, 4000)
+                } else {
+                   _this.$message.warning(res.msg, 4000)
+                   _this.onSearch()
+                }
+              },(err) => {
+                _this.onSearch()
+              })         
+          }
+    }
     },
     onExport() {
 
@@ -228,6 +263,9 @@ export default {
        this.getDeviceNames = res
     })
     this.onSearch()
+     setInterval(() => {
+       this.onSearch()
+     }, 60_000);
   },
   mounted() {},
 }
