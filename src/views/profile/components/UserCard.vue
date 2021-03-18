@@ -6,8 +6,8 @@
 
     <div class="user-profile">
       <div class="box-center">
-        <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
-          <div>华捷艾米</div>
+        <pan-thumb :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false">
+          <div>{{ user.username }}</div>
           {{ user.role }}
         </pan-thumb>
       </div>
@@ -35,6 +35,11 @@ export default {
           role: ''
         }
       }
+    }
+  },
+  data() {
+    return {
+      avatar: require('../../../assets/image/logo.png')
     }
   }
 }

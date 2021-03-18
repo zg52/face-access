@@ -31,6 +31,7 @@ export default {
       chart: null,
       online: [1,2,3,40,0,0,0],
       offline: [1,2,3,40,0,0,0],
+      fault: [1,2,3,40,1,2,4],
       Xvalue: ['03-01', '03-02', '03-03', '03-04', '03-05', '03-06', '今日']
     }
   },
@@ -40,7 +41,7 @@ export default {
 
   this.chart.setOption({
     title: {
-        text: '设备在线/离线实时监控（近7天记录）',
+        text: '设备在线/离线/故障实时监控',
         textStyle: {
           color: '#8a16ff',
           fontSize: 14
@@ -49,12 +50,12 @@ export default {
     textStyle: {
       color: '#8a16ff'
     },
-    color:['#8a16ff','#d1a9fb'],
+    color:['#8a16ff','#b572f9', '#dec9f3'],
     tooltip: {
         trigger: 'axis'
     },
     legend: {
-        data: ['在线', '离线']
+        data: ['在线', '离线', '故障']
     },
     toolbox: {
         show: true,
@@ -137,11 +138,11 @@ export default {
             name: '离线',
             type: 'bar',
             data: this.offline,
-            markLine: {
-                data: [
-                    {type: 'average', name: '平均值'}
-                ]
-            }
+        },
+        {
+            name: '故障',
+            type: 'bar',
+            data: this.fault,
         }
     ]
 }

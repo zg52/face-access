@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-11 18:40:25
+ * @LastEditTime: 2021-03-17 15:28:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -247,7 +247,8 @@ export default {
   },
   filters: {
     weekComput(value) {
-          let weekStr = []
+      if(value) {
+        let weekStr = []
           weekParams().forEach((item, index) => {
             value.includes(item?.id) ? weekStr.push(`${ item?.value }`) : ''
             })
@@ -264,6 +265,9 @@ export default {
          } else {
             return '周' + weekStr.join('、')
          }
+        } else {
+          return ''
+        }
   },
   dateTime(value) {
     return value.replace(new RegExp('null', 'img'), '')

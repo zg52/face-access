@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-15 17:56:08
- * @LastEditTime: 2021-03-16 14:07:42
+ * @LastEditTime: 2021-03-17 10:46:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\device-manage\personnel\index.vue
@@ -44,24 +44,15 @@ import blockListRecords from './blockListRecords'
     data() {
       return {
         tabs: [
-           {
-            value: '全部',
-          },
-          {
-            value: '员工',
-          },
-          {
-            value: '访客',
-          },
-          {
-            value: '陌生人',
-          },
-          {
-            value: '黑名单人员',
-          }
+          { value: '全部', },
+          { value: '员工', },
+          { value: '访客', },
+          { value: '陌生人', },
+          { value: '黑名单人员', }
         ],
         tabPosition: 'top',
         activeName: 0,
+        
         isShow0: true,
         isShow1: false,
         isShow2: false,
@@ -97,5 +88,5 @@ import blockListRecords from './blockListRecords'
     },
     mounted() {
     }
-  };
+  }
 </script>
