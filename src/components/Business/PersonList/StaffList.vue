@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-16 14:39:26
+ * @LastEditTime: 2021-03-18 15:20:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -46,7 +46,7 @@
        <!-- <el-button class="ml10" type="primary" :disabled="table_loading" @click="handleIssuedPerson"><svg-icon icon-class="guide" />  一键下发</el-button> -->
     </el-form>
     
-    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable" border>
+    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" element-loading-spinner="el-icon-loading" v-loading="table_loading"  ref="multipleTable" border>
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>

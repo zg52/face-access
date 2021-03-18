@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-17 15:28:09
+ * @LastEditTime: 2021-03-18 15:33:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -78,9 +78,9 @@
       <router-link class="ml10" to="/traffic-rules/addRules"><el-button type="primary"><svg-icon icon-class="edit"/> 新建通行规则</el-button></router-link>
     </el-form>
       
-    <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
+    <el-table :data="ruleList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <el-table-column width="50" type="selection" fixed></el-table-column>
-      <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
+      <el-table-column label="序列" width="50" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="110"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="所在设备" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
         <el-table-column align="center" label="设备标识" width="120"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier}}</template></el-table-column>

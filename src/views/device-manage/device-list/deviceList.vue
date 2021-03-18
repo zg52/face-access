@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-12 16:33:40
+ * @LastEditTime: 2021-03-18 16:47:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -157,7 +157,7 @@ margin-left: 30px;
       <router-link class="ml10" to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
     </el-form>
     
-    <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
+    <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column :width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -173,7 +173,7 @@ margin-left: 30px;
                <el-form-item label="设备型号："><span>{{ props.row.model }}</span></el-form-item>
                <el-form-item label="设备厂商："><span>{{ props.row.manufacturer }}</span></el-form-item>
                <el-form-item label="设备SN："><span>{{ props.row.sn }}</span></el-form-item>
-               <el-form-item label="设备版本："><span>{{ props.row.firmware_version }}</span></el-form-item>
+               <el-form-item label="设备版本："><span>{{ props.row.firmwareVersion }}</span></el-form-item>
                <el-form-item label="设备位置："><span>{{ props.row.location }}</span></el-form-item>
                <!-- <el-form-item label="方向："><span>{{ props.row.name }}</span></el-form-item> -->
                <el-form-item label="在线状态："><span>{{ props.row.online | filterOnline}}</span></el-form-item>
@@ -192,7 +192,7 @@ margin-left: 30px;
       <el-table-column align="center" label="设备型号" :width="80"><template v-slot="scope">{{ scope.row.model }}</template></el-table-column>
       <el-table-column align="center" label="设备厂商" :width="80"><template v-slot="scope">{{ scope.row.manufacturer }}</template></el-table-column>
       <el-table-column align="center" label="设备SN" :width="80"><template v-slot="scope">{{ scope.row.sn }}</template></el-table-column>
-      <el-table-column align="center" label="设备版本" :width="80"><template v-slot="scope">{{ scope.row.firmware_version }}</template></el-table-column>
+      <el-table-column align="center" label="设备版本" :width="80"><template v-slot="scope">{{ scope.row.firmwareVersion }}</template></el-table-column>
       <el-table-column align="center" label="设备位置" :width="100"><template v-slot="scope"> {{ scope.row. location }} </template></el-table-column>
       <!-- <el-table-column align="center" label="已下发人数" :width="115" sortable><template v-slot="scope"> {{ scope.row.name }} </template></el-table-column> -->
       <!-- <el-table-column align="center" label="方向" :width="100"> <template v-slot="scope"> {{ scope.row.description }} </template> </el-table-column> -->
@@ -201,8 +201,7 @@ margin-left: 30px;
         <span :class="scope.row.online ? 'green' : 'red'">{{ scope.row.online | filterOnline}}</span></template> </el-table-column>
       <el-table-column align="center" label="设备状态" :width="140"><template v-slot="scope"><span>{{ scope.row.state | filterDeivceState(scope.row)}}</span></template> </el-table-column>
       <el-table-column align="center" label="设备信息" :width="140"><template v-slot="scope">{{ scope.row.information }} </template> </el-table-column>
-      <el-table-column align="center" label="创建时间" :width="150" sortable><template v-slot="scope">{{scope.row.createTime | filterDate }}</template> </el-table-column>
-      <!-- <el-table-column align="center" label="修改时间" :width="150" sortable><template v-slot="scope">{{ scope.row.lastUpdateTime }}</template> </el-table-column> -->
+      <el-table-column align="center" label="创建时间" :width="150"><template v-slot="scope">{{scope.row.createTime | filterDate }}</template> </el-table-column>
 
       <el-table-column align="center" label="操作" :width="300" fixed="right">
         <template v-slot="scope">
@@ -251,7 +250,6 @@ margin-left: 30px;
         <!-- <el-form-item label="方向："><el-select class="w100" v-model="value" placeholder="请选择"><el-option>进</el-option><el-option>出</el-option></el-select></el-form-item> -->
     </el-form>
     <div slot="footer" class="dialog-footer t_right">
-      <el-button type="primary"><i class="el-icon-folder-add" /><span>批量导入</span></el-button>
       <el-button @click="resetAddDeviceData('addDeviceData')">重 置</el-button>
       <el-button @click="addDeviceVisible = false">取 消</el-button>
       <el-button type="primary" @click="saveAddDeviceData('addDeviceData')">保 存</el-button>

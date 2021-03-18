@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-16 16:37:13
+ * @LastEditTime: 2021-03-18 18:04:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -66,7 +66,7 @@
       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
     </el-form>
     
-    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
+    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="姓名" width="100"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
@@ -82,7 +82,7 @@
       <el-table-column align="center" label="门禁卡" width="120"> <template v-slot="scope"> {{ scope.row.gateCardId }}</template></el-table-column>
       <el-table-column align="center" label="IC卡" width="120"> <template v-slot="scope"> {{ scope.row.icCardId }}</template></el-table-column>
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
-      <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
+      <!-- <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column> -->
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>
       <el-table-column align="center" label="通行时间" width="160" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>

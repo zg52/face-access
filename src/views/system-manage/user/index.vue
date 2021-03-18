@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-03-12 15:15:56
+ * @LastEditTime: 2021-03-18 11:05:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -89,24 +89,24 @@
       <el-button type="primary" @click="showAddUser"><svg-icon icon-class="edit" /> 新增用户</el-button>
     </el-form>
 
-    <el-table :data="userList" class="user_list" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
+    <el-table border :data="userList" element-loading-spinner="el-icon-loading" class="user_list" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
      <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" width="60"> <template slot-scope="scope">{{ scope.row.index }}</template></el-table-column>
       <el-table-column align="center" label="用户名" width="150"> <template slot-scope="scope"> {{ scope.row.name }} </template> </el-table-column>
-      <el-table-column align="center" label="昵称"  width="120"> <template slot-scope="scope"> {{ scope.row.nickName }} </template> </el-table-column>
-      <el-table-column align="center" label="邮箱"  width="220"> <template slot-scope="scope"> {{ scope.row.email }} </template> </el-table-column>
-      <el-table-column align="center" label="手机"> <template slot-scope="scope"> {{ scope.row.phone }} </template> </el-table-column>
-       <el-table-column align="center" label="角色"  width="120"> <template slot-scope="scope" :data="roles"> {{roles[scope.row.roleId-1].roleName}} </template> </el-table-column>
-      <el-table-column align="center" label="创建时间"  width="150"> <template slot-scope="scope"> {{ scope.row.createTime }} </template> </el-table-column>
+      <el-table-column align="center" label="昵称" width="120"> <template slot-scope="scope"> {{ scope.row.nickName }} </template> </el-table-column>
+      <el-table-column align="center" label="邮箱" width="220"> <template slot-scope="scope"> {{ scope.row.email }} </template> </el-table-column>
+      <el-table-column align="center" label="手机"><template slot-scope="scope"> {{ scope.row.phone }} </template> </el-table-column>
+       <el-table-column align="center" label="角色" width="120"> <template slot-scope="scope" :data="roles"> {{roles[scope.row.roleId-1].roleName}} </template> </el-table-column>
+      <el-table-column align="center" label="创建时间" width="150"> <template slot-scope="scope"> {{ scope.row.createTime }} </template> </el-table-column>
        <el-table-column align="center" label="修改时间" width="150"> <template slot-scope="scope"> {{ scope.row.updataTime }} </template> </el-table-column>
-         <el-table-column align="center" label="状态"  width="160">
+         <el-table-column align="center" label="状态" width="160">
         <template v-slot="scope">
          <el-switch class="switchStyle" v-model="scope.row.status" disabled active-value="VALID" inactive-value="INVALID" active-text="激活" inactive-text="禁用" active-color="#00A854" inactive-color="#F04134"></el-switch>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button class="radius_45" type="primary" size="small" @click="handleEdit(scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
+          <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
