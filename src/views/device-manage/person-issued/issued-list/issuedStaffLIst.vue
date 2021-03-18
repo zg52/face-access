@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-17 18:49:32
+ * @LastEditTime: 2021-03-18 10:24:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -156,10 +156,9 @@ export default {
            if(records) {
              if(records.length !== 0) {
              this.painingQueryList = res.data.records
-             for(let i = 0; i <  this.painingQueryList.length; i++) [
-              //  this.painingQueryList[i].issueSateLoading = false
+             for(let i = 0; i <  this.painingQueryList.length; i++) {
               this.$set(this.painingQueryList[i], 'issueSateLoading', false)
-             ]
+             }
            }
            }
          } else {
