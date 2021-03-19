@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 15:28:56
+ * @LastEditTime: 2021-03-19 17:51:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -339,6 +339,7 @@ export default {
         expiredTime: null,
         createTimeFrom: null,
         createTimeTo: null,
+        states: 0,
         status: null,
         isDelete: null, /// 0为正常1为已删除
         
@@ -497,48 +498,22 @@ export default {
           type: status
         })
       },
-
-// 导入失败信息操作
-    changeStatus() {
-      let p = this.pagingQuery
-          p['isDelete'] = p['states'] === 'isDelete' ? 1 : null
-    },
     getStaffList() {
-      let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
+      let [params] = [this.pagingQuery]
       this.table_loading = true
-
     getReslut(this.pagingQuery).then((res) => {
         this.tableData = []
-        if(res.code === 0) {
+     if(res.code === 0) {
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
-
         if(res.data.records.length !== 0) {
-         res.data.records.map((item, index) => {
-           if(item.isDelete != 1) {
-              filterData.push(item)
-              this.tableData = filterData.reverse()
-
-// 设置visible解决elemenui pover 弹出异常缺陷
-              this.tableData.forEach(function (item) {
-               item.visible = true
-              })
-           } else {
-             isDeleteNum.push(item.isDelete)
-           }
-         })
-      
-//  转换state为Boolean
-        let satatusArr = []
-        this.tableData.map((x, index) => {
-          satatusArr.push({
-            status: x.status == 1 ? false : true
-          })
-        })
-        this.status = satatusArr
+          this.tableData = res.data.records
         }
         this.table_loading = false
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
         }
     })
     },

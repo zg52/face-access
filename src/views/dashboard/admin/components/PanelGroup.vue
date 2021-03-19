@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-16 18:29:17
+ * @LastEditTime: 2021-03-19 18:44:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\PanelGroup.vue
@@ -160,7 +160,7 @@
           <div class="card-panel-text">
            今日进门人数
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="2000" :end-val="in_a_few" :duration="2600" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -175,7 +175,7 @@
           <div class="card-panel-text">
             今日访客预约
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="500" :end-val="reservation_number" :duration="3000" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -190,7 +190,7 @@
           <div class="card-panel-text">
             今日刷脸人数
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="800" :end-val="faceNum" :duration="3600" class="card-panel-num" />
         </div>
       </div>
       </router-link>
@@ -205,7 +205,7 @@
           <div class="card-panel-text">
             今日离线设备
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="50" :end-val="offline_device" :duration="3200" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -220,7 +220,7 @@
           <div class="card-panel-text">
             今日故障设备
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="50" :end-val="temperature_number" :duration="3200" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -235,7 +235,7 @@
           <div class="card-panel-text">
             今日体温异常
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="400" :end-val="temperature_number" :duration="3600" class="card-panel-num" />
         </div>
       </div>
       </router-link>
@@ -244,7 +244,7 @@
 </template>
 <script>
 import CountTo from 'vue-count-to'
-import { deviceException } from '@/api/alarm'
+import { in_a_few, reservation_number, faceNum, offline_device, failure_device, temperature_number, bas, devicePersonNum, inDoorWay } from '@/api/dashboard' 
 
 export default {
   components: {
@@ -252,35 +252,26 @@ export default {
   },
   data() {
     return {
-      device_out_of_order_num: 0,
-      deviceException_params: {
-        source: 'device',
-        category: 'device_out_of_order',
-        current: 1
-      }
+      in_a_few: 0,
+      reservation_number: 0,
+      faceNum: 0,
+      offline_device: 0,
+      failure_device: 0,
+      temperature_number: 0,
+
     }
   },
   methods: {
-    onSearch() {
-      this.pagingQuery.current = 1
-     this.getDeviceException()
+  onSearch() {
+// 
+  in_a_few().then((res) => {
+    
+  })
     },
-    getDeviceException() {
-      deviceException(this.deviceException_params).then((res) => {
-         if(res.code === 0)  {
-           this.table_loading = false
-           if(res.data.records.length !== 0) {
-             this.device_out_of_order_num = res.data.total
-           }
-         } else {
-           this.$message.error(res.msg)
-           this.table_loading = false
-         }
-       })
-    }
+
   },
   created() {
-    this.getDeviceException()
+    this.onSearch()
 
 // 每30分刷新
   setInterval(() => {

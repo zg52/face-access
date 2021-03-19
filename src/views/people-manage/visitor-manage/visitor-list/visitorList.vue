@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 15:24:47
+ * @LastEditTime: 2021-03-19 17:17:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -307,7 +307,10 @@ export default {
         })
         this.isDeletes = satatusArr
       this.tableData = this.tableData
-       }
+       } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
+        }
       })
     },
     onSearch() {

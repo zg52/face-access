@@ -321,6 +321,14 @@ export function resetRouter() {
   router.matcher = newRouter.matcher // reset router
 }
 
+// // 全局配置TDK
+const HEAD = document.getElementsByTagName('head')[0]
+let meta_keywords = document.createElement('meta')
+    meta_keywords.name = 'description'
+    meta_keywords.content = '智能刷脸门禁系统、人脸辨识云、安防、监管、人脸识别、华捷艾米'
+    HEAD.appendChild(meta_keywords)
+
+
 export default router
 
 // 非必须路由组件（按业务需求开放）

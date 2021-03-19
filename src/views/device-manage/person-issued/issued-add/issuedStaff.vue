@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 14:41:46
+ * @LastEditTime: 2021-03-19 17:42:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -114,6 +114,7 @@ export default {
         enrollTime: null,
         createTimeFrom: null, //初始查询默认参数，必填
         createTimeTo: null, //初始查询默认参数，必填
+        states: 0,
         status: null,
         
         current: 1, 
@@ -127,32 +128,24 @@ export default {
     getDeviceIds1(deviceIds) {
     this.deviceIds = deviceIds
     },
-     getStaffList() {
-      let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
+   getStaffList() {
+      let [params] = [this.pagingQuery]
       this.table_loading = true
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
+        if(res.code === 0) {
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
-         res.data.records.map((item, index) => {
-           if(item.isDelete != 1) {
-              filterData.push(item)
-              this.tableData = filterData.reverse()
-           } else {
-             isDeleteNum.push(item.isDelete)
-           }
-         })
+
+        if(res.data.records.length !== 0) {
+        this.tableData = res.data.records
+        }
         this.table_loading = false
-      
-//  转换state为Boolean
-        let satatusArr = []
-        this.tableData.map((x, index) => {
-          satatusArr.push({
-            status: x.status == 1 ? false : true
-          })
-        })
-        this.status = satatusArr
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
+        }
       })
     },
     onSearch() {
@@ -244,7 +237,6 @@ export default {
     })
   },
   mounted() {
-    // console.log(this.multipleSelection)
   },
 };
 </script>

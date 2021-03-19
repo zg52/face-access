@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-21 10:35:12
- * @LastEditTime: 2021-03-16 16:03:14
+ * @LastEditTime: 2021-03-19 18:51:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
@@ -15,6 +15,7 @@
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
+import { devicePersonNum } from '@/api/dashboard' 
 
 const animationDuration = 6000
 

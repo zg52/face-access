@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 18:05:11
+ * @LastEditTime: 2021-03-19 14:29:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -72,10 +72,11 @@
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
       <el-table-column align="center" label="通行设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
+       <el-table-column align="center" label="设备标识" width="174"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
       <el-table-column align="center" label="通行结果" width="110"> <template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
       <span v-show="scope.row.result !== 'success'" class="red">（{{ scope.row.reason }}）</span></template></el-table-column>
       <el-table-column align="center" label="体温" width="90"> <template v-slot="scope"><span :class="scope.row.temperature >= 37.5 ? 'red' : ''">{{ scope.row.temperature }}℃</span></template></el-table-column>
-      <el-table-column align="center" label="身份证号" width="auto"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
+      <el-table-column align="center" label="身份证号" width="170"> <template v-slot="scope"> {{ scope.row.idNum }}</template></el-table-column>
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column> -->
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>

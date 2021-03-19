@@ -1,13 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-01-23 18:21:44
+ * @LastEditTime: 2021-03-19 11:18:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\settings.js
  */
 module.exports = {
-  title: '人脸辨识云 · 门禁',
+  title: '智能刷脸门禁系统-人脸辨识云/安防/监管/识别-刷脸-华捷艾米',
 
   /**
    * @type {boolean} true | false

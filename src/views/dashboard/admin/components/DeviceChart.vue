@@ -7,6 +7,7 @@
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
+import { bas } from '@/api/dashboard' 
 
 const animationDuration = 6000
 
@@ -31,7 +32,7 @@ export default {
       chart: null,
       online: [1,2,3,40,0,0,0],
       offline: [1,2,3,40,0,0,0],
-      fault: [1,2,3,40,1,2,4],
+      fault: [1,0,0,2,0,0,0,0],
       Xvalue: ['03-01', '03-02', '03-03', '03-04', '03-05', '03-06', '今日']
     }
   },

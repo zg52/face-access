@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 17:59:52
+ * @LastEditTime: 2021-03-19 17:52:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -108,7 +108,7 @@
         <el-date-picker class="w300" v-model="pagingQuery.expiredTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate2"></el-date-picker>
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="pagingQuery.states" class="w100" @change="changeStatus" clearable>
+        <el-select v-model="getStates" class="w100" @change="changeStatus" clearable>
          <el-option v-for="(state, index) of states" :key="index" :label="state.value" :value="state.id"></el-option>
         </el-select>
       </el-form-item>
@@ -256,7 +256,6 @@ import moment from 'moment'
  const states = [
    {  id: 0, value: '在职' }, 
    {  id: 1, value: '离职' },
-   {  id: 'deleted1', value: '已删除' },
    {  id: 'removing2', value: '删除中' },
  
  ]
@@ -286,7 +285,8 @@ export default {
       expiredDateFormRule: {
         expiredDate: [{type:'date', required: true, message: '请选择离职日期', trigger: ['blur', 'change'] }]
       },
-      
+
+      getStates: null,
       pagingQuery: {
         operator: null,
         name: null,
@@ -306,6 +306,7 @@ export default {
         createTimeTo: null,
         status: null,
         isDelete: null, /// 0为正常 1为已删除 2为删除中
+        states: null,
         
         current: 1, 
         size: 20,
@@ -346,23 +347,23 @@ export default {
   methods: {
     changeStatus() {
       let p = this.pagingQuery
+       p['states'] = vm['getStates']
+       p['isDelete'] = null
+        
       statesValue(2)
-      statesValue(3)
       function statesValue(i) {
-        if(p['states'] === states[i].id) {
-            p['isDelete'] = states[i].id.substr(-1)
-        }
+        if(vm['getStates'] === states[i].id) 
+            p['isDelete'] = states[i].id.substr(-1),
+            p['states'] = null,
+            console.log( p['isDelete'])
+        
       }
     },
     getStaffList() {
-      let [params, filterData, isDeleteNum] = [this.pagingQuery, [], []]
+      let [params] = [this.pagingQuery]
       this.table_loading = true
-      let stateValue =  params['states']
-     if(params['isDelete']) {
-       params['states'] = null
-     }
+      
       getStaffList(this.pagingQuery).then((res) => {
-        // params['states'] = stateValue
         this.tableData = []
         if(res.code === 0) {
         params.size = res.data.size
@@ -370,21 +371,14 @@ export default {
         params.total = res.data.total
 
         if(res.data.records.length !== 0) {
-         res.data.records.map((item, index) => {
-           if(item.isDelete != 1) {
-              filterData.push(item)
-              this.tableData = filterData
 
+          this.tableData = res.data.records
 // 设置visible解决elemenui pover 弹出异常缺陷
-              this.tableData.forEach(function (item) {
-               item.visible = true
-              })
-           } else {
-             isDeleteNum.push(item.isDelete)
-           }
-         })
-      
-//  转换state为Boolean
+        this.tableData.forEach(function (item) {
+         item.visible = true
+        })
+
+//  转换status为Boolean
         let satatusArr = []
         this.tableData.map((x, index) => {
           satatusArr.push({
@@ -394,6 +388,9 @@ export default {
         this.status = satatusArr
         }
         this.table_loading = false
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
         }
       })
     },

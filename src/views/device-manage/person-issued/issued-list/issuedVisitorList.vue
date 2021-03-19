@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 15:28:26
+ * @LastEditTime: 2021-03-19 16:44:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -75,8 +75,8 @@
             confirmButtonText="确认"
             cancelButtonText="取消"
             title="确定要删除该通行人员？"
-            @onConfirm="handleDelete(scope.$index, scope.row)">
-            <el-button  class="radius_45 ml10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
+            @onConfirm="handleDelete(scope.row, scope.$index)">
+            <el-button  class="radius_45 ml10" size="mini" type="danger" slot="reference" :loading="scope.row.deleteIssuesPerson"><i class="el-icon-delete"></i><span>删除</span></el-button>
           </el-popconfirm>
           </template>
       </el-table-column>
@@ -164,6 +164,7 @@ export default {
              this.painingQueryList = res.data.records
              for(let i = 0; i <  this.painingQueryList.length; i++) {
               this.$set(this.painingQueryList[i], 'issueSateLoading', false)
+              this.$set(this.painingQueryList[i], 'deleteIssuesPerson', false)
              }
            }
            }
@@ -174,7 +175,8 @@ export default {
       })
     },
 
-    handleDelete(x, row) {
+    handleDelete(row, index) {
+       this.$set(this.painingQueryList[index], 'deleteIssuesPerson', true)
       deleteDevicePerson({ids: row.id}).then((res) => {
         if (res.code == 0) {
           this.$message.success({message: res.msg})
@@ -182,7 +184,9 @@ export default {
         } else {
           this.$message.error({message: res.msg})
         }
-      })
+      },(err) => {
+          this.onSearch()
+          })
     },
 
 // 批量删规则

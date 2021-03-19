@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 15:32:25
+ * @LastEditTime: 2021-03-19 14:41:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -30,7 +30,7 @@
     <el-form :model="pagingQuery" :inline="true">
       <el-form-item label="通行设备">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
-         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.personName" :value="deviceName.id"></el-option>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
        <el-form-item label="通行时间">
@@ -60,6 +60,9 @@
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
       <el-table-column align="center" label="通行设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
+       <el-table-column align="center" label="设备标识" width="174"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
+      <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
+      <span v-show="scope.row.result !== 'success'" class="red"><i v-if="scope.row.reason ? true : false">（{{ scope.row.reason }}）</i></span></template></el-table-column>
       <!-- <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column> -->
       <el-table-column align="center" label="通行时间"  width="auto"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>
