@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-17 17:07:15
+ * @LastEditTime: 2021-03-22 09:44:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\utils\request.js
@@ -49,7 +49,7 @@ service.interceptors.response.use(
     const {code, msg } = response.data
     
     if(code === 10009) {
-      removeToken(), router.push({path:'/login'})
+      removeToken(), router.go(0), router.push({path:'/login'})
     }
     return response.data
   },
@@ -76,7 +76,7 @@ service.interceptors.response.use(
             })
             break
           case 401:
-            router.push({path:'/login'}),  Message(请登录, 5000)
+            router.push({path:'/login'}),  Message('请登录', 5000)
             break
           case 500:
             Message({

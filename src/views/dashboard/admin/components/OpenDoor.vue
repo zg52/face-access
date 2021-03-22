@@ -7,7 +7,8 @@
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
-import { inDoorWay } from '@/api/dashboard' 
+import { inDoorWay } from '@/api/dashboard'
+import moment, { months } from 'moment'
 const animationDuration = 6000
 
 export default {
@@ -32,9 +33,9 @@ export default {
 
      xValue: ['3-01', '3-02', '3-03', '3-05', '3-06', '3-07', '3-08', '3-09', '3-10', '3-11', '3-12', '3-13', '3-14', '3-15', '3-16', '3-17', '3-18', '3-19', '3-20', '3-21', '3-22', '3-23', '3-24', '3-25','3-26','03-27','03-28','03-29','03-30','今日'],
      face_swiping: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20],
-     swiping_card: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20],
-     qr_code: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20],
-     fingerprint: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20]
+     swiping_card: [],
+     qr_code: [],
+     fingerprint: []
     }
   },
   methods: {
@@ -228,14 +229,33 @@ export default {
             data: this.fingerprint
         }
     ]
-}
-)
-    }
+  }
+  )
+    },
+ onSearch() {
+   let date = moment(new Date()).format('YYYY-MM-DD')
+    inDoorWay(date).then((res) => {
+      if(res.hasOwnProperty('dates')) {
+        if(Array.isArray(res.dates)) {
+          if(res.dates.length !== 0) {
+            console.log(res.dates)
+            this.xValue = res.dates.map((item, index) => {
+              if(index === 0) { return item = '今日' }
+               return item.substr(5) 
+               })
+            this.face_swiping = res.counts
+              this.initChart()
+          }
+        }
+      }
+    })
+  }
   },
+  
   mounted() {
     this.$nextTick(() => {
       this.initChart()
-
+      this.onSearch()
 // 每30分刷新
       setInterval(() => {
         

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-19 18:44:51
+ * @LastEditTime: 2021-03-22 14:26:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\PanelGroup.vue
@@ -160,7 +160,7 @@
           <div class="card-panel-text">
            今日进门人数
           </div>
-          <count-to :start-val="2000" :end-val="in_a_few" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="1000" :end-val="in_a_few" :duration="2600" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -190,7 +190,7 @@
           <div class="card-panel-text">
             今日刷脸人数
           </div>
-          <count-to :start-val="800" :end-val="faceNum" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="600" :end-val="faceNum" :duration="3600" class="card-panel-num" />
         </div>
       </div>
       </router-link>
@@ -244,7 +244,7 @@
 </template>
 <script>
 import CountTo from 'vue-count-to'
-import { in_a_few, reservation_number, faceNum, offline_device, failure_device, temperature_number, bas, devicePersonNum, inDoorWay } from '@/api/dashboard' 
+import { in_a_few, reservation_number, faceNum, offline_device, failure_device, temperature_number } from '@/api/dashboard' 
 
 export default {
   components: {
@@ -257,27 +257,26 @@ export default {
       faceNum: 0,
       offline_device: 0,
       failure_device: 0,
-      temperature_number: 0,
-
+      temperature_number: 0
     }
   },
   methods: {
   onSearch() {
-// 
-  in_a_few().then((res) => {
-    
-  })
-    },
-
+    in_a_few().then((res) => { this.in_a_few = res }),
+    reservation_number().then((res) => { this.reservation_number = res }),
+    faceNum().then((res) => { this.faceNum = res }),
+    offline_device().then((res) => { this.offline_device = res }),
+    failure_device().then((res) => { this.failure_device = res })
+    temperature_number().then((res) => { this.temperature_number = res })
+  },
   },
   created() {
     this.onSearch()
 
 // 每30分刷新
   setInterval(() => {
-        
+      this.onSearch()
       },(1000 * 60) * 30)
-    
   }
 }
 </script>

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-19 18:50:17
+ * @LastEditTime: 2021-03-22 15:10:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -28,7 +28,7 @@ const monitor = 'monitor/access/'
  */
  export function reservation_number(params) {
     return request({
-       url: `${ passing }visitor/visitorCount`,
+       url: `monitor/visitor/visitorCount`,
        method: 'GET',
        params
      })
@@ -39,7 +39,7 @@ const monitor = 'monitor/access/'
  */
  export function faceNum(params) {
     return request({
-       url: `${ passing }faceCount`,
+       url: `${ monitor }faceCount`,
        method: 'GET',
        params
      })
@@ -50,7 +50,7 @@ const monitor = 'monitor/access/'
  */
  export function offline_device(params) {
     return request({
-       url: `${ passing }offlineCount`,
+       url: `${ monitor }offlineCount`,
        method: 'GET',
        params
      })
@@ -61,7 +61,7 @@ const monitor = 'monitor/access/'
  */
  export function failure_device(params) {
     return request({
-       url: `${ passing }outOfOrderCount`,
+       url: `${ monitor }outOfOrderCount`,
        method: 'GET',
        params
      })
@@ -72,7 +72,7 @@ const monitor = 'monitor/access/'
  */
  export function temperature_number(params) {
     return request({
-       url: `${ passing }outOfOrderCount`,
+       url: 'monitor/exception/outOfOrderCount',
        method: 'GET',
        params
      })
@@ -83,7 +83,7 @@ const monitor = 'monitor/access/'
  */
  export function bas(params) {
     return request({
-       url: `${ passing }device`,
+       url: `${ monitor }device`,
        method: 'GET',
        params
      })
@@ -94,7 +94,7 @@ const monitor = 'monitor/access/'
  */
  export function devicePersonNum(params) {
     return request({
-       url: `${ passing }getAccessPersonCount`,
+       url: `${ monitor }getAccessPersonCount`,
        method: 'GET',
        params
      })
@@ -103,10 +103,12 @@ const monitor = 'monitor/access/'
 /**
  * @description: 进门方式近30天记录
  */
- export function inDoorWay(params) {
+ export function inDoorWay(date) {
     return request({
-       url: `${ passing }faceAccessCount`,
+       url: `${ monitor }faceAccessCount`,
        method: 'GET',
-       params
+       params: {
+        nowDate: date
+       }
      })
     }
