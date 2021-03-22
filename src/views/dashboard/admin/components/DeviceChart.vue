@@ -56,9 +56,7 @@ export default {
         trigger: 'axis'
     },
     legend: {
-        data: [
-          // '在线', '离线', 
-          '故障']
+        data: ['在线', '离线', '故障']
     },
     toolbox: {
         show: true,
@@ -127,21 +125,21 @@ export default {
         }
     ],
     series: [
-        // {
-        //     name: '在线',
-        //     type: 'bar',
-        //     data: this.online,
-        //     markLine: {
-        //         data: [
-        //             {type: 'average', name: '平均值'}
-        //         ]
-        //     }
-        // },
-        // {
-        //     name: '离线',
-        //     type: 'bar',
-        //     data: this.offline,
-        // },
+        {
+            name: '在线',
+            type: 'bar',
+            data: this.online,
+            markLine: {
+                data: [
+                    {type: 'average', name: '平均值'}
+                ]
+            }
+        },
+        {
+            name: '离线',
+            type: 'bar',
+            data: this.offline,
+        },
         {
             name: '故障',
             type: 'bar',

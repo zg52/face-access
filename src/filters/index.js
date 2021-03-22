@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-18 11:23:20
+ * @LastEditTime: 2021-03-22 17:38:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -91,7 +91,10 @@ export function filterDate(string) {
 
 // 业务数据过滤
 
-import { 
+import {
+  getGender,
+  getFaceType,
+  getStaffStates,
   passWay, 
   weekParams, 
   passWayArrHandle, 
@@ -201,3 +204,30 @@ export function filterPesonType(value) {
   })
   return personTypeName
 }
+
+/**
+ * @description: 处理性别
+ */
+export function filterGenter(value) {
+ return value === getGender()[0].id ? '男' : '女'
+}
+
+/**
+ * @description: 处理头像类型
+ */
+ export function filterFaceType(value) {
+  return value === getFaceType()[0].id ? '证件照' : '生活照'
+ }
+
+ export function filterStaffStates(value, isDelete) {
+   let state = null
+   getStaffStates.forEach((item) => {
+   if(item.ID == value) {
+    state = item.value
+  }
+  if(item.ID == isDelete) {
+    state = item.value
+  }
+})
+return state
+ }

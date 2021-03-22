@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-22 14:26:06
+ * @LastEditTime: 2021-03-22 15:59:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\PanelGroup.vue
@@ -181,7 +181,7 @@
      </router-link>
     </el-col>
      <el-col :md="8" :xs="12" :sm="12" :lg="4" class="card-panel-col icon-face_swiping">
-      <router-link to="/traffic-records/index?tab=0">
+      <router-link to="/traffic-records/index?tab=1">
          <div class="card-panel">
         <div class="card-panel-icon-wrapper">
           <svg-icon icon-class="face_swipingNum" class-name="card-panel-icon face_swipingNum" />

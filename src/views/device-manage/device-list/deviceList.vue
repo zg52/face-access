@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 16:47:24
+ * @LastEditTime: 2021-03-22 16:25:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -133,7 +133,7 @@ margin-left: 30px;
       <!-- <el-form-item label="已下发人数" ><el-input class="w120" v-model.trim="pagingQuery.num" clearable></el-input></el-form-item> -->
       <el-form-item label="在线 / 离线"><el-select class="w100" v-model="pagingQuery.online" clearable><el-option v-for="(isOnline, index) of deviceISOnline" :key="index" :label="isOnline.value" :value="isOnline.id"></el-option></el-select></el-form-item>
        <!-- <el-form-item label="方向">  <el-select class="w100"  v-model="value" placeholder="请选择"> <el-option>进</el-option><el-option>出</el-option> </el-select></el-form-item> -->
-      <el-form-item label="创建时间">
+      <el-form-item label="创建日期">
         <el-date-picker
           v-model="date"
           type="daterange"
@@ -321,7 +321,6 @@ export default {
 
 // 新增设备
       addDeviceData: {
-       username: '',
        name: '',
        type: getDeviceTypes()[0].id,
        model: '',
@@ -334,7 +333,6 @@ export default {
        
  // 编辑设备
       editDeviceData: {
-       username: null,
        name: null,
        model: null,
        manufacturer: null,
@@ -347,7 +345,6 @@ export default {
        
 // 设备查询/分页参数
      pagingQuery: {
-      //  username: '艾米',
        name: null,
        type: null,
        online: null,
@@ -612,7 +609,5 @@ export default {
     this.onSearch()
  
   },
-  mounted() {
-  },
-};
+}
 </script>
