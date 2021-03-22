@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-17 10:50:59
+ * @LastEditTime: 2021-03-18 11:23:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -97,13 +97,22 @@ import {
   passWayArrHandle, 
   getDeviceNames, 
   get_issuePersonStatus, 
-  getPersonTypes 
+  getPersonTypes,
+  getUserRoles
 } from '@/utils/business'
 
 const businessData = [
   'success',
   'in'
 ]
+
+/**
+ * @description: 获取角色名称
+ * @param {*} string
+ */
+ export function userRoleName(string) {
+    return getUserRoles.filter((item) => item.id == string)[0].name
+}
 
 /**
  * @description: 处理通行结果

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-16 14:39:26
+ * @LastEditTime: 2021-03-19 17:37:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -46,7 +46,7 @@
        <!-- <el-button class="ml10" type="primary" :disabled="table_loading" @click="handleIssuedPerson"><svg-icon icon-class="guide" />  一键下发</el-button> -->
     </el-form>
     
-    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable" border>
+    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" element-loading-spinner="el-icon-loading" v-loading="table_loading"  ref="multipleTable" border>
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -110,8 +110,9 @@ export default {
         icCardId: null,
         gateCardId: null,
         enrollTime: null,
-        createTimeFrom: null, //初始查询默认参数，必填
-        createTimeTo: null, //初始查询默认参数，必填
+        createTimeFrom: null,
+        createTimeTo: null,
+        states: 0,
         status: null,
         
         current: 1, 
@@ -128,22 +129,23 @@ export default {
   },
   methods: {
      getStaffList() {
-      let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
+      let [params] = [this.pagingQuery]
       this.table_loading = true
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
+        if(res.code === 0) {
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
-         res.data.records.map((item, index) => {
-           if(item.isDelete != 1) {
-              filterData.push(item)
-              this.tableData = filterData.reverse()
-           } else {
-             isDeleteNum.push(item.isDelete)
-           }
-         })
+
+        if(res.data.records.length !== 0) {
+        this.tableData = res.data.records
+        }
         this.table_loading = false
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
+        }
       })
     },
     onSearch() {

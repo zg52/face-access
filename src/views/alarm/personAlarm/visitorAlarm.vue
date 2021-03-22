@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-16 10:13:21
+ * @LastEditTime: 2021-03-18 15:27:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -42,7 +42,7 @@
     </el-button>
   </el-form>
 
-  <el-table :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading">
+  <el-table :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading" element-loading-spinner="el-icon-loading">
     <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
     <el-table-column width="50" type="selection" fixed>
     </el-table-column>

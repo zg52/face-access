@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-26 10:29:33
- * @LastEditTime: 2021-03-17 10:45:05
+ * @LastEditTime: 2021-03-22 09:58:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-element-admine:\hjimi\人脸\html\face-recognition\README\README.md
@@ -26,7 +26,12 @@ npm run serve
 npm run build:prod
 ```
 
-### 路由权限：
-### 只挂载了用户有权限进入的页面，若没权限，路由自动帮我跳转404
+### 系统操作流程：
+1.创建设备
+2.创建通行规则
+3.创建人员
+3.从设备下发人员
+4.将人员添加至通行规则
+5.查人员对应的设备及通行规则
  
  
