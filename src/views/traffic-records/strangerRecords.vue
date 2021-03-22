@@ -2,6 +2,7 @@
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD:src/views/traffic-records/strangerRecords.vue
  * @LastEditTime: 2021-03-16 16:25:27
 =======
@@ -9,6 +10,9 @@
 >>>>>>> zhanglong:src/views/traffic-records/StrangerRecords.vue
 =======
  * @LastEditTime: 2021-03-16 16:37:30
+>>>>>>> dev
+=======
+ * @LastEditTime: 2021-03-19 14:40:42
 >>>>>>> dev
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
@@ -38,7 +42,7 @@
     <el-form :model="pagingQuery" :inline="true">
       <el-form-item label="通行设备">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
-         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.personName" :value="deviceName.id"></el-option>
+         <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
        <el-form-item label="通行时间">
@@ -61,13 +65,16 @@
       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
     </el-form>
     
-    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
+    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="已抓拍人脸" width="95" class="ppp">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
       <el-table-column align="center" label="通行设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
+       <el-table-column align="center" label="设备标识" width="174"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
+      <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
+      <span v-show="scope.row.result !== 'success'" class="red"><i v-if="scope.row.reason ? true : false">（{{ scope.row.reason }}）</i></span></template></el-table-column>
       <!-- <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column> -->
       <el-table-column align="center" label="通行时间"  width="auto"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>

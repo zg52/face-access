@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-12 11:20:29
+ * @LastEditTime: 2021-03-19 17:17:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -127,7 +127,7 @@
       <router-link to="/people-manage/visitor-manage/visitor-add/visitorAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增访客</el-button></router-link>
     </el-form>
     
-    <el-table :data="tableData" class="people_list" border max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
+    <el-table :data="tableData" class="people_list" border max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -307,7 +307,10 @@ export default {
         })
         this.isDeletes = satatusArr
       this.tableData = this.tableData
-       }
+       } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
+        }
       })
     },
     onSearch() {

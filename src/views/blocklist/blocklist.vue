@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-10 17:04:39
+ * @LastEditTime: 2021-03-18 15:27:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -87,7 +87,7 @@ position: absolute;
       <el-button type="primary" @click="dialogVisible1 = true"><svg-icon icon-class="edit" /> 添加黑名单人员</el-button>
      </el-form>
 
-    <el-table :data="tableData" border max-height="700" @selection-change="handleSelectionChange" ref="multipleTable" v-loading="table_loading">
+    <el-table :data="tableData" border max-height="700" @selection-change="handleSelectionChange" ref="multipleTable" v-loading="table_loading" element-loading-spinner="el-icon-loading">
       <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="姓名" width="80">

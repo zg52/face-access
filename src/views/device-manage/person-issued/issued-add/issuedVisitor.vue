@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-13 12:32:03
+ * @LastEditTime: 2021-03-18 14:43:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -67,7 +67,7 @@
        <el-button class="ml10" type="primary" :disabled="table_loading" @click="handleIssuedPerson"><svg-icon icon-class="guide" />  一键下发</el-button>
     </el-form>
     
-    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable" border>
+    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" :element-loading-text="loadingTip1" element-loading-spinner="el-icon-loading" ref="multipleTable" border>
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -124,6 +124,7 @@ export default {
       genders: getGender(),
       value: '华捷艾米',
       table_loading: true,
+      loadingTip1: null,
 
       pagingQuery: {
         name: null,
@@ -189,6 +190,7 @@ export default {
           type: "warning",
         }).then(() => {
           _this.table_loading = true
+          _this.loadingTip1 = '正在下发中'
           let personIds = []
           for (let i = 0; i < _this.multipleSelection.length; i++) {
             personIds.push(_this.multipleSelection[i].id)
@@ -197,15 +199,18 @@ export default {
              issuedVisitor(_this.deviceIds, personIds).then((res) => {
                 if (res.code == 0) {
                   _this.table_loading = true
+                  _this.loadingTip1 = null
                   _this.onSearch()
                   _this.$message.success(res.msg +' 可在已下发人员页面查看', 4000)
                 } else {
                    _this.$message.warning(res.msg, 4000)
                    _this.table_loading = false
+                   _this.loadingTip1 = null
                     _this.$refs.multipleTable.clearSelection()
                 }
               },(err) => {
                 _this.table_loading = false
+                _this.loadingTip1 = null
                 _this.$refs.multipleTable.clearSelection()
               })         
           }
