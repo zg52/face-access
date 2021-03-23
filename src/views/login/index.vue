@@ -210,6 +210,8 @@ $cursor: #fff;
        <el-checkbox v-model="checked">记住密码</el-checkbox>
       <el-button class="handle_login" :loading="loading" type="primary" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
+
+<!-- ###########找回密码 ##########-->
       </div>
     </div>
     <footer class="base">版权信息： CopyRight © 2016-2021 华捷艾米 版权所有 京ICP备18040828号-1</footer>

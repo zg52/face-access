@@ -8,7 +8,7 @@ import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 import { bas } from '@/api/dashboard' 
-
+import moment from 'moment'
 const animationDuration = 6000
 
 export default {
@@ -30,10 +30,10 @@ export default {
   data() {
     return {
       chart: null,
-      online: [1,2,3,40,0,0,0],
-      offline: [1,2,3,40,0,0,0],
-      fault: [1,0,0,2,0,0,0,0],
-      Xvalue: ['03-01', '03-02', '03-03', '03-04', '03-05', '03-06', '今日']
+      online: [],
+      offline: [],
+      fault: [],
+      xValue: []
     }
   },
   methods: {
@@ -105,18 +105,23 @@ export default {
         {
             type: 'category',
             name: '日期',
-            data: this.Xvalue,
+            data: this.xValue,
             axisLine: {
             lineStyle: {
             color: '#8a16ff' ,
             }
+        },
+        axisPointer: {
+              show: true,
+            }
        },
-        }
+      
     ],
     yAxis: [
         {
             type: 'value',
             name: '数量',
+            minInterval: 1,
             axisLine: {
             lineStyle: {
             color: '#8a16ff' ,
@@ -129,11 +134,11 @@ export default {
             name: '在线',
             type: 'bar',
             data: this.online,
-            markLine: {
-                data: [
-                    {type: 'average', name: '平均值'}
-                ]
-            }
+            // markLine: {
+            //     data: [
+            //         {type: 'average', name: '平均值'}
+            //     ]
+            // }
         },
         {
             name: '离线',
@@ -145,20 +150,54 @@ export default {
             type: 'bar',
             data: this.fault,
         }
-    ]
+    ],
+      grid: {
+                left: '0%',
+                right: '6%',
+                bottom: '8%',
+                top:'25%',
+                containLabel: true
+            },
 }
 )
-    }
+    },
+  onSearch() {
+    let date = moment(new Date()).format('YYYY-MM-DD')
+    bas(date).then((res) => {
+      if(res.hasOwnProperty('dates')) {
+        if(Array.isArray(res.dates)) {
+          if(res.dates.length !== 0) {
+            this.xValue = res.dates.map((item, index) => {
+              if(index === 0) { return item = '今日' }
+               return item.substr(5) 
+               })
+            this.online = res.onlineCounts,
+            this.offline = res.offlineCounts,
+            this.fault = res.outOfOrderCounts
+
+            this.initChart()
+          }
+        }
+      }
+    })
+  }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart()
-      
-// 每30分刷新
+  this.$nextTick(() => {
+  this.initChart()
+  this.onSearch()
   setInterval(() => {
-        
+     this.onSearch()
       },(1000 * 60) * 30)
-    })
+
+  setTimeout(() => {
+      this.chart.dispatchAction({
+      type: 'showTip',
+      seriesIndex: 0 ,
+      dataIndex: 0,
+      });
+},1000)
+  })
   },
   beforeDestroy() {
     if (!this.chart) {

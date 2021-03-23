@@ -1,13 +1,12 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-19 14:22:53
+ * @LastEditTime: 2021-03-23 14:00:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-// 详情
  .demo-table-expand {
     width: 1100px;
   }
@@ -92,7 +91,7 @@
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
          :current-page="pagingQuery['current']"
-         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
+         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400, 500, 600, 700 , 800 ,1000]"
          :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingQuery['total']"

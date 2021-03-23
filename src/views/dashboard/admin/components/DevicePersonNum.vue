@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-21 10:35:12
- * @LastEditTime: 2021-03-22 14:56:47
+ * @LastEditTime: 2021-03-23 17:41:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
@@ -117,6 +117,7 @@ export default {
     },
     xAxis: {
         type: 'value',
+         name: '数量',
         boundaryGap: [0, 0.01],
           axisLine: {
             lineStyle: {
@@ -126,6 +127,7 @@ export default {
     },
     yAxis: {
         type: 'category',
+         name: '设备名称',
         data: this.yValue,
             axisLine: {
             lineStyle: {
@@ -138,9 +140,16 @@ export default {
             name: '人数',
             type: 'bar',
             data: this.xValue,
-            barWidth: '45%',
+            barWidth: '58%',
         },
-    ]
+    ],
+     grid: {
+                left: '0%',
+                right: '6%',
+                bottom: '8%',
+                top:'25%',
+                containLabel: true
+            },
 }
 )
     },
@@ -161,7 +170,6 @@ export default {
   },
   created() {
     this.onSearch()
-  // 每30分刷新
    setInterval(() => {
       this.onSearch()
       },(1000 * 60) * 30)

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-17 16:32:43
+ * @LastEditTime: 2021-03-23 15:59:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\user.js
@@ -18,6 +18,9 @@ export function login(params) {
   })
 }
 
+/**
+ * @description: 用户信息
+ */
 export function getInfo(token) {
   return request({
     url: `${ user }info`,
@@ -26,6 +29,10 @@ export function getInfo(token) {
   })
 }
 
+
+/**
+ * @description: 登出
+ */
 export function logout() {
   return request({
     url: `${ user }logout`,
@@ -36,7 +43,10 @@ export function logout() {
   })
 }
 
-// 修改密码
+/**
+ * @description: 修改密码
+ */
+
 export function getAuthCode(data) {
   return request({
     url:  `${ user }forgotpassword`,
@@ -45,11 +55,10 @@ export function getAuthCode(data) {
   })
 }
 
-export function resetpassword(data) { 
+export function updatePass(data) { 
   return request({
-    url:  `${ user }resetpassword`,
+    url:  'user/user/updatePass',
     method: 'post',
     data
   })
 }
- 

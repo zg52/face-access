@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-03-18 11:05:47
+ * @LastEditTime: 2021-03-23 16:13:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -332,6 +332,8 @@ export default {
                _this.$message.success(res.msg);
                _this.$refs[val].resetFields();
                _this.userFormVisible = false;
+             } else {
+               this.$message.warning(res.msg)
              }
            });
       }})
@@ -411,7 +413,6 @@ export default {
              }
       });
     },
-    // 批量删设备
     onDeleteUserList() {
        let _this = this;
        if (_this.multipleSelection.length !== 0) {
