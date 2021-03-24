@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-15 18:28:39
+ * @LastEditTime: 2021-03-24 18:31:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -82,7 +82,8 @@ position: absolute;
        <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.name" class="w120" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w100" v-model.trim="addVisitorForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
-       <el-form-item label="访客所在公司："  prop="position"><el-input class="w300" v-model.trim="addVisitorForm.visitorCompany" clearable></el-input></el-form-item>
+        <el-form-item label="邮箱：" prop="email"><el-input class="w180" v-model.trim="addVisitorForm.email" clearable></el-input></el-form-item>
+       <el-form-item label="访客所在公司："  prop="position"><el-input class="w240" v-model.trim="addVisitorForm.visitorCompany" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w200" v-model.trim="addVisitorForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addVisitorForm.address" clearable></el-input></el-form-item>
        <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim.trim="addVisitorForm.intervieweeName" maxlength="30" clearable></el-input> </el-form-item>
@@ -101,7 +102,7 @@ position: absolute;
           @change="changeDate">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="备注：" prop="remark"><el-input class="w360" v-model.trim="addVisitorForm.remark" type="textarea" :rows="2" placeholder="请输入内容"> </el-input></el-form-item>
+      <el-form-item label="备注：" prop="remark"><el-input class="w360" v-model.trim="addVisitorForm.remark" type="textarea" :rows="2" placeholder="请输入内容"> </el-input></el-form-item> <br>
       <el-form-item label="头像类型：">
         <el-radio-group v-model="faceType" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
       </el-form-item><br>
@@ -240,6 +241,7 @@ export default {
             notNull('访客手机号')[0],
             { validator: validPhoneTarget, trigger: "blur" },
           ],
+          email: notNull('访客邮箱'),
           intervieweeName: notNull('访客姓名'),
           intervieweePhone: [
             notNull('被访人手机号')[0],

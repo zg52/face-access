@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-23 14:00:54
+ * @LastEditTime: 2021-03-24 16:46:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -84,7 +84,7 @@
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column> -->
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>
-      <el-table-column align="left" label="通行时间" width="160" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
+      <el-table-column align="left" label="通行时间" width="160" fixed="right"><template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>
 
     <el-pagination
@@ -201,6 +201,7 @@ export default {
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
+      this.date = null
       this.onSearch()
     }
   },
@@ -213,8 +214,8 @@ export default {
        this.getRuleNames = res
     })
     this.onSearch()
-    setInterval(() => {
-      this.onSearch()
+     setInterval(() => {
+    this.onSearch()
     },360_0000)
   },
   mounted() {},

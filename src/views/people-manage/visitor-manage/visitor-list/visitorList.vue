@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 18:15:07
+ * @LastEditTime: 2021-03-24 18:26:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -143,6 +143,7 @@
                <el-form-item label="头像类型："><span>{{ props.row.faceType | filterFaceType }} </span></span></el-form-item>
                  <el-form-item label="所在公司："> <span>{{ props.row.visitorCompany }} </span></el-form-item>
                  <el-form-item label="电话："><span>{{ props.row.phone }} </span></el-form-item>
+                   <el-form-item label="邮箱："><span>{{ props.row.email }} </span></el-form-item>
                    <el-form-item label="住址："><span>{{ props.row.address }} </span></el-form-item>
                  <el-form-item label="身份证号："><span>{{ props.row.idNum }} </span></el-form-item>
                    <el-form-item label="来访事由："><span>{{ props.row.reason }} </span></el-form-item>
@@ -162,10 +163,11 @@
       <el-table-column align="center" label="来访人头像" width="95">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope">{{ scope.row.gender === filterGenter }} </template></el-table-column>
+     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope">{{ scope.row.gender | filterGenter }} </template></el-table-column>
       <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'auth' ? '已授权' : '已失效' }} </template></el-table-column>
       <el-table-column align="center" label="所在公司" width="100"> <template v-slot="scope">{{ scope.row.visitorCompany }}</template></el-table-column>
       <el-table-column align="center" label="电话" width="108"><template v-slot="scope">{{ scope.row.phone }} </template></el-table-column>
+        <el-table-column align="center" label="邮箱" width="108"><template v-slot="scope">{{ scope.row.email }} </template></el-table-column>
       <el-table-column align="center" label="身份证号" width="108"> <template v-slot="scope">{{ scope.row.idNum }} </template></el-table-column>
        <el-table-column align="center" label="被访人姓名" width="108"><template v-slot="scope">{{ scope.row.intervieweeName }} </template></el-table-column>
       <el-table-column align="center" label="被访人电话" width="108"><template v-slot="scope">{{ scope.row.intervieweePhone }} </template></el-table-column>

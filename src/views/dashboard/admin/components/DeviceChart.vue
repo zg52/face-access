@@ -9,7 +9,9 @@ require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 import { bas } from '@/api/dashboard' 
 import moment from 'moment'
+import { getSystemTime } from '@/utils'
 const animationDuration = 6000
+let vm
 
 export default {
   mixins: [resize],
@@ -163,24 +165,42 @@ export default {
     },
   onSearch() {
     let date = moment(new Date()).format('YYYY-MM-DD')
+    let timer = null
     bas(date).then((res) => {
       if(res.hasOwnProperty('dates')) {
         if(Array.isArray(res.dates)) {
           if(res.dates.length !== 0) {
             this.xValue = res.dates.map((item, index) => {
-              if(index === 0) { return item = '今日' }
-               return item.substr(5) 
+              if(index !== 0 && index !== 1) { return item.substr(5) }
+              else if(index === 1) {
+                return '昨天'
+              } else {
+              let time = new Date(),
+                  hour = checkTime(time.getHours()),
+                 minite = checkTime(time.getMinutes())
+              function checkTime(i){
+               if(i<10) return "0"+i
+               return i
+            }
+           return `现在 ( ${ hour+":"+minite} )`
+              }
                })
-            this.online = res.onlineCounts,
-            this.offline = res.offlineCounts,
-            this.fault = res.outOfOrderCounts
+
+           this.online = res.onlineCounts,
+           this.offline = res.offlineCounts,
+           this.fault = res.outOfOrderCounts
 
             this.initChart()
           }
         }
       }
     })
-  }
+  },
+  getTime() {}
+  },
+  created() {
+    vm = this
+     
   },
   mounted() {
   this.$nextTick(() => {
@@ -188,15 +208,19 @@ export default {
   this.onSearch()
   setInterval(() => {
      this.onSearch()
-      },(1000 * 60) * 30)
+     xuanfu()
+      },60_000)
 
-  setTimeout(() => {
-      this.chart.dispatchAction({
+xuanfu()
+function xuanfu() {
+    setTimeout(() => {
+      vm.chart.dispatchAction({
       type: 'showTip',
       seriesIndex: 0 ,
       dataIndex: 0,
       });
-},1000)
+   },1000)
+}
   })
   },
   beforeDestroy() {

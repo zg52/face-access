@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-17 16:52:42
+ * @LastEditTime: 2021-03-24 18:20:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\components\Account.vue
@@ -13,14 +13,17 @@
 </style>
 <template>
  <el-form :model="changePsw" :rules="changePswRule" ref="changePswForm" label-position="right" label-width="92px">
-    <el-form-item prop="username" label="用户名"> <el-input type="email" v-model="user.username" placeholder="请输入邮箱" disabled></el-input></el-form-item>
-    <el-form-item prop="email" label="邮箱"><el-input disabled type="email" v-model="user.email" placeholder="请输入邮箱"></el-input></el-form-item>
-    <el-form-item label="验证码:" prop="authCode">
-      <el-input type="text" v-model.trim="changePsw.authCode" placeholder="请输入验证码" class="authCode" style="width:300px"></el-input>
-      <el-button type="primary" size="small" class="authCode_btn ml10" :disabled="changePsw.authCodeBtnStatus" @click.prevent="getauthCodeHandler_psw('changePswForm')">{{ changePsw.authCodeTxt }}</el-button>
+    <el-form-item prop="username" label="用户名"> <el-input type="email" v-model="changePsw.changePswname" placeholder="请输入邮箱" disabled></el-input></el-form-item>
+    <el-form-item prop="email" label="邮箱"><el-input type="email" v-model="changePsw.email" placeholder="请输入邮箱"></el-input></el-form-item>
+    <el-form-item label="验证码:" prop="verifyCode">
+      <el-input type="text" v-model.trim="changePsw.verifyCode" placeholder="请输入验证码" class="verifyCode" style="width:300px"></el-input>
+      <el-button type="primary" size="small" class="verifyCode_btn ml10" :disabled="changePsw.verifyCodeBtnStatus" @click.prevent="getverifyCodeHandler_psw('changePswForm')">{{ changePsw.verifyCodeTxt }}</el-button>
     </el-form-item>
-    <el-form-item prop="password" label="新密码">
-      <el-input type="password" :show-password="true" v-model="changePsw.password" maxlength="16" placeholder="请输入大于6位数字和字母组合的密码"></el-input>
+     <el-form-item prop="oldPass" label="旧密码">
+      <el-input type="oldPass" :show-password="true" v-model="changePsw.oldPass" maxlength="16" placeholder="请输入旧密码"></el-input>
+    </el-form-item>
+    <el-form-item prop="newPass" label="新密码">
+      <el-input type="newPass" :show-password="true" v-model="changePsw.newPass" maxlength="16" placeholder="请输入大于6位数字和字母组合的密码"></el-input>
     </el-form-item>
     <el-form-item prop="checkPsw" label="确认新密码">
       <el-input type="password" :show-password="true" v-model="changePsw.checkPsw" placeholder="请输入确认密码"></el-input>
@@ -32,63 +35,58 @@
 </template>
 
 <script>
-import { login, getAuthCode, resetpassword } from "@/api/user"
+import { login, getVerifyCode, updatePass } from "@/api/user"
 import { mapMutations } from 'vuex'
+let vm
 
 export default {
-  name: "personalCenter",
-   props: {
-    user: {
-      type: Object,
-      default: () => {
-        return {
-          username: '',
-          email: ''
-        }
-      }
-    }
-  },
+  name: 'personalCenter',
   data() {
     let validatePsw1 = (rule, value, callback) => {
-      if (value === "") {
+      if (value === '') {
         callback(new Error("请再次输入密码"))
-      } else if (value !== this.changePsw.password) {
+      } else if (value !== this.changePsw.newPass) {
         callback(new Error("两次输入密码不一致!"))
       } else {
         callback()
       }
     }
+    function notNull(notNullName) { return [{required: true, message: `请输入${ notNullName }`, trigger: "blur" }] }
     return {
-      // personMsg: {
-      //     username: "",
-      //     email: ""
-      // },
       changePsw_loading: false,
       changeEmail_loading: false,
       changePsw: {
+        username: this.$store.getters.username,
         email: '',
-        authCode: '',
-        password: '',
+        verifyCode: '',
+        oldPass: null,
+        newPass: '',
         checkPsw: '',
-        authCodeTxt: "获取验证码",
-        authCodeBtnStatus: false,
-        authCodeTime: 60,
+        verifyCodeTxt: "获取验证码",
+        verifyCodeBtnStatus: false,
+        verifyCodeTime: 60,
       },
       changePswRule: {
-        authCode: [
-          { required: true, message: "验证码不能为空", trigger: "blur" },
+         email: [
+          notNull('邮箱地址')[0],
+          {
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: ["blur", "change"],
+          },
         ],
-        password: [
-          { required: true, message: "请输入新密码", trigger: "blur" },
+        oldPass: notNull('旧密码'),
+        verifyCode:notNull('验证码'),
+        newPass: [
+          notNull('新密码')[0],
           {
             min: 6,
             message: "请输入大于6位数字和字母组合的密码",
             trigger: "blur",
           },
         ],
-        checkPsw: [{required: true, validator: validatePsw1, trigger: "blur" }],
-      },
- 
+        checkPsw: [{required: true, validator: validatePsw1, trigger: 'blur' }],
+      }
     }
   },
   methods: {
@@ -100,21 +98,19 @@ export default {
       await this.$store.dispatch("logout")
       this.$router.push("/")
     },
-    // 倒计时
-
-    authCodeHandler(x, y) {
+    verifyCodeHandler(x, y) {
       let _this = this,
         updatedKey = x,
         timeDecrease = x[y]
       let timer = setInterval(() => {
         timeDecrease--
         if (!timeDecrease <= 0) {
-          this.$set(updatedKey, "authCodeTxt", timeDecrease + "s后重新获取")
-          this.$set(updatedKey, "authCodeBtnStatus", true)
+          this.$set(updatedKey, "verifyCodeTxt", timeDecrease + "s后重新获取")
+          this.$set(updatedKey, "verifyCodeBtnStatus", true)
         } else {
           clearInterval(timer)
-          this.$set(updatedKey, "authCodeTxt", "获取验证码")
-          this.$set(updatedKey, "authCodeBtnStatus", false)
+          this.$set(updatedKey, "verifyCodeTxt", "获取验证码")
+          this.$set(updatedKey, "verifyCodeBtnStatus", false)
         }
       }, 1000)
       new Promise((resolved) => {
@@ -129,29 +125,18 @@ export default {
     },
 
 // 修改密码-发送邮箱验证码
-    getauthCodeHandler_psw(changePswRule) {
+    getverifyCodeHandler_psw(changePswRule) {
       this.$refs[changePswRule].validateField("email", (validEmail) => {
         if (!validEmail) {
-           let param = new FormData()
-               param.append('username', this.username)
-               param.append('email', this.changePsw.email)
-          getAuthCode(param).then((res) => {
+          getVerifyCode({
+            username: this.changePsw.username,
+            email: this.changePsw.username
+          }).then((res) => {
             if (res.code == 0 && res.data) {
-              this.authCodeHandler(this.changePsw, "authCodeTime")
+              this.verifyCodeHandler(this.changePsw, "verifyCodeTime")
+            } else {
+              this.$message.error(res.msg)
             }
-            // else if (res.code == 10102) {
-            //   this.$message({
-            //     message: "邮箱不存在",
-            //     type: "warning",
-            //     duration: 5 * 1000,
-            //   })
-            // } else {
-            //   this.$message({
-            //     message: "验证码发送失败，请稍后重试",
-            //     type: "warning",
-            //     duration: 5 * 1000,
-            //   })
-            // }
           })
         }
       })
@@ -164,22 +149,14 @@ export default {
         if (valid) {
           startResetPsw()
           function startResetPsw() {
-            let param = new FormData()
-                param.append('username',_this.username)
-                param.append('email',_this.changePsw.email)
-                param.append('password',_this.changePsw.password)
-                param.append('token',_this.changePsw.authCode)
-            resetpassword(param).then((res2) => {
+            updatePass(this.changePsw).then((res2) => {
               if (res2.code == 0 && res2.data) {
 
                 if (_this.changePsw_loading) {
                   return
                 }
                 _this.changePsw_loading = true
-                
-// 重置密码后-直接登录
-                param.delete('email')
-                param.delete('token')
+ 
                 login(param).then((res3) => {
                     if (res3.code == 0 && res3.data && res3.data.username) {
                       _this.$message({
@@ -214,10 +191,12 @@ export default {
           }
         }
       })
-    },
- 
+    }
   },
- 
+  created() {
+    vm = this
+  },
+  mounted() {
+  }
 }
- 
 </script>

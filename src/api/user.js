@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-23 15:59:21
+ * @LastEditTime: 2021-03-24 14:47:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\user.js
@@ -47,18 +47,18 @@ export function logout() {
  * @description: 修改密码
  */
 
-export function getAuthCode(data) {
+export function getVerifyCode(params) {
   return request({
-    url:  `${ user }forgotpassword`,
-    method: 'post',
-    data
+    url:  'user/user/verifyCode',
+    method: 'POST',
+    data: params
   })
 }
 
-export function updatePass(data) { 
+export function updatePass(params) { 
   return request({
     url:  'user/user/updatePass',
-    method: 'post',
-    data
+    method: 'POST',
+    data: params
   })
 }
