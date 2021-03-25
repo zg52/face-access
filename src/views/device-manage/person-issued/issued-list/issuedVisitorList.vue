@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-19 16:44:09
+ * @LastEditTime: 2021-03-25 12:15:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -47,13 +47,13 @@
       </el-form-item>
        <el-form-item label="身份证号"><el-input class="w200" v-model.trim="pagingQuery.idNum" clearable></el-input></el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
-      <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
+      <el-button type="warning" @click="onDeletes" :loading="onDeletesLoading"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary"><router-link to="/device-manage/person-issued/issued-add/issuedAdd?tab=1"><svg-icon icon-class="guide"/> 去下发访客</router-link></el-button>
     </el-form>
     
-    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
+    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" :element-loading-text="loadingTip1" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -115,6 +115,8 @@ export default {
       getImgUrl: imgUrl(),
       multipleSelection: [],
       get_issuePersonStatus: get_issuePersonStatus(),
+      loadingTip1: null,
+      onDeletesLoading: false,
       
       pagingQuery: {
         operator: null,
@@ -188,8 +190,6 @@ export default {
           this.onSearch()
           })
     },
-
-// 批量删规则
     onDeletes() {
        if (this.multipleSelection.length !== 0) {
         this.$confirm("此操作将永久删除已选设备通行人员, 是否继续?", "提示", {
@@ -197,27 +197,33 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         }).then(() => {
-            for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteDevicePerson({ids:this.multipleSelection[i].id}).then((res) => {
-                if (res.code == 0) {
-                  if(i + 1 >= this.multipleSelection.length) {
+          this.handleDeleteLoading('删除中', true)
+          let personIds = []
+          for (let i = 0; i < this.multipleSelection.length; i++) {
+            personIds.push(this.multipleSelection[i].id)
+          }
+          deleteDevicePerson({ids: personIds}).then((res) => {
+              if(res.code == 0) {
                   this.onSearch()
-                  this.$message.success({message: res.msg})
-                  } 
+                  this.$message.success(res.msg)
+                    this.handleDeleteLoading(null, false)
+                } else {
+                  this.$message.error(res.msg, 4000)
+                   this.handleDeleteLoading(null, false)
                 }
-              })
-            }
+             })
           }).catch(() => {
-             this.$message.info({message: '已取消删除'})
+             this.$message.info('已取消删除')
              this.$refs.multipleTable.clearSelection()
           })
       } else {
         this.$message.warning('请在列表中勾选要删除的设备通行人员')
       }
     },
-    onExport() {
-
-    },
+    handleDeleteLoading(x, y) {
+     this.loadingTip1 = x
+     this.table_loading = this.onDeletesLoading = y
+  },
 
 // 重新下发
     handleIssuedPerson(row, index) {
@@ -264,6 +270,9 @@ export default {
     refreshPagingQuery() {
       this.pagingQuery = {}
       this.onSearch()
+    },
+    onExport() {
+
     }
   },
   created() {

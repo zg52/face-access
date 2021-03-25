@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-03-23 16:13:50
+ * @LastEditTime: 2021-03-25 09:57:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -93,7 +93,7 @@
      <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" width="60"> <template slot-scope="scope">{{ scope.row.index }}</template></el-table-column>
       <el-table-column align="center" label="用户名" width="150"> <template slot-scope="scope"> {{ scope.row.name }} </template> </el-table-column>
-      <el-table-column align="center" label="昵称" width="120"> <template slot-scope="scope"> {{ scope.row.nickName }} </template> </el-table-column>
+      <!-- <el-table-column align="center" label="昵称" width="120"> <template slot-scope="scope"> {{ scope.row.nickName }} </template> </el-table-column> -->
       <el-table-column align="center" label="邮箱" width="220"> <template slot-scope="scope"> {{ scope.row.email }} </template> </el-table-column>
       <el-table-column align="center" label="手机"><template slot-scope="scope"> {{ scope.row.phone }} </template> </el-table-column>
        <el-table-column align="center" label="角色" width="120"> <template slot-scope="scope" :data="roles"> {{roles[scope.row.roleId-1].roleName}} </template> </el-table-column>
@@ -131,7 +131,7 @@
       <div v-loading="addSave_loading"  element-loading-text="拼命保存中"  element-loading-spinner="el-icon-loading">
         <el-form :model="addUserForm" label-width="auto" :rules="addUserRule" ref="addUserForm" class="addUserForm" :inline="true">
           <el-form-item label="用户名：" prop="name"> <el-input v-model="addUserForm.name" style="width: 160px" placeholder="用户名"></el-input> </el-form-item>
-          <el-form-item label="昵称：" prop="nickName"> <el-input v-model="addUserForm.nickName" style="width: 160px" placeholder="昵称"></el-input> </el-form-item>
+          <!-- <el-form-item label="昵称：" prop="nickName"> <el-input v-model="addUserForm.nickName" style="width: 160px" placeholder="昵称"></el-input> </el-form-item> -->
           <el-form-item label="邮箱：" prop="email"> <el-input v-model="addUserForm.email" style="width: 160px" placeholder="邮箱"></el-input> </el-form-item>
           <el-form-item label="手机号：" prop="phone"> <el-input v-model="addUserForm.phone" style="width: 160px" placeholder="手机号"></el-input> </el-form-item>
           <el-form-item label="角色：" prop="role">
@@ -162,9 +162,9 @@
           <el-form-item label="用户名：" prop="name">
             <el-input v-model="editUserForm.name" style="width: 160px" placeholder="用户名"></el-input>
           </el-form-item>
-          <el-form-item label="昵称：" prop="nickName">
+          <!-- <el-form-item label="昵称：" prop="nickName">
             <el-input v-model="editUserForm.nickName" style="width: 160px" placeholder="昵称"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="邮箱：" prop="email">
             <el-input v-model="editUserForm.email" style="width: 160px" placeholder="邮箱"></el-input>
           </el-form-item>
@@ -231,7 +231,7 @@ export default {
       addUserForm: {
         name: null,
         email: null,
-        nickName: null,
+        // nickName: null,
         phone: null,
         roleId: null,
         status: null,
@@ -242,7 +242,7 @@ export default {
         id: null,
         name: null,
         email: null,
-        nickName: null,
+        // nickName: null,
         phone: null,
         roleId: null,
         status: null,

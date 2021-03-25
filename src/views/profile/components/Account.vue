@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-24 18:20:24
+ * @LastEditTime: 2021-03-25 18:25:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\components\Account.vue
@@ -13,10 +13,10 @@
 </style>
 <template>
  <el-form :model="changePsw" :rules="changePswRule" ref="changePswForm" label-position="right" label-width="92px">
-    <el-form-item prop="username" label="用户名"> <el-input type="email" v-model="changePsw.changePswname" placeholder="请输入邮箱" disabled></el-input></el-form-item>
+    <el-form-item prop="username" label="用户名"> <el-input type="email" v-model="changePsw.username" placeholder="请输入用户名" disabled></el-input></el-form-item>
     <el-form-item prop="email" label="邮箱"><el-input type="email" v-model="changePsw.email" placeholder="请输入邮箱"></el-input></el-form-item>
     <el-form-item label="验证码:" prop="verifyCode">
-      <el-input type="text" v-model.trim="changePsw.verifyCode" placeholder="请输入验证码" class="verifyCode" style="width:300px"></el-input>
+      <el-input type="text" v-model.trim="changePsw.verifyCode" placeholder="请输入验证码" class="verifyCode w300"></el-input>
       <el-button type="primary" size="small" class="verifyCode_btn ml10" :disabled="changePsw.verifyCodeBtnStatus" @click.prevent="getverifyCodeHandler_psw('changePswForm')">{{ changePsw.verifyCodeTxt }}</el-button>
     </el-form-item>
      <el-form-item prop="oldPass" label="旧密码">
@@ -35,8 +35,10 @@
 </template>
 
 <script>
-import { login, getVerifyCode, updatePass } from "@/api/user"
+import { getVerifyCode, updatePass } from "@/api/user"
 import { mapMutations } from 'vuex'
+import md5 from 'js-md5'
+import Cookies from 'js-cookie'
 let vm
 
 export default {
@@ -57,11 +59,11 @@ export default {
       changeEmail_loading: false,
       changePsw: {
         username: this.$store.getters.username,
-        email: '',
-        verifyCode: '',
+        email: null,
+        verifyCode: null,
         oldPass: null,
-        newPass: '',
-        checkPsw: '',
+        newPass: null,
+        checkPsw: null,
         verifyCodeTxt: "获取验证码",
         verifyCodeBtnStatus: false,
         verifyCodeTime: 60,
@@ -130,7 +132,7 @@ export default {
         if (!validEmail) {
           getVerifyCode({
             username: this.changePsw.username,
-            email: this.changePsw.username
+            email: this.changePsw.email
           }).then((res) => {
             if (res.code == 0 && res.data) {
               this.verifyCodeHandler(this.changePsw, "verifyCodeTime")
@@ -144,48 +146,42 @@ export default {
 
 // 修改密码-提交
     changePswHandler(changePswRule) {
-      let _this = this
+      let _this = this,
+      user = this.changePsw
       this.$refs[changePswRule].validate((valid) => {
         if (valid) {
+          let changePswOld = {...this.changePsw}
           startResetPsw()
           function startResetPsw() {
-            updatePass(this.changePsw).then((res2) => {
-              if (res2.code == 0 && res2.data) {
+            updatePass(Object.assign(changePswOld, { 
+              oldPass: md5(changePswOld.oldPass).toUpperCase(),
+              newPass: md5(changePswOld.newPass).toUpperCase()
+            })).then((res) => {
+              if (res.code === 0) {
 
-                if (_this.changePsw_loading) {
-                  return
-                }
+                if (_this.changePsw_loading) { return }
                 _this.changePsw_loading = true
+                let users = {
+                  username: user['username'],
+                  password: user['newPass']
+                }
  
-                login(param).then((res3) => {
-                    if (res3.code == 0 && res3.data && res3.data.username) {
-                      _this.$message({
-                        message: "密码修改成功",
-                        type: "success",
-                        duration: 4 * 1000,
-                      })
-                      _this.changePsw_loading = false
-                      _this.setUser(res3.data) //存储用户信息到cookie
-                      _this.$refs[changePswRule].resetFields()
-                    } else {
-                      // 若登录失败则退出，手动登录
-                      _this.$message({
-                        message: "密码修改成功，请重新登录",
-                        type: "success",
-                        duration: 4 * 1000,
-                      })
-                      _this.loginOut()
-                    }
-                  })
-                  .finally(() => {
+         _this.$store.dispatch('user/login',users).then(() => {
+           _this.$message.success('密码修改成功，系统已为您自动登录！', 4000)
+           _this.$refs.changePswForm.resetFields()
+           if(Cookies.get('username')) {
+              Cookies.set('username', users['username'], {expires: 10})
+             Cookies.set('password', users['password'], {expires: 10})
+             Cookies.set('checkedStatus', true)
+           } else {
+             Cookies.remove('username')
+             Cookies.remove('checkedStatus')
+           }
+            }).finally(() => {
                     _this.changePsw_loading = false
                   })
-              } else if (res2.code == 400) {
-                _this.$message({
-                  message: "请输入有效验证码",
-                  type: "warning",
-                  duration: 5 * 1000,
-                })
+              } else {
+               _this.$message.error(res.msg)
               }
             })
           }
