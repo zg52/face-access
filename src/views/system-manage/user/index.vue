@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-03-25 09:57:25
+ * @LastEditTime: 2021-03-26 19:05:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -98,13 +98,14 @@
       <el-table-column align="center" label="手机"><template slot-scope="scope"> {{ scope.row.phone }} </template> </el-table-column>
        <el-table-column align="center" label="角色" width="120"> <template slot-scope="scope" :data="roles"> {{roles[scope.row.roleId-1].roleName}} </template> </el-table-column>
       <el-table-column align="center" label="创建时间" width="150"> <template slot-scope="scope"> {{ scope.row.createTime }} </template> </el-table-column>
-       <el-table-column align="center" label="修改时间" width="150"> <template slot-scope="scope"> {{ scope.row.updataTime }} </template> </el-table-column>
+      <el-table-column align="center" label="修改时间" width="150"> <template slot-scope="scope"> {{ scope.row.updataTime }} </template> </el-table-column>
          <el-table-column align="center" label="状态" width="160">
         <template v-slot="scope">
          <el-switch class="switchStyle" v-model="scope.row.status" disabled active-value="VALID" inactive-value="INVALID" active-text="激活" inactive-text="禁用" active-color="#00A854" inactive-color="#F04134"></el-switch>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作">
+       <el-table-column align="center" label="备注" width="150"> <template slot-scope="scope"> {{ scope.row.remark }} </template> </el-table-column>
+      <el-table-column align="center" label="操作" width="180px" fixed="right">
         <template slot-scope="scope">
           <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
@@ -159,18 +160,9 @@
     <el-dialog title="编辑用户" :visible.sync="editUserVisible" width="558px">
       <div v-loading="editSave_loading" element-loading-text="拼命保存中" element-loading-spinner="el-icon-loading">
         <el-form :model="editUserForm" label-width="auto" :rules="addUserRule" ref="editUserForm" class="addUserForm" :inline="true">
-          <el-form-item label="用户名：" prop="name">
-            <el-input v-model="editUserForm.name" style="width: 160px" placeholder="用户名"></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="昵称：" prop="nickName">
-            <el-input v-model="editUserForm.nickName" style="width: 160px" placeholder="昵称"></el-input>
-          </el-form-item> -->
-          <el-form-item label="邮箱：" prop="email">
-            <el-input v-model="editUserForm.email" style="width: 160px" placeholder="邮箱"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号：" prop="phone">
-            <el-input v-model="editUserForm.phone" style="width: 160px" placeholder="手机号"></el-input>
-          </el-form-item>
+          <el-form-item label="用户名：" prop="name"><el-input v-model="editUserForm.name" style="width: 160px" placeholder="用户名"></el-input></el-form-item>
+          <el-form-item label="邮箱：" prop="email"><el-input v-model="editUserForm.email" style="width: 160px" placeholder="邮箱"></el-input></el-form-item>
+          <el-form-item label="手机号：" prop="phone"><el-input v-model="editUserForm.phone" style="width: 160px" placeholder="手机号"></el-input></el-form-item>
           <el-form-item label="角色：" prop="role">
             <el-select v-model="editUserForm.roleId" placeholder="选择角色" style="width: 160px">
               <el-option label="超级管理员" value=1></el-option>
@@ -202,21 +194,21 @@ import moment from 'moment'
 
 export default {
   data() {
-    var validateEmail = (rule, value, callback) => {
+    let validateEmail = (rule, value, callback) => {
       if (!validEmail(value)) {
         callback(new Error("邮箱格式错误"));
       } else {
-        callback();
+        callback()
       }
-    }
-
-    var validatePhone = (rule, value, callback) => {
+    },
+    validatePhone = (rule, value, callback) => {
       if (!validPhone(value)) {
         callback(new Error("手机号格式错误"));
       } else {
-        callback();
+        callback()
       }
     }
+
     return {
       userFormVisible: false,
       editUserVisible: false,
@@ -226,27 +218,25 @@ export default {
       pickerOptions: pickerOptions(),
       getUserRoles: getUserRoles,
 
-      
       queryDate: '',
       addUserForm: {
         name: null,
         email: null,
-        // nickName: null,
+        nickName: null,
         phone: null,
         roleId: null,
         status: null,
-        remark: null,
+        remark: null
       },
 
       editUserForm: {
         id: null,
         name: null,
         email: null,
-        // nickName: null,
         phone: null,
         roleId: null,
         status: null,
-        remark: null,
+        remark: null
       },
       roles: [
         {roleName: '超级管理员'}, {roleName: '管理员'}
@@ -268,7 +258,10 @@ export default {
         total: null,
       },
       addUserRule: {
-          name: { required: true, message: "用户名不能为空", trigger: "blur"},
+          name: [
+            { required: true, message: "用户名不能为空", trigger: "blur"}
+            
+            ],
           email: [{ required: true, message: "邮箱不能为空", trigger: "blur"}, {validator: validateEmail, trigger: "blur"}],
           phone: [{ required: true, message: "手机号不能为空", trigger: "blur"}, {validator: validatePhone, trigger: "blur"}],
           status: { required: true, message: "请选择状态", trigger: "blur"},
@@ -306,32 +299,33 @@ export default {
   },
   methods: {
     setValueNull(val) {
-      this.value_ = null;
+      this.value_ = null
     },
     getRoleName(val) {
-      let _this = this;
-      return _this.roles[val-1].roleName;
+      let _this = this
+      return _this.roles[val-1].roleName
     },
     showAddUser() {
-      let _this = this;
-      _this.userFormVisible = true;
+      let _this = this
+      _this.userFormVisible = true
     },
     resetForm(val) {
       let _this = this;
-      _this.$refs[val].resetFields();
-      _this.addUserForm.roleId = undefined;
-      console.log(_this.addUserForm);
+      _this.$refs[val].resetFields()
+      _this.addUserForm.roleId = undefined
+      console.log(_this.addUserForm)
     },
     saveUserForm(val) {
-      let _this = this;
+      let _this = this
       _this.$refs[val].validate((valid) => {
           if (valid) {
+            _this.addUserForm.nickName = _this.addUserForm.name
             addUser(_this.addUserForm).then((res) => {
              if(res.code === 0 && res.data == true) {
-               _this.onSearch();
-               _this.$message.success(res.msg);
-               _this.$refs[val].resetFields();
-               _this.userFormVisible = false;
+               _this.onSearch()
+               _this.$message.success(res.msg)
+               _this.$refs[val].resetFields()
+               _this.userFormVisible = false
              } else {
                this.$message.warning(res.msg)
              }

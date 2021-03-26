@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-24 18:31:40
+ * @LastEditTime: 2021-03-26 18:54:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -79,7 +79,7 @@ position: absolute;
   <div class="app-container pl0">
      <el-form :model="addVisitorForm" label-width="auto" :rules="addVisitorRule" ref="addVisitorFormRule" class="addVisitorForm" :inline="true">
        <el-form-item label="创建人："><el-input v-model="addVisitorForm.operator" class="w100" disabled></el-input></el-form-item>
-       <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.name" class="w120" clearable></el-input></el-form-item>
+       <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.name" maxlength="8" class="w120" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w100" v-model.trim="addVisitorForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
         <el-form-item label="邮箱：" prop="email"><el-input class="w180" v-model.trim="addVisitorForm.email" clearable></el-input></el-form-item>
@@ -192,7 +192,7 @@ import { mapGetters } from 'vuex'
 import { saveVisitor, editVisitor, visitorZip, visitorExcel, getVisitorTemplate, getImportStatus, getReslut } from '@/api/people-manage/visitorManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
-import { validPhone, validateIdCard } from '@/utils/validate'
+import { validPhone, validateIdCard, validName } from '@/utils/validate'
 import { getGender, getFaceType} from '@/utils/business'
 import {proxyUrl_1, imgUrl, downVisitorTemplate } from '@/api/public'
 // import { pickerOptions } from '@/utils'
@@ -215,6 +215,9 @@ export default {
     },
     validateIdCardTarge = (rule, value, callback) => {
      !validateIdCard(value) ? callback(new Error("请输入正确格式的身份证号!")) : callback()
+    },
+    validateName = (rule, value, callback) => {
+      !validName(value) ? callback(new Error('只能输入中文或英文')) :  callback()
     }
     function numbers (str) {
       return (rule, value, callback) => {
@@ -236,7 +239,10 @@ export default {
       faceType: getFaceType()[0].name,
     //   addVisitorForm: formHadleParam,
       addVisitorRule: {
-          name: notNull('被访人姓名'),
+           name: [
+            notNull('访客姓名')[0],
+            { validator: validateName, trigger: "blur" },
+          ],
           phone: [
             notNull('访客手机号')[0],
             { validator: validPhoneTarget, trigger: "blur" },
