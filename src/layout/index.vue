@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-18 16:41:44
+ * @LastEditTime: 2021-03-29 18:39:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\layout\index.vue
@@ -104,6 +104,7 @@ export default {
     }),
     classObj() {
       return {
+        websock: null,
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
@@ -114,16 +115,54 @@ export default {
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+    },
+     initWebSocket(){ //初始化weosocket
+        const wsuri = "ws://192.168.10.148:31181/";
+        this.websock = new WebSocket(wsuri);
+        this.websock.onmessage = this.websocketonmessage;
+        this.websock.onopen = this.websocketonopen;
+        this.websock.onerror = this.websocketonerror;
+        this.websock.onclose = this.websocketclose;
+      },
+      websocketonopen(){ //连接建立之后执行send方法发送数据
+        let actions = {"test":"12345"};
+        this.websocketsend(JSON.stringify(actions));
+      },
+      websocketonerror(){//连接建立失败重连
+        this.initWebSocket();
+        console.log('err')
+      },
+      websocketonmessage(e){ //数据接收
+        const redata = JSON.parse(e.data)
+        console.log("🚀 ~ file: index.vue ~ line 136 ~ websocketonmessage ~ redata", redata)
+        
+      },
+      websocketsend(Data){//数据发送
+        this.websock.send(Data);
+      },
+      websocketclose(e){  //关闭
+        console.log('断开连接',e);
+      },
+    getException_monitoring() {
+         exception_monitoring().then((res) => {
+      if(res.code === 0 && res.data) {
+       exception_monitoring(res.data.lastId).then((res) => {
+       if(res.code === 0 && res.data) {
+        
+
+      }
+    })
+      }
+    })
     }
   },
+  created() {
+    //  this.initWebSocket()
+   setInterval(() => {
+      // this.getException_monitoring()
+   },5000)
+    },
   mounted() {
   },
-  created() {
-  //  setInterval(() => {
-  //     exception_monitoring().then((res) => {
-  //     console.log(res)
-  //   })
-  //  },5000)
-  }
 }
 </script>

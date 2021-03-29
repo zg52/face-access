@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-18 16:32:36
+ * @LastEditTime: 2021-03-29 18:36:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -36,13 +36,14 @@ export function personException(params) {
   /**
  * @description: 设备/人员异常监控（employee/visitor）
  */
-export function exception_monitoring(params) {
+export function exception_monitoring(lastId) {
   return request({
      url: `${ exception }/watch`,
      method: 'GET',
     params: {
       category: 'blocklist',
-      source: 'person'
+      source: 'person',
+      lastId: lastId
      }
    })
  }

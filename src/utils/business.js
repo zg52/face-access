@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-22 17:28:32
+ * @LastEditTime: 2021-03-29 16:20:14
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -22,7 +22,11 @@ const
   userRoles = [
     { id: 1, name: '超级管理员' }, //superAdmin
     { id: 2, name: '管理员' }, //admin
-     ], 
+     ],
+     userStatus = [
+     { id:'VALID', value: '激活'},
+     {id: 'INVALID', value: '禁用'}
+     ],
   passWayArr = [
     { label: '刷脸', value: 'face' },
     { label: '指纹', value: 'fingerprint' },
@@ -222,7 +226,7 @@ export async function getRuleNames() {
   /**
  * @description: 员工状态、性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
  */
-
+  export { userStatus as getUserStatus }
   export { userRoles as getUserRoles }
   export { staffStates as getStaffStates }
   export function getGender() { return genders }

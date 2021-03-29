@@ -62,7 +62,8 @@ const actions = {
 
         const { roles, username, avatar, introduction } = data
         if (!roles || roles.length <= 0) {
-          reject('角色必须是一个非空数组!')
+          // reject('角色必须是一个非空数组!')
+          reject('该账户无权访问，请联系管理员!')
         }
 
         commit('SET_ROLES', roles)

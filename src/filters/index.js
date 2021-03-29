@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-22 17:38:24
+ * @LastEditTime: 2021-03-29 16:33:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -101,7 +101,8 @@ import {
   getDeviceNames, 
   get_issuePersonStatus, 
   getPersonTypes,
-  getUserRoles
+  getUserRoles,
+  getUserStatus
 } from '@/utils/business'
 
 const businessData = [
@@ -111,11 +112,18 @@ const businessData = [
 
 /**
  * @description: 获取角色名称
- * @param {*} string
+ * @param {*} Array
  */
- export function userRoleName(string) {
-    return getUserRoles.filter((item) => item.id == string)[0].name
+let roleId = []
+getUserRoles.forEach(item => roleId.push(item.id))
+ export function filterUserRoleName(arr) {
+  if(arr && Array.isArray(arr) && arr.length !== 0) {
+   if(roleId.includes(arr[0])) {
+     let index = roleId.indexOf(arr[0])
+     return getUserRoles[index].name
+   }
 }
+ }
 
 /**
  * @description: 处理通行结果
@@ -127,6 +135,18 @@ export function trafficRersultFilter(string, row) {
   } else {
     return `未通过`
   }  
+}
+
+/**
+ * @description: 处理用户状态
+ * @param {*} string
+ */
+ export function filterUserStatus(string) {
+ if(string === getUserStatus[0].id) {
+  return  '已' + getUserStatus[0].value
+} else {
+  return  '已' + getUserStatus[1].value
+}
 }
 
 /**

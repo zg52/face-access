@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-25 18:25:18
+ * @LastEditTime: 2021-03-29 17:12:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\components\Account.vue
@@ -9,6 +9,9 @@
 <style lang="scss">
   .getCode {
     margin-left: 10px;
+  }
+  .verifyCode_btn {
+    letter-spacing: 1px;
   }
 </style>
 <template>

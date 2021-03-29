@@ -169,29 +169,29 @@ $light_gray:#eee;
 
     <el-form ref="loginForm" v-if="loginShow" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container"><h3 class="title">人脸辨识云·门禁系统</h3></div>
-      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input ref="username" v-model="loginForm.username" placeholder="用户名" name="username" type="text" clearable /></el-form-item>
+      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input ref="username" v-model.trim="loginForm.username" placeholder="用户名" name="username" type="text" clearable /></el-form-item>
       <el-form-item prop="password">
           <span class="svg-container"><svg-icon icon-class="password" /></span>
-          <el-input ref="password" v-model="loginForm.password" placeholder="密码" type="password" clearable />
+          <el-input ref="password" v-model.trim="loginForm.password" placeholder="密码" type="password" clearable />
         </el-form-item>
-       <div class="flex flexbetween"><el-checkbox v-model="checked">记住密码</el-checkbox><span class="forget" @click="loginShowHandle">忘记密码？</span></div>
+       <div class="flex flexbetween"><el-checkbox v-model.trim="checked">记住密码</el-checkbox><span class="forget" @click="loginShowHandle">忘记密码？</span></div>
       <el-button class="handle_login" :loading="loading" type="primary" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
     
 <!-- ###########找回密码 ##########--> 
  <el-form ref="findPassRule" v-if="findPassShow" :model="findPassForm" :rules="findPassRule" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container"><h3 class="title">人脸辨识云·门禁系统</h3></div>
-      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input v-model="findPassForm.username" placeholder="用户名" type="text" clearable /></el-form-item>
-      <el-form-item prop="email"><span class="svg-container"><svg-icon icon-class="emial" /></span><el-input v-model="findPassForm.email" placeholder="邮箱" name="emial" type="text" clearable /></el-form-item>
-      <el-form-item prop="verifyCode" class="verify inline_block"><span class="svg-container"><svg-icon icon-class="authCode" /></span><el-input v-model="findPassForm.verifyCode" placeholder="邮箱验证码" type="text" clearable/></el-form-item>
+      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input v-model.trim="findPassForm.username" placeholder="用户名" type="text" clearable /></el-form-item>
+      <el-form-item prop="email"><span class="svg-container"><svg-icon icon-class="emial" /></span><el-input v-model.trim="findPassForm.email" placeholder="邮箱" name="emial" type="text" clearable /></el-form-item>
+      <el-form-item prop="verifyCode" class="verify inline_block"><span class="svg-container"><svg-icon icon-class="authCode" /></span><el-input v-model.trim="findPassForm.verifyCode" placeholder="邮箱验证码" type="text" clearable/></el-form-item>
       <el-button type="primary" class="verifyCode_btn ml10 inline_block" :disabled="findPassForm.verifyCodeBtnStatus" @click.prevent="getverifyCodeHandler_psw('findPassRule')">{{ findPassForm.verifyCodeTxt }}</el-button>
-      <el-form-item prop="newPass"> <span class="svg-container"><svg-icon icon-class="password" /></span><el-input :key="passwordType" v-model="findPassForm.newPass" :type="passwordType" placeholder="新密码" clearable />
+      <el-form-item prop="newPass"> <span class="svg-container"><svg-icon icon-class="password" /></span><el-input :key="passwordType" v-model.trim="findPassForm.newPass" :type="passwordType" placeholder="新密码" clearable />
           <span class="show-pwd" @click="showPwd"><svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" /></span>
         </el-form-item>
-      <el-form-item prop="checkPsw"> <span class="svg-container"><svg-icon icon-class="password" /></span><el-input :key="passwordType" v-model="findPassForm.checkPsw"  :type="passwordType" placeholder="确认新密码" clearable />
+      <el-form-item prop="checkPsw"> <span class="svg-container"><svg-icon icon-class="password" /></span><el-input :key="passwordType" v-model.trim="findPassForm.checkPsw"  :type="passwordType" placeholder="确认新密码" clearable />
           <span class="show-pwd" @click="showPwd"><svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" /></span>
         </el-form-item>
-       <div class="flex flexbetween"><el-checkbox v-model="checked">记住密码</el-checkbox> <span class="forget" @click.prevent="goLoginHandle">去登录</span></div>
+       <div class="flex flexbetween"><el-checkbox v-model.trim="checked">记住密码</el-checkbox> <span class="forget" @click.prevent="goLoginHandle">去登录</span></div>
       <el-button class="handle_login" :loading="loading" type="primary" @click="changePswHandler('findPassRule')">确 认</el-button>
     </el-form>
    </div>
