@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-26 18:54:00
+ * @LastEditTime: 2021-03-30 11:21:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -291,9 +291,10 @@ export default {
   async saveVisitorHandle(el) {
     let a = this.addVisitorForm
        this.$refs[el].validate((valid) => {
-        if (valid) {
-          a['files'] === null ? this.$message.warning('请上传访客头像！') : this.httpRequest()
-      }
+         this.httpRequest()
+      //   if (valid) {
+      //     a['files'] === null ? this.$message.warning('请上传访客头像！') : this.httpRequest()
+      // }
      })
   },
   changeDate() {
@@ -369,6 +370,9 @@ export default {
               edit()
           }
            function add() {
+            if( vm.addVisitorForm['files'] == null) { //访客非必选上传头像（因为每个访客下发时有二维码）
+              formData.delete('files')
+            }
                saveVisitor(formData).then((res) => {
                 if(res.code === 0 && res.data) {
                    vm.save_loading = false
