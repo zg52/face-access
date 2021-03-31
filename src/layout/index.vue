@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-30 16:15:43
+ * @LastEditTime: 2021-03-31 09:41:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\layout\index.vue
@@ -64,7 +64,7 @@
   .el-notification__title {
     font-weight: normal!important;
   }
-  .el-icon-warning {
+  .w {
     color: red!important;
   }
 }
@@ -195,8 +195,7 @@ export default {
        if(records.length !== 0) {
           this.$notify({
           title: '设备抓拍到黑名单人员',
-          // type: 'warning',
-          iconClass: 'el-icon-warning',
+          iconClass: 'el-icon-warning w',
           position: 'bottom-right',
          dangerouslyUseHTMLString: true,
          customClass:'warn',
@@ -237,7 +236,6 @@ export default {
       }
     })
     },
-    
   },
 //   additionalInformation: null
 // category: "blocklist"
