@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-31 09:41:02
+ * @LastEditTime: 2021-04-01 09:45:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\layout\index.vue
@@ -255,15 +255,15 @@ export default {
     //  this.initWebSocket()
     },
   mounted() {
-    this.get_exception_monitoring_person()
+    // this.get_exception_monitoring_person()
     this.get_exception_monitoring_blocklist()
    setInterval(() => {
      this.get_exception_monitoring_blocklist()
    }, 10000)
 
-   setInterval(() => {
-      this.get_exception_monitoring_person()
-   },5000)
+  //  setInterval(() => {
+  //     this.get_exception_monitoring_person()
+  //  },5000)
   },
 }
 </script>
