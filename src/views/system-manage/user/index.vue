@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-03-29 17:02:41
+ * @LastEditTime: 2021-04-02 10:33:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -42,15 +42,15 @@
       <el-table-column align="center" label="用户名" width="150"> <template v-slot="scope"> {{ scope.row.name }} </template> </el-table-column>
       <!-- <el-table-column align="center" label="昵称" width="120"> <template v-slot="scope"> {{ scope.row.nickName }} </template> </el-table-column> -->
       <el-table-column align="center" label="邮箱" width="220"> <template v-slot="scope"> {{ scope.row.email }} </template> </el-table-column>
-      <el-table-column align="center" label="手机"><template v-slot="scope"> {{ scope.row.phone }} </template> </el-table-column>
+      <el-table-column align="center" label="手机" width="120"><template v-slot="scope"> {{ scope.row.phone }} </template> </el-table-column>
        <el-table-column align="center" label="角色" width="120"> <template v-slot="scope"> {{ scope.row.roleIds | filterUserRoleName }} </template></el-table-column>
-      <el-table-column align="center" label="创建时间" width="150"> <template v-slot="scope"> {{ scope.row.createTime }} </template> </el-table-column>
-      <el-table-column align="center" label="修改时间" width="150"> <template v-slot="scope"> {{ scope.row.lastUpdateTime }} </template> </el-table-column>
+      <el-table-column align="center" label="创建时间" width="160"> <template v-slot="scope"> {{ scope.row.createTime }} </template> </el-table-column>
+      <el-table-column align="center" label="修改时间" width="160"> <template v-slot="scope"> {{ scope.row.lastUpdateTime }} </template> </el-table-column>
          <el-table-column align="center" label="状态" width="70">
         <template v-slot="scope">{{ scope.row.status | filterUserStatus }}</template>
       </el-table-column>
-       <el-table-column align="center" label="备注" width="150"> <template v-slot="scope"> {{ scope.row.remark }} </template> </el-table-column>
-      <el-table-column align="center" label="操作" width="180px" fixed="right">
+       <el-table-column align="center" label="备注" width="auto"> <template v-slot="scope"> {{ scope.row.remark }} </template> </el-table-column>
+      <el-table-column align="center" label="操作" width="200" fixed="right">
         <template v-slot="scope">
           <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.row)"><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
@@ -100,7 +100,6 @@
         </div>
       </div>
     </el-dialog>
-
     
     <el-dialog title="编辑用户" :visible.sync="editUserVisible" width="558px">
       <div v-loading="editSave_loading" element-loading-text="拼命保存中" element-loading-spinner="el-icon-loading">
@@ -135,7 +134,6 @@ import { validEmail, validPhone } from '@/utils/validate.js'
 import { pickerOptions } from '@/utils'
 import { getUserRoles, getUserStatus } from '@/utils/business'
 import moment from 'moment'
-import { filterUserRoleName } from '@/filters'
 
 export default {
   data() {
@@ -239,7 +237,7 @@ export default {
       this.editUserForm.email = val.email;
       this.editUserForm.nickName = val.nickName;
       this.editUserForm.phone = val.phone;
-      this.editUserForm.roleIds = filterUserRoleName(val.roleIds)
+      this.editUserForm.roleIds = val.roleIds[0]
       this.editUserForm.status = val.status;
       this.editUserForm.remark = val.remark;
       this.editUserVisible = true;

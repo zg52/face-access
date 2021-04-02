@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-25 11:29:32
+ * @LastEditTime: 2021-04-02 10:38:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -355,11 +355,11 @@ export default {
     },
    handleSizeChange(val) {
       this.pagingQuery.size = val
-      this.onSearch()
+      this.getBockList()
     },
     handleCurrentChange(val) {
       this.pagingQuery.current = val
-      this.onSearch()
+      this.getBockList()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
