@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-10 18:10:42
- * @LastEditTime: 2021-04-02 10:33:27
+ * @LastEditTime: 2021-04-06 10:02:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\system-manage\user\index.vue
@@ -36,7 +36,7 @@
       <el-button type="primary" @click="showAddUser"><svg-icon icon-class="edit" /> 新增用户</el-button>
     </el-form>
 
-    <el-table border :data="tableData" element-loading-spinner="el-icon-loading" class="user_list" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
+    <el-table border :data="tableData" v-loading="table_loading" element-loading-spinner="el-icon-loading" class="user_list" max-height="650" @selection-change="handleSelectionChange" ref="multipleTable">
      <el-table-column width="40" type="selection" fixed></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="用户名" width="150"> <template v-slot="scope"> {{ scope.row.name }} </template> </el-table-column>
@@ -153,6 +153,7 @@ export default {
     }
 
     return {
+      table_loading: true,
       userFormVisible: false,
       editUserVisible: false,
       addSave_loading: false,
@@ -280,13 +281,14 @@ export default {
      this.getUserList()
     },
     getUserList() {
-       searchUser(this.pagingQuery).then((res) => {
-             if(res.code === 0) {
+      searchUser(this.pagingQuery).then((res) => {
+        if(res.code === 0) {
                this.tableData = []
-               this.pagingQuery.total = res.data.total;
-               this.pagingQuery.current = res.data.current;
-               this.pagingQuery.size = res.data.size;
-               this.tableData = res.data.records.length !== 0 ? res.data.records : []
+               this.pagingQuery.total = res.data.total
+               this.pagingQuery.current = res.data.current
+               this.pagingQuery.size = res.data.size
+                 this.table_loading = false
+                 this.tableData = res.data.records.length !== 0 ? res.data.records : []
              } else {
                this.$message.error(re.msg)
              }
