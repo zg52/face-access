@@ -243,6 +243,7 @@ vertical-align: middle;
 border-radius: 50%;
 }
 
+.inline_block {display: inline-block;}
 // 状态查询下拉样式
 .statusStyle {
   label, input,.el-select__caret {
@@ -296,3 +297,13 @@ border-radius: 50%;
 // 色值
 .red {color: red;}
 .green{color: #13ce66;}
+
+
+// 弹性盒
+.flex {
+  display: flex;
+}
+.flexbetween {
+  display: flex;
+  justify-content: space-between;
+}

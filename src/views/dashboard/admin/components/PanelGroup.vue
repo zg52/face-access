@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-01-07 18:28:14
+ * @LastEditTime: 2021-03-22 15:59:14
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\PanelGroup.vue
+-->
 
 <style lang="scss" scoped>
 .panel-group {
@@ -152,7 +160,7 @@
           <div class="card-panel-text">
            今日进门人数
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="1000" :end-val="in_a_few" :duration="2600" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -167,13 +175,13 @@
           <div class="card-panel-text">
             今日访客预约
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="500" :end-val="reservation_number" :duration="3000" class="card-panel-num" />
         </div>
       </div>
      </router-link>
     </el-col>
      <el-col :md="8" :xs="12" :sm="12" :lg="4" class="card-panel-col icon-face_swiping">
-      <router-link to="/traffic-records/index?tab=0">
+      <router-link to="/traffic-records/index?tab=1">
          <div class="card-panel">
         <div class="card-panel-icon-wrapper">
           <svg-icon icon-class="face_swipingNum" class-name="card-panel-icon face_swipingNum" />
@@ -182,7 +190,7 @@
           <div class="card-panel-text">
             今日刷脸人数
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="600" :end-val="faceNum" :duration="3600" class="card-panel-num" />
         </div>
       </div>
       </router-link>
@@ -195,9 +203,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            今日设备离线
+            今日离线设备
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="50" :end-val="offline_device" :duration="3200" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -210,9 +218,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            今日设备故障
+            今日故障设备
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="50" :end-val="temperature_number" :duration="3200" class="card-panel-num" />
         </div>
       </div>
      </router-link>
@@ -227,7 +235,7 @@
           <div class="card-panel-text">
             今日体温异常
           </div>
-          <count-to :start-val="0" :end-val="0" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="400" :end-val="temperature_number" :duration="3600" class="card-panel-num" />
         </div>
       </div>
       </router-link>
@@ -236,7 +244,7 @@
 </template>
 <script>
 import CountTo from 'vue-count-to'
-import { deviceException } from '@/api/alarm'
+import { in_a_few, reservation_number, faceNum, offline_device, failure_device, temperature_number } from '@/api/dashboard' 
 
 export default {
   components: {
@@ -244,41 +252,31 @@ export default {
   },
   data() {
     return {
-      device_out_of_order_num: 0,
-      deviceException_params: {
-        source: 'device',
-        category: 'device_out_of_order',
-        current: 1
-      }
+      in_a_few: 0,
+      reservation_number: 0,
+      faceNum: 0,
+      offline_device: 0,
+      failure_device: 0,
+      temperature_number: 0
     }
   },
   methods: {
-    onSearch() {
-      this.pagingQuery.current = 1
-     this.getDeviceException()
-    },
-    getDeviceException() {
-      deviceException(this.deviceException_params).then((res) => {
-         if(res.code === 0)  {
-           this.table_loading = false
-           if(res.data.records.length !== 0) {
-             this.device_out_of_order_num = res.data.total
-           }
-         } else {
-           this.$message.error(res.msg)
-           this.table_loading = false
-         }
-       })
-    }
+  onSearch() {
+    in_a_few().then((res) => { this.in_a_few = res }),
+    reservation_number().then((res) => { this.reservation_number = res }),
+    faceNum().then((res) => { this.faceNum = res }),
+    offline_device().then((res) => { this.offline_device = res }),
+    failure_device().then((res) => { this.failure_device = res })
+    temperature_number().then((res) => { this.temperature_number = res })
+  },
   },
   created() {
-    this.getDeviceException()
+    this.onSearch()
 
 // 每30分刷新
   setInterval(() => {
-        
+      this.onSearch()
       },(1000 * 60) * 30)
-    
   }
 }
 </script>

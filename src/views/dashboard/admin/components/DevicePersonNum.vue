@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-21 10:35:12
- * @LastEditTime: 2021-03-16 16:03:14
+ * @LastEditTime: 2021-03-23 17:41:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
@@ -15,6 +15,7 @@
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
+import { devicePersonNum } from '@/api/dashboard' 
 
 const animationDuration = 6000
 
@@ -37,8 +38,8 @@ export default {
   data() {
     return {
       chart: null,
-      xValue: [3, 29, 20],
-      yValue: ['前门', '后门', '负一层']
+      xValue: [],
+      yValue: []
     }
   },
   methods: {
@@ -116,6 +117,7 @@ export default {
     },
     xAxis: {
         type: 'value',
+         name: '数量',
         boundaryGap: [0, 0.01],
           axisLine: {
             lineStyle: {
@@ -125,6 +127,7 @@ export default {
     },
     yAxis: {
         type: 'category',
+         name: '设备名称',
         data: this.yValue,
             axisLine: {
             lineStyle: {
@@ -137,21 +140,43 @@ export default {
             name: '人数',
             type: 'bar',
             data: this.xValue,
-            barWidth: '45%',
+            barWidth: '58%',
         },
-    ]
+    ],
+     grid: {
+                left: '0%',
+                right: '6%',
+                bottom: '8%',
+                top:'25%',
+                containLabel: true
+            },
 }
 )
-    }
+    },
+  onSearch() {
+    devicePersonNum().then((res) => {
+      if(res.hasOwnProperty('deviceNames')) {
+        if(Array.isArray(res.deviceNames)) {
+          if(res.deviceNames.length !== 0) {
+            console.log(res.deviceNames)
+            this.yValue = res.deviceNames
+            this.xValue = res.counts
+              this.initChart()
+          }
+        }
+      }
+    })
+  }
+  },
+  created() {
+    this.onSearch()
+   setInterval(() => {
+      this.onSearch()
+      },(1000 * 60) * 30)
   },
   mounted() {
     this.$nextTick(() => {
-      this.initChart()
-
-// 每30分刷新
-  setInterval(() => {
-        
-      },(1000 * 60) * 30)
+        this.initChart()
     })
   },
   beforeDestroy() {

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-16 10:14:29
+ * @LastEditTime: 2021-03-18 15:31:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -40,7 +40,7 @@
         <i class="el-icon-search"></i><span>查询</span></el-button>
     </el-form>
 
-    <el-table :data="tableData" border max-height="650">
+    <el-table :data="tableData" v-loading="table_loading" element-loading-spinner="el-icon-loading"  border max-height="650">
         <el-table-column width="50" type="selection" fixed></el-table-column>
         <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
         <el-table-column align="center" label="操作人">

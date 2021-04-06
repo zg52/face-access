@@ -1,45 +1,3 @@
-<template>
-  <el-card style="margin-bottom:20px;">
-    <div slot="header" class="clearfix">
-      <span>关于我</span>
-    </div>
-
-    <div class="user-profile">
-      <div class="box-center">
-        <pan-thumb :image="user.avatar" :height="'100px'" :width="'100px'" :hoverable="false">
-          <div>华捷艾米</div>
-          {{ user.role }}
-        </pan-thumb>
-      </div>
-      <div class="box-center">
-        <div class="user-name text-center">{{ user.username }}</div>
-        <div class="user-role text-center text-muted">{{ user.role | uppercaseFirst }}</div>
-      </div>
-    </div>
-  </el-card>
-</template>
-
-<script>
-import PanThumb from '@/components/PanThumb'
-
-export default {
-  components: { PanThumb },
-  props: {
-    user: {
-      type: Object,
-      default: () => {
-        return {
-          username: '',
-          email: '',
-          avatar: require('../../../assets/image/logo.png'),
-          role: ''
-        }
-      }
-    }
-  }
-}
-</script>
-
 <style lang="scss" scoped>
 .box-center {
   margin: 0 auto;
@@ -98,4 +56,58 @@ export default {
     }
   }
 }
+.admin {
+  line-height: 50px;
+}
 </style>
+<template>
+  <el-card style="margin-bottom:20px;">
+    <div slot="header" class="clearfix">
+      <span>关于我</span>
+    </div>
+
+    <div class="user-profile">
+      <div class="box-center">
+        <pan-thumb :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false">
+          <div class="admin">{{ user.username }}</div>
+        </pan-thumb>
+      </div>
+      <div class="box-center">
+        <div class="user-name text-center">{{ user.username }}</div>
+        <!-- <div class="user-role text-center text-muted">{{ user.role | filterUserRoleName }}</div> -->
+      </div>
+    </div>
+  </el-card>
+</template>
+
+<script>
+import PanThumb from '@/components/PanThumb'
+
+
+export default {
+  components: { PanThumb },
+  props: {
+    user: {
+      type: Object,
+      default: () => {
+        return {
+          username: '',
+          email: '',
+          avatar: require('../../../assets/image/logo.png'),
+          role: ''
+        }
+      }
+    }
+  },
+  filters: {
+    getRoleName(value) {
+      return 'dd'
+    }
+  },
+  data() {
+    return {
+      avatar: require('../../../assets/image/logo.png')
+    }
+  }
+}
+</script>

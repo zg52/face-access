@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-16 14:26:57
+ * @LastEditTime: 2021-03-29 16:33:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -76,7 +76,7 @@ export function uppercaseFirst(string) {
 }
 
 /**
- * @description: 处理日期
+ * @description: 处理日期 'T'
  * @param {*} string
  */
 export function filterDate(string) {
@@ -91,19 +91,39 @@ export function filterDate(string) {
 
 // 业务数据过滤
 
-import { 
+import {
+  getGender,
+  getFaceType,
+  getStaffStates,
   passWay, 
   weekParams, 
   passWayArrHandle, 
   getDeviceNames, 
   get_issuePersonStatus, 
-  getPersonTypes 
+  getPersonTypes,
+  getUserRoles,
+  getUserStatus
 } from '@/utils/business'
 
 const businessData = [
   'success',
   'in'
 ]
+
+/**
+ * @description: 获取角色名称
+ * @param {*} Array
+ */
+let roleId = []
+getUserRoles.forEach(item => roleId.push(item.id))
+ export function filterUserRoleName(arr) {
+  if(arr && Array.isArray(arr) && arr.length !== 0) {
+   if(roleId.includes(arr[0])) {
+     let index = roleId.indexOf(arr[0])
+     return getUserRoles[index].name
+   }
+}
+ }
 
 /**
  * @description: 处理通行结果
@@ -115,6 +135,18 @@ export function trafficRersultFilter(string, row) {
   } else {
     return `未通过`
   }  
+}
+
+/**
+ * @description: 处理用户状态
+ * @param {*} string
+ */
+ export function filterUserStatus(string) {
+ if(string === getUserStatus[0].id) {
+  return  '已' + getUserStatus[0].value
+} else {
+  return  '已' + getUserStatus[1].value
+}
 }
 
 /**
@@ -192,3 +224,30 @@ export function filterPesonType(value) {
   })
   return personTypeName
 }
+
+/**
+ * @description: 处理性别
+ */
+export function filterGenter(value) {
+ return value === getGender()[0].id ? '男' : '女'
+}
+
+/**
+ * @description: 处理头像类型
+ */
+ export function filterFaceType(value) {
+  return value === getFaceType()[0].id ? '证件照' : '生活照'
+ }
+
+ export function filterStaffStates(value, isDelete) {
+   let state = null
+   getStaffStates.forEach((item) => {
+   if(item.ID == value) {
+    state = item.value
+  }
+  if(item.ID == isDelete) {
+    state = item.value
+  }
+})
+return state
+ }

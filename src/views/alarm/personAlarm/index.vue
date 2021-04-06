@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-16 13:58:36
+ * @LastEditTime: 2021-03-23 18:49:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -18,7 +18,7 @@
         </el-select>
       </el-form-item>
   <el-form-item label="告警类型"><el-select class="w140" v-model="pagingQuery.category" clearable><el-option v-for="(deviceCategory, index) of deviceCategorys" :key="index" :label="deviceCategory.name" :value="deviceCategory.id"></el-option></el-select></el-form-item>
-  <el-form-item label="人员类型"><el-select class="w140" v-model="pagingQuery.personType" clearable><el-option v-for="(personType, index) of personTypes" :key="index" :label="personType.name" :value="personType.id"></el-option></el-select></el-form-item>
+  <!-- <el-form-item label="人员类型"><el-select class="w140" v-model="pagingQuery.personType" clearable><el-option v-for="(personType, index) of personTypes" :key="index" :label="personType.name" :value="personType.id"></el-option></el-select></el-form-item> -->
     <el-form-item label="告警时间">
       <el-date-picker
         v-model="date"
@@ -36,7 +36,7 @@
      <el-button type="primary" @click.prevent="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
   </el-form>
 
-  <el-table border :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading">
+  <el-table border :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading" element-loading-spinner="el-icon-loading">
     <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
     <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
     <el-table-column align="center" label="姓名" width="auto"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>

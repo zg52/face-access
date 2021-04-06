@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-02-02 11:29:23
+ * @LastEditTime: 2021-03-24 14:35:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\index.vue
@@ -17,7 +17,7 @@
           <el-card>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="账户" name="account">
-                <account :user="user" />
+                <account :user="user"/>
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -56,7 +56,7 @@ export default {
       this.user = {
         username: this.username,
         role: this.roles.join(' | '),
-        email: 'hjimi@test.com',
+        email: '',
         avatar: this.avatar
       }
     }

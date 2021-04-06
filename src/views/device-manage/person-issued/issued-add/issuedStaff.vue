@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-13 12:30:44
+ * @LastEditTime: 2021-03-19 17:42:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -48,7 +48,7 @@
        <el-button class="ml10" type="primary" :disabled="table_loading" @click="handleIssuedPerson"><svg-icon icon-class="guide" />  一键下发</el-button>
     </el-form>
     
-    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable" border>
+    <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" :element-loading-text="loadingTip1" element-loading-spinner="el-icon-loading" ref="multipleTable" border>
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -56,7 +56,7 @@
       <el-table-column align="center" label="已注册人脸" width="95">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
+     <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender | filterGenter }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"><template v-slot="scope">{{ scope.row.position }}</template></el-table-column>
       <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
@@ -103,6 +103,7 @@ export default {
       genders: getGender(),
       value: '华捷艾米',
       table_loading: true,
+      loadingTip1: null,
 
       pagingQuery: {
         name: null,
@@ -113,6 +114,7 @@ export default {
         enrollTime: null,
         createTimeFrom: null, //初始查询默认参数，必填
         createTimeTo: null, //初始查询默认参数，必填
+        states: 0,
         status: null,
         
         current: 1, 
@@ -126,32 +128,24 @@ export default {
     getDeviceIds1(deviceIds) {
     this.deviceIds = deviceIds
     },
-     getStaffList() {
-      let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
+   getStaffList() {
+      let [params] = [this.pagingQuery]
       this.table_loading = true
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
+        if(res.code === 0) {
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
-         res.data.records.map((item, index) => {
-           if(item.isDelete != 1) {
-              filterData.push(item)
-              this.tableData = filterData.reverse()
-           } else {
-             isDeleteNum.push(item.isDelete)
-           }
-         })
+
+        if(res.data.records.length !== 0) {
+        this.tableData = res.data.records
+        }
         this.table_loading = false
-      
-//  转换state为Boolean
-        let satatusArr = []
-        this.tableData.map((x, index) => {
-          satatusArr.push({
-            status: x.status == 1 ? false : true
-          })
-        })
-        this.status = satatusArr
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
+        }
       })
     },
     onSearch() {
@@ -170,6 +164,7 @@ export default {
           type: "warning",
         }).then(() => {
           _this.table_loading = true
+          _this.loadingTip1 = '正在下发中'
           let personIds = []
           for (let i = 0; i < _this.multipleSelection.length; i++) {
             personIds.push(_this.multipleSelection[i].id)
@@ -178,15 +173,18 @@ export default {
              issuedEmployee(_this.deviceIds, personIds).then((res) => {
                 if (res.code == 0) {
                   _this.table_loading = true
+                   _this.loadingTip1 = null
                   _this.onSearch()
                   _this.$message.success(res.msg +' 可在已下发人员页面查看', 4000)
                 } else {
                    _this.$message.warning(res.msg, 4000)
                    _this.table_loading = false
+                   _this.loadingTip1 = null
                     _this.$refs.multipleTable.clearSelection()
                 }
               },(err) => {
                 _this.table_loading = false
+                _this.loadingTip1 = null
                 _this.$refs.multipleTable.clearSelection()
               })         
           }
@@ -239,7 +237,6 @@ export default {
     })
   },
   mounted() {
-    // console.log(this.multipleSelection)
   },
 };
 </script>

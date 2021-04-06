@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-10 14:55:27
+ * @LastEditTime: 2021-03-30 10:52:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -33,4 +33,31 @@ export function personException(params) {
    })
  }
 
- 
+  /**
+ * @description: 监控黑名单人员
+ */
+export function exception_monitoring_blocklist(lastId) {
+  return request({
+     url: `${ exception }/watch`,
+     method: 'GET',
+    params: {
+      category: 'blocklist',
+      source: 'person',
+      lastId: lastId
+     }
+   })
+ }
+
+   /**
+ * @description: 监控提示未能通行人员
+ */
+export function exception_monitoring_person(lastId) {
+  return request({
+     url: `${ exception }/watch`,
+     method: 'GET',
+    params: {
+      source: 'person',
+      lastId: lastId
+     }
+   })
+ }

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-12 11:20:17
+ * @LastEditTime: 2021-03-22 17:48:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -108,7 +108,7 @@
         <el-date-picker class="w300" v-model="pagingQuery.expiredTime" type="date" align="right" unlink-panels start-placeholder="创建日期" @change="changeDate2"></el-date-picker>
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="pagingQuery.states" class="w100" @change="changeStatus" clearable>
+        <el-select v-model="getStates" class="w100" @change="changeStatus" clearable>
          <el-option v-for="(state, index) of states" :key="index" :label="state.value" :value="state.id"></el-option>
         </el-select>
       </el-form-item>
@@ -143,7 +143,7 @@
       <router-link to="/people-manage/staff-manage/staff-add/staffAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增员工</el-button></router-link>
     </el-form>
     
-    <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" ref="multipleTable">
+    <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -153,10 +153,10 @@
            <template slot-scope="props">
              <el-form label-position="left" inline class="demo-table-expand">
                <!-- <el-form-item label="创建人："><span>{{ props.row.name }}</span></el-form-item> -->
-               <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="120"></div></el-form-item></div>
+               <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" width="120"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
-                <el-form-item label="性别："><span>{{ props.row.gender === 'male' ? '男' : '女' }} </span></el-form-item>
-               <el-form-item label="头像类型："><span>{{ props.row.faceType == 'life' ? '生活照' : '证件照' }} </span></el-form-item>
+                <el-form-item label="性别："><span>{{ props.row.gender | filterGenter }} </span></el-form-item>
+               <el-form-item label="头像类型："><span>{{ props.row.faceType | filterFaceType }} </span></el-form-item>
                  <el-form-item label="部门："> <span>华捷艾米 </span></el-form-item>
                  <el-form-item label="身份证号："><span>{{ props.row.idNum }} </span></el-form-item>
                  <el-form-item label="工号："><span>{{ props.row.employeeNum }} </span></el-form-item>
@@ -170,27 +170,26 @@
                  <el-form-item label="离职日期："><span>{{ props.row.status == 1 ? props.row.expiredTime : null }} </span></el-form-item>
                  <el-form-item label="创建时间："><span>{{ props.row.createTime | filterDate }} </span></el-form-item>
                  <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | filterDate }} </span></el-form-item>
-                  <el-form-item label="状态："><span>{{ props.row.status == 0 ? '在职' : '离职' }}</span> </el-form-item>
+                  <el-form-item label="状态："><span>{{ props.row.status | filterStaffStates(props.row.isDelete) }}</span> </el-form-item>
                  <el-form-item label="备注："><span></span></el-form-item>
                 <el-form-item label="创建人："><span>{{ props.row.operator }}</span></el-form-item>
            </el-form>
            </template>
      </el-table-column>
-
       
       <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
       <el-table-column align="center" label="已注册人脸" width="90">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
-      <el-table-column align="center" label="部门" width="100"> <template> 华捷艾米 </template></el-table-column>
-      <el-table-column align="center" label="工号" width="180"> <template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
-      <el-table-column align="center" label="电话" width="108"> <template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
-      <el-table-column align="center" label="邮箱" width="180"> <template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
-      <el-table-column align="center" label="职务" width="108"> <template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
-      <el-table-column align="center" label="门禁卡" width="230"> <template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
-      <el-table-column align="center" label="IC卡" width="230"> <template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
-       <el-table-column align="center" label="状态" width="60"><template v-slot="scope">{{ scope.row.status == 0 ? '在职' : '离职' }}</template> </el-table-column>
+     <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender | filterGenter }} </template></el-table-column>
+      <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
+      <el-table-column align="center" label="工号" width="180"><template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
+      <el-table-column align="center" label="电话" width="108"><template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
+      <el-table-column align="center" label="邮箱" width="180"><template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
+      <el-table-column align="center" label="职务" width="108"><template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
+      <el-table-column align="center" label="门禁卡" width="230"><template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
+      <el-table-column align="center" label="IC卡" width="230"><template v-slot="scope"> {{ scope.row.icCardId }} </template></el-table-column>
+      <el-table-column align="center" label="状态" width="64" fixed="right"><template v-slot="scope">{{ scope.row.status | filterStaffStates(scope.row.isDelete) }}</template> </el-table-column>
      
       <el-table-column align="left" label="操作" width="190" fixed="right">
         <template v-slot="scope">
@@ -250,15 +249,10 @@ import { mapGetters } from 'vuex'
 import { getStaffList, deleteStaff, StaffState, downloadEmployee } from '@/api/people-manage/staffManage'
 import { imgUrl, downStaffXls } from '@/api/public'
 import { pickerOptions } from '@/utils'
-import { getGender, getFaceType} from '@/utils/business'
+import { getGender, getFaceType, getStaffStates } from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
 
- const states = [
-   { value: '在职', id: 0 }, 
-   { value: '离职', id: 1 },
-  //  { value: '已删除', id: 'isDelete' }
- ]
 let vm
 
 export default {
@@ -267,12 +261,12 @@ export default {
   data() {
     return {
       expiredDateTip: false,
-      table_loading:false,
+      table_loading: true,
       dialogVisible1: false,
       value: '华捷艾米',
       genders: getGender(),
       status: [],
-      states: states,
+      states: getStaffStates,
       faceTypes: getFaceType(),
       pickerOptions: pickerOptions(),
       date: null,
@@ -285,7 +279,8 @@ export default {
       expiredDateFormRule: {
         expiredDate: [{type:'date', required: true, message: '请选择离职日期', trigger: ['blur', 'change'] }]
       },
-      
+
+      getStates: null,
       pagingQuery: {
         operator: null,
         name: null,
@@ -304,7 +299,8 @@ export default {
         createTimeFrom: null,
         createTimeTo: null,
         status: null,
-        isDelete: null, /// 0为正常1为已删除
+        isDelete: null, /// 0为正常 1为已删除 2为删除中
+        states: null,
         
         current: 1, 
         size: 20,
@@ -316,19 +312,19 @@ export default {
       addStaffForm: {
           id: null,
           operator: this.$store.getters.username,
-          name: 'null',
+          name: null,
           gender: '1',
-          phone: '15652970356',
-          address: 'w',
-          idNum: '622826199811192711',
-          mail: '2@163.com',
-          employeeNum: '32',
+          phone: null,
+          address: null,
+          idNum: null,
+          mail: null,
+          employeeNum:null,
           companyId: '1',
-          position: 'fwe',
-          icCardId: '32',
-          gateCardId: '32',
-          enrollTime: '2021-12-20',
-          faceType: 'id',
+          position: null,
+          icCardId: null,
+          gateCardId: null,
+          enrollTime: null,
+          faceType: null,
           files: null
          },
          btn_el: ['edit']
@@ -345,12 +341,20 @@ export default {
   methods: {
     changeStatus() {
       let p = this.pagingQuery
-          p['isDelete'] = p['states'] === 'isDelete' ? 1 : null
+       p['states'] = vm['getStates']
+       p['isDelete'] = null
+        
+      statesValue(2)
+      function statesValue(i) {
+        if(vm['getStates'] === getStaffStates[i].id) 
+            p['isDelete'] = getStaffStates[i].id.substr(-1),
+            p['states'] = null
+      }
     },
     getStaffList() {
-      let [params, filterData,isDeleteNum] = [this.pagingQuery, [], []]
+      let [params] = [this.pagingQuery]
       this.table_loading = true
-
+      
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
         if(res.code === 0) {
@@ -359,21 +363,14 @@ export default {
         params.total = res.data.total
 
         if(res.data.records.length !== 0) {
-         res.data.records.map((item, index) => {
-           if(item.isDelete != 1) {
-              filterData.push(item)
-              this.tableData = filterData
-
+          this.tableData = res.data.records
+          
 // 设置visible解决elemenui pover 弹出异常缺陷
-              this.tableData.forEach(function (item) {
-               item.visible = true
-              })
-           } else {
-             isDeleteNum.push(item.isDelete)
-           }
-         })
-      
-//  转换state为Boolean
+        this.tableData.forEach(function (item) {
+         item.visible = true
+        })
+
+//  转换status为Boolean
         let satatusArr = []
         this.tableData.map((x, index) => {
           satatusArr.push({
@@ -383,6 +380,9 @@ export default {
         this.status = satatusArr
         }
         this.table_loading = false
+        } else {
+          this.$message.error(res.msg)
+          this.table_loading = false
         }
       })
     },
