@@ -20,6 +20,15 @@ export function validUsername(str) {
 }
 
 /**
+ * @param {string} str
+ */
+ export function validName(str) {
+  const reg = /^[a-zA-Z\u4e00-\u9fa5]+$/
+  return reg.test(str)
+}
+
+
+/**
  * @param {string} url
  * @returns {Boolean}
  */

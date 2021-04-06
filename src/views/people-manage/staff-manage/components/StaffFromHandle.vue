@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-12 18:06:27
+ * @LastEditTime: 2021-03-26 18:50:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -73,7 +73,7 @@ position: absolute;
   <div class="app-container">
      <el-form :model="addStaffForm" label-width="auto" :rules="addStaffRule" ref="addStaffFormRule" class="addStaffForm" :inline="true">
        <el-form-item label="创建人："><el-input v-model="addStaffForm.operator" class="w160" disabled></el-input></el-form-item>
-       <el-form-item label="员工姓名：" prop="name"><el-input v-model.trim="addStaffForm.name" class="w160" clearable></el-input></el-form-item>
+       <el-form-item label="员工姓名：" prop="name"><el-input v-model.trim="addStaffForm.name" class="w160" maxlength="8" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w160" v-model.trim="addStaffForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model.trim="addStaffForm.phone" clearable></el-input></el-form-item>
        <el-form-item label="职务："  prop="position"><el-input v-model.trim="addStaffForm.position" class="w160" clearable></el-input></el-form-item>
@@ -132,7 +132,7 @@ import { mapGetters } from 'vuex'
 import { saveStaff, editStaff } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
-import { validPhone, validateIdCard } from '@/utils/validate.js'
+import { validPhone, validateIdCard, validName } from '@/utils/validate.js'
 import { getGender, getFaceType} from '@/utils/business'
 import {proxyUrl_1, imgUrl } from '@/api/public'
 // import { pickerOptions } from '@/utils'
@@ -155,14 +155,18 @@ export default {
     },
     validateIdCardTarge = (rule, value, callback) => {
      !validateIdCard(value) ? callback(new Error("请输入正确格式的身份证号格式!")) : callback()
+    },
+    validateName = (rule, value, callback) => {
+      !validName(value) ? callback(new Error('只能输入中文或英文')) :  callback()
     }
+    
     function numbers (str) {
       return (rule, value, callback) => {
      !isNaN(value) ? callback() : callback(new Error(`${ str }号只能为数字组成！`))
     }
     }
-    
     function notNull(notNullName) { return [{required: true, message: `请输入员工${ notNullName }`, trigger: "blur" }] }
+
     return {
       save_loading: false,
       addStaffFormVisible: true,
@@ -175,7 +179,10 @@ export default {
       faceType: getFaceType()[0].name,
     //   addStaffForm: formHadleParam,
       addStaffRule: {
-          name: notNull('姓名'),
+          name: [
+            notNull('姓名')[0],
+            { validator: validateName, trigger: "blur" },
+          ],
           phone: [
             { required: true, message: "请输入手机号", trigger: "blur" },
             { validator: validPhoneTarget, trigger: "blur" },

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-16 13:55:35
+ * @LastEditTime: 2021-03-29 16:20:14
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -22,54 +22,29 @@ const
   userRoles = [
     { id: 1, name: '超级管理员' }, //superAdmin
     { id: 2, name: '管理员' }, //admin
-     ], 
+     ],
+     userStatus = [
+     { id:'VALID', value: '激活'},
+     {id: 'INVALID', value: '禁用'}
+     ],
   passWayArr = [
+    { label: '刷脸', value: 'face' },
+    { label: '指纹', value: 'fingerprint' },
+    { label: '二维码', value: 'qr_code' },
     {
-      label: '刷脸',
-      value: 'face'
-    },
-    {
-      label: '指纹',
-      value: 'fingerprint'
-    },
-    {
-      label: '二维码',
-      value: 'qr_code'
-    },
-    {
-      label: '刷卡',
-      value: 'card',
+      label: '刷卡', value: 'card',
         children: [
-          {
-           label: '门禁卡',
-           value: 'wg_card'
-         },
-         {
-          label: 'IC卡',
-          value: 'ic_card'
-        },
-        {
-          label: '身份证',
-          value: 'identity_card'
-        }
+          { label: '门禁卡', value: 'wg_card' },
+          { label: 'IC卡', value: 'ic_card' },
+          { label: '身份证', value: 'identity_card' }
     ]
   },
   {
-     label: '刷脸 + 刷卡',
-     value: 'faceCard',
+     label: '刷脸 + 刷卡', value: 'faceCard',
       children: [
-        {
-          label: '刷脸 + 门禁卡',
-          value: 'face,wg_card'
-        },
-        {
-          label: '刷脸 + IC卡',
-          value: 'face,ic_card'
-        },
-        {
-          label: '刷脸 + 身份证',
-          value: 'face,identity_card'
-        }
+        { label: '刷脸 + 门禁卡', value: 'face,wg_card' },
+        { label: '刷脸 + IC卡', value: 'face,ic_card' },
+        { label: '刷脸 + 身份证', value: 'face,identity_card' }
       ]
     }
     ],
@@ -82,6 +57,11 @@ const
     genders = [
       { id: 'male' , value: '男' },
       { id: 'female', value: '女'  }
+    ],
+    staffStates = [
+      { ID: 0,  id: 0, value: '在职' }, 
+      { ID: 1,  id: 1, value: '离职' },
+      { ID: 2,  id: 'removing2', value: '删除中' },
     ],
    faceTypes = [
       { id: 'id', name: '证件照' },
@@ -150,7 +130,6 @@ const
  
 /**
  * @description: 处理通行方式
- * @param {*}
  */
 export function passWay() {
    return passWayArr
@@ -175,7 +154,6 @@ export function passWayArrHandle() {
 
 /**
  * @description: 星期制参数
- * @param {*}
  */
  export function weekParams() {
      return [
@@ -246,10 +224,11 @@ export async function getRuleNames() {
 }
 
   /**
- * @description: 性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
+ * @description: 员工状态、性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
  */
-
+  export { userStatus as getUserStatus }
   export { userRoles as getUserRoles }
+  export { staffStates as getStaffStates }
   export function getGender() { return genders }
   export function getFaceType() { return faceTypes }
   export function getDirection() { return directions }

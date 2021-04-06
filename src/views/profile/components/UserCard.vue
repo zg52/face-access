@@ -74,7 +74,7 @@
       </div>
       <div class="box-center">
         <div class="user-name text-center">{{ user.username }}</div>
-        <div class="user-role text-center text-muted">{{ user.role | userRoleName }}</div>
+        <!-- <div class="user-role text-center text-muted">{{ user.role | filterUserRoleName }}</div> -->
       </div>
     </div>
   </el-card>

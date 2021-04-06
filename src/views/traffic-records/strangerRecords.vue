@@ -182,6 +182,7 @@ export default {
     refreshPagingQuery() {
       this.pagingQuery = {}
       this.onSearch()
+      this.date = null
     }
   },
   created() {

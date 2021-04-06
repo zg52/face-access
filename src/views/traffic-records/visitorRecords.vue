@@ -3,6 +3,7 @@
  * @Date: 2021-01-08 16:14:42
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD:src/views/traffic-records/visitorRecords.vue
  * @LastEditTime: 2021-03-18 10:36:49
 =======
@@ -14,6 +15,9 @@
 =======
  * @LastEditTime: 2021-03-19 14:29:27
 >>>>>>> dev
+=======
+ * @LastEditTime: 2021-04-02 14:27:59
+>>>>>>> zhanglong
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -46,9 +50,9 @@
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.ruleName" placeholder="请选择" filterable clearable>
+      <!-- <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.ruleName" placeholder="请选择" filterable clearable>
          <el-option v-for="(ruleName, index) of getRuleNames" :key="index" :label="ruleName.name" :value="ruleName.name"></el-option>
-       </el-select></el-form-item>
+       </el-select></el-form-item> -->
       <el-form-item label="通行方向"><el-select v-model="pagingQuery.direction" placeholder="请选择" filterable clearable>
          <el-option v-for="(direction, index) of getDirections" :key="index" :label="direction.value" :value="direction.id"></el-option>
        </el-select></el-form-item>
@@ -108,7 +112,7 @@
 </template>
 <script>
 
-import {getDirection, getTrafficResult, getRuleNames, getDeviceNames } from '@/utils/business'
+import {getDirection, getTrafficResult, getDeviceNames } from '@/utils/business'
 import { trafficRecords } from '@/api/traffic-records'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -123,8 +127,6 @@ export default {
       table_loading: true,
       pickerOptions: pickerOptions(),
       getDeviceNames: [],
-      getRuleNames: [],
-      getRulesName: [],
       getDirections: getDirection(),
       getTrafficResult: getTrafficResult(),
       getImgUrl: imgUrl(),
@@ -157,14 +159,8 @@ export default {
          item.id == value ? txt = item.name : null
       })
       return txt
-  },
-  getRuleId_name(value) {
-    let txt = null
-      vm.getRuleNames.map((item, index) => {
-         item.id == value ? txt = item.name : null
-      })
-      return txt
-  },
+  }
+
   },
   methods: {
     onSearch(){
@@ -208,6 +204,7 @@ export default {
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
+      this.date = null
       this.onSearch()
     }
   },
@@ -215,9 +212,6 @@ export default {
     vm = this
    getDeviceNames().then((res) => {
        this.getDeviceNames = res
-    })
-   getRuleNames().then((res) => {
-       this.getRuleNames = res
     })
     this.onSearch()
   },

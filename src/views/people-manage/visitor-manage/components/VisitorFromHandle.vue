@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-15 18:28:39
+ * @LastEditTime: 2021-03-30 11:21:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -79,10 +79,11 @@ position: absolute;
   <div class="app-container pl0">
      <el-form :model="addVisitorForm" label-width="auto" :rules="addVisitorRule" ref="addVisitorFormRule" class="addVisitorForm" :inline="true">
        <el-form-item label="创建人："><el-input v-model="addVisitorForm.operator" class="w100" disabled></el-input></el-form-item>
-       <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.name" class="w120" clearable></el-input></el-form-item>
+       <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.name" maxlength="8" class="w120" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w100" v-model.trim="addVisitorForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
-       <el-form-item label="访客所在公司："  prop="position"><el-input class="w300" v-model.trim="addVisitorForm.visitorCompany" clearable></el-input></el-form-item>
+        <el-form-item label="邮箱：" prop="email"><el-input class="w180" v-model.trim="addVisitorForm.email" clearable></el-input></el-form-item>
+       <el-form-item label="访客所在公司："  prop="position"><el-input class="w240" v-model.trim="addVisitorForm.visitorCompany" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w200" v-model.trim="addVisitorForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addVisitorForm.address" clearable></el-input></el-form-item>
        <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim.trim="addVisitorForm.intervieweeName" maxlength="30" clearable></el-input> </el-form-item>
@@ -101,7 +102,7 @@ position: absolute;
           @change="changeDate">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="备注：" prop="remark"><el-input class="w360" v-model.trim="addVisitorForm.remark" type="textarea" :rows="2" placeholder="请输入内容"> </el-input></el-form-item>
+      <el-form-item label="备注：" prop="remark"><el-input class="w360" v-model.trim="addVisitorForm.remark" type="textarea" :rows="2" placeholder="请输入内容"> </el-input></el-form-item> <br>
       <el-form-item label="头像类型：">
         <el-radio-group v-model="faceType" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
       </el-form-item><br>
@@ -191,7 +192,7 @@ import { mapGetters } from 'vuex'
 import { saveVisitor, editVisitor, visitorZip, visitorExcel, getVisitorTemplate, getImportStatus, getReslut } from '@/api/people-manage/visitorManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
-import { validPhone, validateIdCard } from '@/utils/validate'
+import { validPhone, validateIdCard, validName } from '@/utils/validate'
 import { getGender, getFaceType} from '@/utils/business'
 import {proxyUrl_1, imgUrl, downVisitorTemplate } from '@/api/public'
 // import { pickerOptions } from '@/utils'
@@ -214,6 +215,9 @@ export default {
     },
     validateIdCardTarge = (rule, value, callback) => {
      !validateIdCard(value) ? callback(new Error("请输入正确格式的身份证号!")) : callback()
+    },
+    validateName = (rule, value, callback) => {
+      !validName(value) ? callback(new Error('只能输入中文或英文')) :  callback()
     }
     function numbers (str) {
       return (rule, value, callback) => {
@@ -235,11 +239,15 @@ export default {
       faceType: getFaceType()[0].name,
     //   addVisitorForm: formHadleParam,
       addVisitorRule: {
-          name: notNull('被访人姓名'),
+           name: [
+            notNull('访客姓名')[0],
+            { validator: validateName, trigger: "blur" },
+          ],
           phone: [
             notNull('访客手机号')[0],
             { validator: validPhoneTarget, trigger: "blur" },
           ],
+          email: notNull('访客邮箱'),
           intervieweeName: notNull('访客姓名'),
           intervieweePhone: [
             notNull('被访人手机号')[0],
@@ -283,9 +291,10 @@ export default {
   async saveVisitorHandle(el) {
     let a = this.addVisitorForm
        this.$refs[el].validate((valid) => {
-        if (valid) {
-          a['files'] === null ? this.$message.warning('请上传访客头像！') : this.httpRequest()
-      }
+         this.httpRequest()
+      //   if (valid) {
+      //     a['files'] === null ? this.$message.warning('请上传访客头像！') : this.httpRequest()
+      // }
      })
   },
   changeDate() {
@@ -361,6 +370,9 @@ export default {
               edit()
           }
            function add() {
+            if( vm.addVisitorForm['files'] == null) { //访客非必选上传头像（因为每个访客下发时有二维码）
+              formData.delete('files')
+            }
                saveVisitor(formData).then((res) => {
                 if(res.code === 0 && res.data) {
                    vm.save_loading = false

@@ -444,3 +444,22 @@ export function pickerOptions(tomorrow) {
     return date1
   }
  }
+
+//  /**
+//  * @description: 获取系统时分秒
+//  */
+// export function getSystemTime() {
+//   let timer = null
+//  setInterval(function(){
+//     let time = new Date()
+//     let hour = checkTime(time.getHours())
+//     let minite = checkTime(time.getMinutes())
+//     let second = checkTime(time.getSeconds())
+//     function checkTime(i){
+//         if(i<10) return "0"+i
+//         return i
+//     }
+//     timer = hour+":"+minite+":"+second  
+//     return timer
+//    },1000)
+// }

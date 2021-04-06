@@ -4,6 +4,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 >>>>>>> dev
@@ -26,12 +27,14 @@
  * @LastEditTime: 2021-03-19 14:22:53
 >>>>>>> zhanglong
 >>>>>>> dev
+=======
+ * @LastEditTime: 2021-04-02 14:25:04
+>>>>>>> zhanglong
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-// 详情
  .demo-table-expand {
     width: 1100px;
   }
@@ -58,9 +61,9 @@
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.ruleName" placeholder="请选择" filterable clearable>
+      <!-- <el-form-item label="通行规则名称"><el-select v-model="pagingQuery.ruleName" placeholder="请选择" filterable clearable>
          <el-option v-for="(ruleName, index) of getRuleNames" :key="index" :label="ruleName.name" :value="ruleName.name"></el-option>
-       </el-select></el-form-item>
+       </el-select></el-form-item> -->
       <el-form-item label="通行方向"><el-select v-model="pagingQuery.direction" placeholder="请选择" filterable clearable>
          <el-option v-for="(direction, index) of getDirections" :key="index" :label="direction.value" :value="direction.id"></el-option>
        </el-select></el-form-item>
@@ -109,14 +112,14 @@
       <el-table-column align="center" label="通行方向" width="90"> <template v-slot="scope"> {{ scope.row.direction | trafficDirectionFilter }}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行规则" width="190"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column> -->
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column>
-      <el-table-column align="left" label="通行时间" width="160" fixed="right"> <template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
+      <el-table-column align="left" label="通行时间" width="160" fixed="right"><template v-slot="scope"> {{ scope.row.accessTime | filterDate}} </template></el-table-column>
     </el-table>
 
     <el-pagination
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
          :current-page="pagingQuery['current']"
-         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
+         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400, 500, 600, 700 , 800 ,1000]"
          :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingQuery['total']"
@@ -125,7 +128,7 @@
 </template>
 <script>
 
-import {getDirection, getTrafficResult, getRuleNames, getDeviceNames } from '@/utils/business'
+import {getDirection, getTrafficResult, getDeviceNames } from '@/utils/business'
 import { trafficRecords } from '@/api/traffic-records'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -141,7 +144,7 @@ export default {
       table_loading: true,
       pickerOptions: pickerOptions(),
       getDeviceNames: [],
-      getRuleNames: [],
+      // getRuleNames: [],
       getRulesName: [],
       getDirections: getDirection(),
       getTrafficResult: getTrafficResult(),
@@ -176,13 +179,13 @@ export default {
       })
       return txt
   },
-  getRuleId_name(value) {
-    let txt = null
-      vm.getRuleNames.map((item, index) => {
-         item.id == value ? txt = item.name : null
-      })
-      return txt
-  },
+  // getRuleId_name(value) {
+  //   let txt = null
+  //     vm.getRuleNames.map((item, index) => {
+  //        item.id == value ? txt = item.name : null
+  //     })
+  //     return txt
+  // },
   },
   methods: {
     onSearch(){
@@ -226,6 +229,7 @@ export default {
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
+      this.date = null
       this.onSearch()
     }
   },
@@ -234,12 +238,12 @@ export default {
    getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
-   getRuleNames().then((res) => {
-       this.getRuleNames = res
-    })
+  //  getRuleNames().then((res) => {
+  //      this.getRuleNames = res
+  //   })
     this.onSearch()
-    setInterval(() => {
-      this.onSearch()
+     setInterval(() => {
+    this.onSearch()
     },360_0000)
   },
   mounted() {},
