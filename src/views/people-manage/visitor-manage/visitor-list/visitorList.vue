@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-09 11:40:36
+ * @LastEditTime: 2021-04-09 16:59:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -171,8 +171,8 @@
       <el-table-column align="center" label="授权状态" width="80" fixed="right"><template v-slot="scope"><span :class="scope.row.status == 'auth' ? 'green' : ''">{{ scope.row.status | filterVisitorAuthorized }}</span></template></el-table-column>
       <el-table-column align="center" label="操作" width="190" fixed="right">
         <template v-slot="scope">
-          <el-switch class="mll5" size="mini" active-text="授权" inactive-text="拒绝" v-model="isAuthorized[scope.$index].status" @change="changeAuthorized(scope.$index, scope.row)"></el-switch>
-          <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
+          <el-switch v-show="expireHandle(scope.row)" class="mll5" size="mini" active-text="授权" :inactive-text="statusText(scope.row)" v-model="isAuthorized[scope.$index].status" @change="changeAuthorized(scope.$index, scope.row)"></el-switch>
+          <el-button v-show="expireHandle(scope.row)" class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
@@ -277,12 +277,12 @@ export default {
   filters: {
     splice_t(value) {
     return value.replace('T', ' ')
-    }
+    },
   },
   computed: {
     ...mapGetters([
       'username'
-    ])
+    ]),
   },
   methods: {
     getVisitorList() {
@@ -301,7 +301,7 @@ export default {
         let satatusArr = []
         this.tableData.map((x, index) => {
           satatusArr.push({
-            status: x.status == 'refuse' ? false : true
+            status: x.status == 'refuse' ||  x.status == 'unAuth' ? false : true
           })
         })
         this.isAuthorized = satatusArr
@@ -372,7 +372,11 @@ export default {
 // 更改访客授权状态
     changeAuthorized(x ,y) {
       function state() {
-        return y.status == 'auth' ? 'refuse' : 'auth'
+        // if(y.status == 'unAuth') {
+        //   return 'refuse'
+        // } else {
+          return y.status == 'auth' ? 'refuse' : 'auth'
+        // }
       }
     visitorState(
           y.id,
@@ -405,6 +409,19 @@ export default {
    cacelEditHandle() {
       this.getVisitorList()
       this.dialogVisible1 = false
+    },
+    statusText(row) {
+     let txt = null
+     switch(row.status) {
+        case 'unAuth' : txt = '未授权';break;
+        case 'refuse' : txt = '拒绝';break;
+        default : txt = '拒绝'
+      }
+      return txt
+ 
+    },
+    expireHandle(row) {
+     return row.status === 'expire' ? false : true
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val
