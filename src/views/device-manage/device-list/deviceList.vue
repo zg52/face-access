@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 16:25:21
+ * @LastEditTime: 2021-04-12 12:44:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -183,6 +183,7 @@ margin-left: 30px;
                <el-form-item label="设备末次心跳同步时间："><span>{{ props.row.astHeartbeatTime | filterDate }}</span></el-form-item>
                <el-form-item label="创建时间："><span>{{ props.row.createTime | filterDate }}</span></el-form-item>
                <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | filterDate}}</span></el-form-item>
+               <el-form-item label="描述："><span>{{ props.row.description }}</span></el-form-item>
            </el-form>
            </template>
      </el-table-column>
