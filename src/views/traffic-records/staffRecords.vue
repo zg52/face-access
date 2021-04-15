@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-02 17:23:46
+ * @LastEditTime: 2021-04-14 10:56:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -100,7 +100,7 @@
 </template>
 <script>
 
-import { getDirection, getTrafficResult, getDeviceNames } from '@/utils/business'
+import { getDirection, getTrafficResult, getDeviceNames, getStaff_name_id } from '@/utils/business'
 import { trafficRecords } from '@/api/traffic-records'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -116,6 +116,7 @@ export default {
       table_loading: true,
       pickerOptions: pickerOptions(),
       getDeviceNames: [],
+      getStaff_name_id: [],
       // getRuleNames: [],
       getDirections: getDirection(),
       getTrafficResult: getTrafficResult(),
@@ -209,6 +210,7 @@ export default {
    getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
+    getStaff_name_id().then(res => this.getStaff_name_id = res)
   //  getRuleNames().then((res) => {
   //      this.getRuleNames = res
   //   })
@@ -217,6 +219,8 @@ export default {
       this.onSearch()
     },360_0000)
   },
-  mounted() {},
+  mounted() {
+    console.log(this.getStaff_name_id)
+  },
 }
 </script>

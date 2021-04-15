@@ -1,9 +1,9 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-04-09 11:26:53
+ * @LastEditTime: 2021-04-14 10:51:31
  * @LastEditors: Please set LastEditors
- * @Description: 全局业务参数配置
+ * @Description: 全局业务参数配置及信息获取
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
  */
 import { 
@@ -13,6 +13,10 @@ import {
    import {
       getRules //获取通行规则列表
    } from '@/api/traffic-rules'
+
+   import {
+    getStaffList //获取员工列表
+ } from '@/api/people-manage/staffManage'
  
 /**
  * @description: 全局业务数据字典
@@ -202,7 +206,7 @@ export function passWayArrHandle() {
   }
 
 /**
- * @description: 根据设备id获取默认设备名称
+ * @description: 获取规则名称
  */
 export async function getRuleNames() {
   let ruleName = []
@@ -220,6 +224,32 @@ export async function getRuleNames() {
                  return ruleName
         } else {
         //  this.$message.warning('无可用规则，请添加规则')
+        }
+      })
+   } else {
+         this.$message.warning(res.msg)
+      }
+  }
+  )
+}
+
+/**
+ * @description: 获取员工姓名及id
+ */
+ export async function getStaff_name_id() {
+  let staff_name_id = []
+  return getStaffList({current: 1}).then((res) => {
+    if(res.code === 0) {
+     return getStaffList({size: res.data.total}).then((res) => {
+        let data = res.data.records
+        if(data) {
+         data.map((x,y) => {
+              staff_name_id.push({
+                 name: x.name,
+                 id: x.id
+              })
+                 })
+                 return staff_name_id
         }
       })
    } else {
