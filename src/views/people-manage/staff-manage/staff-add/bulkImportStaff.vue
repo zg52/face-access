@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-13 17:02:13
+ * @LastEditTime: 2021-04-21 17:20:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -350,7 +350,7 @@ export default {
           files: null,
           imageId: null
          },
-         btn_el: ['edit'],
+         btn_el: ['editErrStaff'],
          errMsg: '未找到对应照片！',
 
     }
@@ -512,7 +512,7 @@ export default {
        y.imageId = 'null'
        }
        this.addStaffForm = y
-       console.log(this.addStaffForm )
+       this.addStaffForm.companyId = 1
 
 // 去除编辑无需字段
       let delEditParam = ['departmentId', 'img_height', 'img_width']

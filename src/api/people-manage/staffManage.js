@@ -164,3 +164,15 @@ export function getEmployeeTemplate() {
      method: 'GET'
    })
  }
+
+
+  /**
+ * @description: 修改员工批量导入出错的信息
+ */
+ export function editBatchStaff(id, params) {
+  return request({
+     url: `person/batch/${ id }`,
+     method: 'POST',
+     data: params
+   })
+ }
