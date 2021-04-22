@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-04-22 10:04:11
+ * @LastEditTime: 2021-04-22 15:12:38
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置及信息获取
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -189,11 +189,13 @@ export function passWayArrHandle() {
           let data = res.data.records
           if(data) {
            data.map((x,y) => {
-                deviceName.push({
-                   name: x.name,
-                   id: x.id
-                })
-                   })
+             if(x.status !== 'removed') {
+               deviceName.push({
+                  name: x.name,
+                  id: x.id
+               })
+             }
+          })
                    return deviceName
           } else {
            this.$message.warning('无可用设备，请添加设备')
