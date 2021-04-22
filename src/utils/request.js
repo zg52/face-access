@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-22 09:44:28
+ * @LastEditTime: 2021-03-26 17:43:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\utils\request.js
@@ -13,6 +13,7 @@ import { getToken, removeToken } from '@/utils/auth'
 import qs from 'qs'
 import router from "../router"
 
+let hash = window.location.hash
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true,
@@ -49,7 +50,7 @@ service.interceptors.response.use(
     const {code, msg } = response.data
     
     if(code === 10009) {
-      removeToken(), router.go(0), router.push({path:'/login'})
+      if(!hash.includes('/login')) removeToken(), router.go(0), router.push({path:'/login'})
     }
     return response.data
   },

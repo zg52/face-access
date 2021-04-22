@@ -8,8 +8,10 @@ import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 import { bas } from '@/api/dashboard' 
-
+import moment from 'moment'
+import { getSystemTime } from '@/utils'
 const animationDuration = 6000
+let vm
 
 export default {
   mixins: [resize],
@@ -30,10 +32,10 @@ export default {
   data() {
     return {
       chart: null,
-      online: [1,2,3,40,0,0,0],
-      offline: [1,2,3,40,0,0,0],
-      fault: [1,0,0,2,0,0,0,0],
-      Xvalue: ['03-01', '03-02', '03-03', '03-04', '03-05', '03-06', '今日']
+      online: [],
+      offline: [],
+      fault: [],
+      xValue: []
     }
   },
   methods: {
@@ -56,9 +58,7 @@ export default {
         trigger: 'axis'
     },
     legend: {
-        data: [
-          // '在线', '离线', 
-          '故障']
+        data: ['在线', '离线', '故障']
     },
     toolbox: {
         show: true,
@@ -107,18 +107,23 @@ export default {
         {
             type: 'category',
             name: '日期',
-            data: this.Xvalue,
+            data: this.xValue,
             axisLine: {
             lineStyle: {
             color: '#8a16ff' ,
             }
+        },
+        axisPointer: {
+              show: true,
+            }
        },
-        }
+      
     ],
     yAxis: [
         {
             type: 'value',
             name: '数量',
+            minInterval: 1,
             axisLine: {
             lineStyle: {
             color: '#8a16ff' ,
@@ -127,40 +132,96 @@ export default {
         }
     ],
     series: [
-        // {
-        //     name: '在线',
-        //     type: 'bar',
-        //     data: this.online,
-        //     markLine: {
-        //         data: [
-        //             {type: 'average', name: '平均值'}
-        //         ]
-        //     }
-        // },
-        // {
-        //     name: '离线',
-        //     type: 'bar',
-        //     data: this.offline,
-        // },
+        {
+            name: '在线',
+            type: 'bar',
+            data: this.online,
+            // markLine: {
+            //     data: [
+            //         {type: 'average', name: '平均值'}
+            //     ]
+            // }
+        },
+        {
+            name: '离线',
+            type: 'bar',
+            data: this.offline,
+        },
         {
             name: '故障',
             type: 'bar',
             data: this.fault,
         }
-    ]
+    ],
+      grid: {
+                left: '0%',
+                right: '6%',
+                bottom: '8%',
+                top:'25%',
+                containLabel: true
+            },
 }
 )
-    }
+    },
+  onSearch() {
+    let date = moment(new Date()).format('YYYY-MM-DD')
+    let timer = null
+    bas(date).then((res) => {
+      if(res.hasOwnProperty('dates')) {
+        if(Array.isArray(res.dates)) {
+          if(res.dates.length !== 0) {
+            this.xValue = res.dates.map((item, index) => {
+              if(index !== 0 && index !== 1) { return item.substr(5) }
+              else if(index === 1) {
+                return '昨天'
+              } else {
+              let time = new Date(),
+                  hour = checkTime(time.getHours()),
+                 minite = checkTime(time.getMinutes())
+              function checkTime(i){
+               if(i<10) return "0"+i
+               return i
+            }
+           return `现在 ( ${ hour+":"+minite} )`
+              }
+               })
+
+           this.online = res.onlineCounts,
+           this.offline = res.offlineCounts,
+           this.fault = res.outOfOrderCounts
+
+            this.initChart()
+          }
+        }
+      }
+    })
+  },
+  getTime() {}
+  },
+  created() {
+    vm = this
+     
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart()
-      
-// 每30分刷新
+  this.$nextTick(() => {
+  this.initChart()
+  this.onSearch()
   setInterval(() => {
-        
-      },(1000 * 60) * 30)
-    })
+     this.onSearch()
+     xuanfu()
+      },60_000)
+
+xuanfu()
+function xuanfu() {
+    setTimeout(() => {
+      vm.chart.dispatchAction({
+      type: 'showTip',
+      seriesIndex: 0 ,
+      dataIndex: 0,
+      });
+   },1000)
+}
+  })
   },
   beforeDestroy() {
     if (!this.chart) {

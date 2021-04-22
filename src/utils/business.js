@@ -1,9 +1,9 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-16 13:55:35
+ * @LastEditTime: 2021-04-22 10:04:11
  * @LastEditors: Please set LastEditors
- * @Description: 全局业务参数配置
+ * @Description: 全局业务参数配置及信息获取
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
  */
 import { 
@@ -13,6 +13,10 @@ import {
    import {
       getRules //获取通行规则列表
    } from '@/api/traffic-rules'
+
+   import {
+    getStaffList //获取员工列表
+ } from '@/api/people-manage/staffManage'
  
 /**
  * @description: 全局业务数据字典
@@ -22,54 +26,35 @@ const
   userRoles = [
     { id: 1, name: '超级管理员' }, //superAdmin
     { id: 2, name: '管理员' }, //admin
+     ],
+     userStatus = [
+     { id:'VALID', value: '激活'},
+     {id: 'INVALID', value: '禁用'}
      ], 
+     visitorAuthorized = [
+      { id:'auth', value: '已授权' },
+      { id: 'unAuth', value: '未授权' },
+      { id: 'refuse', value: '已拒绝' },
+      { id: 'expire', value: '已过期' }
+     ],
   passWayArr = [
+    { label: '刷脸', value: 'face' },
+    { label: '指纹', value: 'fingerprint' },
+    { label: '二维码', value: 'qr_code' },
     {
-      label: '刷脸',
-      value: 'face'
-    },
-    {
-      label: '指纹',
-      value: 'fingerprint'
-    },
-    {
-      label: '二维码',
-      value: 'qr_code'
-    },
-    {
-      label: '刷卡',
-      value: 'card',
+      label: '刷卡', value: 'card',
         children: [
-          {
-           label: '门禁卡',
-           value: 'wg_card'
-         },
-         {
-          label: 'IC卡',
-          value: 'ic_card'
-        },
-        {
-          label: '身份证',
-          value: 'identity_card'
-        }
+          { label: '门禁卡', value: 'wg_card' },
+          { label: 'IC卡', value: 'ic_card' },
+          { label: '身份证', value: 'identity_card' }
     ]
   },
   {
-     label: '刷脸 + 刷卡',
-     value: 'faceCard',
+     label: '刷脸 + 刷卡', value: 'faceCard',
       children: [
-        {
-          label: '刷脸 + 门禁卡',
-          value: 'face,wg_card'
-        },
-        {
-          label: '刷脸 + IC卡',
-          value: 'face,ic_card'
-        },
-        {
-          label: '刷脸 + 身份证',
-          value: 'face,identity_card'
-        }
+        { label: '刷脸 + 门禁卡', value: 'face,wg_card' },
+        { label: '刷脸 + IC卡', value: 'face,ic_card' },
+        { label: '刷脸 + 身份证', value: 'face,identity_card' }
       ]
     }
     ],
@@ -82,6 +67,11 @@ const
     genders = [
       { id: 'male' , value: '男' },
       { id: 'female', value: '女'  }
+    ],
+    staffStates = [
+      { ID: 0,  id: 0, value: '在职' }, 
+      { ID: 1,  id: 1, value: '离职' },
+      { ID: 2,  id: 'removing2', value: '删除中' },
     ],
    faceTypes = [
       { id: 'id', name: '证件照' },
@@ -123,15 +113,16 @@ const
       { id: 'always_open', value: '常开门' },
       { id: 'always_close', value: '常关门' },
       { id: 'power_off', value: '已关机' },
-      { id: 'statuses:removed', value: '已删除'}
-   ],
-   operate: [
-     { id: 'open', value: '开门' },
-     { id: 'close', value: '关门' },
-     { id: 'always_open', value: '常开门' },
-     { id: 'always_close', value: '常关门' },
-     { id: 'restart', value: '重启' },
-     { id: 'shutdown', value: '关机' },
+      { id: 'statuses:removed', value: '已删除'},
+    ],
+    operate: [
+      { id: 'open', value: '开门' },
+      { id: 'close', value: '关门' },
+      { id: 'update', value: '升级' },
+      { id: 'restart', value: '重启' },
+      { id: 'always_open', value: '常开门' },
+      { id: 'always_close', value: '常关门' },
+      { id: 'shutdown', value: '关机' },
    ]
    },
    deviceISOnline = [
@@ -150,7 +141,6 @@ const
  
 /**
  * @description: 处理通行方式
- * @param {*}
  */
 export function passWay() {
    return passWayArr
@@ -175,7 +165,6 @@ export function passWayArrHandle() {
 
 /**
  * @description: 星期制参数
- * @param {*}
  */
  export function weekParams() {
      return [
@@ -218,7 +207,7 @@ export function passWayArrHandle() {
   }
 
 /**
- * @description: 根据设备id获取默认设备名称
+ * @description: 获取规则名称
  */
 export async function getRuleNames() {
   let ruleName = []
@@ -245,11 +234,39 @@ export async function getRuleNames() {
   )
 }
 
-  /**
- * @description: 性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
+/**
+ * @description: 获取员工姓名及id
  */
+ export async function getStaff_name_id() {
+  let staff_name_id = []
+  return getStaffList({current: 1}).then((res) => {
+    if(res.code === 0) {
+     return getStaffList({size: res.data.total}).then((res) => {
+        let data = res.data.records
+        if(data) {
+         data.map((x,y) => {
+              staff_name_id.push({
+                 name: x.name,
+                 id: x.id
+              })
+                 })
+                 return staff_name_id
+        }
+      })
+   } else {
+         this.$message.warning(res.msg)
+      }
+  }
+  )
+}
 
+  /**
+ * @description: 员工状态、性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
+ */
+  export { userStatus as getUserStatus }
   export { userRoles as getUserRoles }
+  export { staffStates as getStaffStates }
+  export { visitorAuthorized as getVisitorAuthorized }
   export function getGender() { return genders }
   export function getFaceType() { return faceTypes }
   export function getDirection() { return directions }

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 15:27:25
+ * @LastEditTime: 2021-04-02 10:38:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -58,12 +58,6 @@ position: absolute;
     background-size: contain;
     position: relative;
   }
-  ::v-deep .el-loading-spinner i {
-    font-size: 22px;
-}
-  ::v-deep .el-loading-text {
-    margin-top: -18px;
-  }
   .save_staff {
     justify-content: flex-end;
     display: flex;
@@ -81,13 +75,13 @@ position: absolute;
       <el-button type="success" @click="onSearch" class="search">
         <i class="el-icon-search"></i><span>查询</span>
       </el-button>
-      <el-button type="warning" @click="onDeletes">
+      <el-button type="warning" @click="onDeletes" :loading="onDeletesLoading">
         <i class="el-icon-delete"></i><span>批量删除</span>
       </el-button>
       <el-button type="primary" @click="dialogVisible1 = true"><svg-icon icon-class="edit" /> 添加黑名单人员</el-button>
      </el-form>
 
-    <el-table :data="tableData" border max-height="700" @selection-change="handleSelectionChange" ref="multipleTable" v-loading="table_loading" element-loading-spinner="el-icon-loading">
+    <el-table :data="painingQueryList" border max-height="700" @selection-change="handleSelectionChange" :element-loading-text="loadingTip1" ref="multipleTable" v-loading="table_loading" element-loading-spinner="el-icon-loading">
       <el-table-column width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="姓名" width="80">
@@ -112,8 +106,8 @@ position: absolute;
             confirmButtonText="确认"
             cancelButtonText="取消"
             title="确定要删除该记录？"
-            @onConfirm="handleDelete(scope.row)">
-            <el-button  class="radius_45 ml10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span>
+            @onConfirm="handleDelete(scope.row, scope.$index)">
+            <el-button  class="radius_45 ml10" size="mini" type="danger" slot="reference" :loading="scope.row.deletePerson"><i class="el-icon-delete"></i><span>删除</span>
             </el-button>
           </el-popconfirm>
         </template>
@@ -178,7 +172,7 @@ position: absolute;
 <script>
 import { blockList, addBlockList, deleteBlock} from '@/api/blocklist/index'
 import { getGender, getFaceType} from '@/utils/business'
-import { imgUrl } from '@/api/public'
+import { imgUrl, proxyUrl_1 } from '@/api/public'
 import { pickerOptions } from '@/utils'
 import Mock from '../../../mock/proxyUrl'
 import moment from 'moment'
@@ -194,13 +188,15 @@ export default {
       table_loading:false,
       save_loading: false,
       imgUploading: false,
-      proxyUrl: 'http://www.zg.com',
+      proxyUrl: proxyUrl_1,
       pickerOptions: pickerOptions(),
-      multipleSelection: [], //多选删除
+      multipleSelection: [],
       genders: getGender(),
       faceTypes: getFaceType(),
       faceType: getFaceType()[0].name,
        getImgUrl: imgUrl(),
+       loadingTip1: null,
+       onDeletesLoading: false,
       imageUrl: '',
       addBlock: {
         name: null,
@@ -213,13 +209,15 @@ export default {
           name: notNull('姓名'),
           reason: notNull('职务'),
        },
-      tableData: [],
+       
+     painingQueryList: [],
      pagingQuery: {
         faceType: null,
         name: null,
         reason: null,
+        
         current: 1,
-        size: 10,
+        size: 20,
         total: null
       },
     }
@@ -279,7 +277,6 @@ export default {
                  type: "error"
             })
      },
-
     changeImgType() {
       this.addBlock.faceType = this.faceType == 'id' ? 'id' : 'life'
     },
@@ -287,18 +284,25 @@ export default {
          let a = this.addBlock
        a['enrollTime'] =  moment(a['enrollTime']).format('YYYY-MM-DD')
   },
-
     onSearch(){
     let params = this.pagingQuery
       params.current = 1
       this.getBockList()
     },
     getBockList() {
+      let params = this.pagingQuery
       blockList(vm.pagingQuery).then((res) => {
-        this.tableData = []
+        this.painingQueryList = []
              if(res.code === 0) {
+                params.size = res.data.size
+                params.current = res.data.current
+                params.total = res.data.total
+                
               if(res.data.records.length !== 0) {
-                this.tableData = res.data.records
+                this.painingQueryList = res.data.records
+            for(let i = 0; i <  this.painingQueryList.length; i++) {
+              this.$set(this.painingQueryList[i], 'deletePerson', false)
+             }
                 this.table_loading = false
               }
              } else {
@@ -306,33 +310,39 @@ export default {
              }
       })
     },
-    handleDelete(y) {
-       deleteBlock(y.id).then((res) => {
+    handleDelete(row, index) {
+      this.$set(this.painingQueryList[index], 'deletePerson', true)
+       deleteBlock(row.id).then((res) => {
         if (res.code == 0 && res.data) {
-          this.$message.success({message: res.msg})
+          this.$message.success(res.msg)
           this.getBockList()
         } else {
-          this.$message.warning({message: res.msg})
+          this.$message.warning(res.msg)
         }
       })
     },
     onDeletes() {
-       if (this.multipleSelection.length !== 0) {
+      if (this.multipleSelection.length !== 0) {
         this.$confirm("此操作将永久删除已选人员, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
         }).then(() => {
+           this.loadingTip1 = '正在删除中'
+           this.table_loading = this.onDeletesLoading = true
            let personIds = []
           for (let i = 0; i < this.multipleSelection.length; i++) {
             personIds.push(this.multipleSelection[i].id)
           }
-            deleteBlock(personIds).then((res) => {
+          deleteBlock(personIds).then((res) => {
                 if (res.code == 0 && res.data) {
+                  this.loadingTip1 = null
                   this.onSearch()
                   this.$message.success(res.msg)
                 } else {
                    this.$message.error(res.msg)
+                   this.loadingTip1 = null
+                   this.table_loading = this.onDeletesLoading = false
                 }
               })
           }).catch(() => {
@@ -345,11 +355,11 @@ export default {
     },
    handleSizeChange(val) {
       this.pagingQuery.size = val
-      this.onSearch()
+      this.getBockList()
     },
     handleCurrentChange(val) {
       this.pagingQuery.current = val
-      this.onSearch()
+      this.getBockList()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -358,14 +368,10 @@ export default {
     this.$refs['addBlockRule'].resetFields()
     this.addBlock['file'] = this.imageUrl = null
    },
-    onDelete() {
-
-    },
   },
   created() {
     vm = this
     this.onSearch()
-  },
-  mounted() {},
-};
+  }
+}
 </script>

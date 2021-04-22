@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-19 16:37:25
+ * @LastEditTime: 2021-03-25 11:36:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -41,13 +41,13 @@
         </el-select>
       </el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
-      <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
+      <el-button type="warning" @click="onDeletes" :loading="onDeletesLoading"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
       <el-button type="primary"><router-link to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><svg-icon icon-class="guide"/> 去下发员工</router-link></el-button>
     </el-form>
     
-    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
+    <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" :element-loading-text="loadingTip1" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column width="50" type="selection" fixed ></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -109,7 +109,9 @@ export default {
       getImgUrl: imgUrl(),
       multipleSelection: [],
       get_issuePersonStatus: get_issuePersonStatus(),
-      
+      onDeletesLoading: false,
+
+      loadingTip1: null,
       pagingQuery: {
         operator: null,
         name: null,
@@ -191,6 +193,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         }).then(() => {
+          this.handleDeleteLoading('删除中', true)
           let personIds = []
           for (let i = 0; i < _this.multipleSelection.length; i++) {
             personIds.push(_this.multipleSelection[i].id)
@@ -199,8 +202,10 @@ export default {
               if(res.code == 0) {
                   this.onSearch()
                   this.$message.success(res.msg)
+                    this.handleDeleteLoading(null, false)
                 } else {
                   this.$message.error(res.msg, 4000)
+                   this.handleDeleteLoading(null, false)
                 }
              })
           }).catch(() => {
@@ -211,6 +216,10 @@ export default {
         this.$message.warning('请在列表中勾选要删除的设备通行人员')
       }
     },
+  handleDeleteLoading(x, y) {
+    this.loadingTip1 = x
+     this.table_loading = this.onDeletesLoading = y
+  },
 
 // 重新下发
     handleIssuedPerson(row, index) {

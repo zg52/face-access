@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-17 14:59:35
+ * @LastEditTime: 2021-03-24 14:35:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\index.vue
@@ -56,7 +56,7 @@ export default {
       this.user = {
         username: this.username,
         role: this.roles.join(' | '),
-        email: 'hjimi@test.com',
+        email: '',
         avatar: this.avatar
       }
     }

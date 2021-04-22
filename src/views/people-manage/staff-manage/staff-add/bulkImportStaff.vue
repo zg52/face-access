@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-19 17:51:43
+ * @LastEditTime: 2021-04-21 17:20:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -185,8 +185,8 @@
              <el-form label-position="left" inline class="demo-table-expand">
                <div class="imgBox fl mr25"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="120"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
-                <el-form-item label="性别："><span>{{ props.row.gender === 'male' ? '男' : '女' }} </span></el-form-item>
-               <el-form-item label="头像类型："><span>{{ props.row.faceType == 'life' ? '生活照' : '证件照' }} </span></el-form-item>
+                <el-form-item label="性别："><span>{{ props.row.gender | filterGenter }} </span></el-form-item>
+               <el-form-item label="头像类型："><span>{{ props.row.faceType | filterFaceType }} </span></el-form-item>
                  <el-form-item label="部门："> <span>华捷艾米 </span></el-form-item>
                  <el-form-item label="身份证号："><span>{{ props.row.idNum }} </span></el-form-item>
                  <el-form-item label="工号："><span>{{ props.row.employeeNum }} </span></el-form-item>
@@ -210,27 +210,17 @@
       <el-table-column align="center" label="已注册人脸" width="90">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender === 'male' ? '男' : '女' }} </template></el-table-column>
+     <el-table-column align="center" label="性别" width="50"> <template v-slot="scope"> {{ scope.row.gender | filterGenter }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"> <template> 华捷艾米 </template></el-table-column>
-      <el-table-column align="center" label="工号" width="180"> <template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
-      <el-table-column align="center" label="电话" width="108"> <template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
-      <el-table-column align="center" label="邮箱" width="180"> <template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
-      <el-table-column align="center" label="职务" width="108"> <template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
+      <el-table-column align="center" label="工号" width="180"> <template v-slot="scope">{{ scope.row.employeeNum }} </template></el-table-column>
+      <el-table-column align="center" label="电话" width="108"> <template v-slot="scope">{{ scope.row.phone }} </template></el-table-column>
+      <el-table-column align="center" label="邮箱" width="180"> <template v-slot="scope">{{ scope.row.mail }} </template></el-table-column>
+      <el-table-column align="center" label="职务" width="108"> <template v-slot="scope">{{ scope.row.position }} </template></el-table-column>
       <el-table-column align="center" label="身份证号" width="auto"> <template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
       <el-table-column align="center" label="导入失败原因" width="200"> <template v-slot="scope"> <span class="red">{{ scope.row.errMsg }}</span> </template></el-table-column>
       <el-table-column align="left" label="操作" width="90" fixed="right">
         <template v-slot="scope">
-      <div v-show="scope.row.isDelete == 1 ? false : true">
-             <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible" >
-              <el-form ref="expiredDateFormRule" :model="expiredDateForm" :rules="expiredDateFormRule">
-                <el-form-item label="请选择离职日期：" prop="expiredDate">
-                  <el-date-picker class="w300" v-model="expiredDateForm.expiredDate" type="date" align="right" unlink-panels start-placeholder="离职日期" @change="changeExpiredDate"></el-date-picker>
-                </el-form-item>
-                <sup v-show="expiredDateTip" class="expireDateTip">请选择离职日期</sup>
-              </el-form>
-        </el-popover>
           <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>修改</span></el-button>
-      </div>
          </template>
       </el-table-column>
     </el-table> 
@@ -262,18 +252,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { deleteStaff, StaffState, downloadEmployee, employeeZip, employeeExcel, getEmployeeTemplate, getImportStatus, getReslut, getSerialList } from '@/api/people-manage/staffManage'
+import { downloadEmployee, employeeZip, employeeExcel, getEmployeeTemplate, getImportStatus, getReslut } from '@/api/people-manage/staffManage'
 import {imgUrl, downEmployeeTemplate } from '@/api/public'
 import { pickerOptions } from '@/utils'
-import { getGender, getFaceType} from '@/utils/business'
+import { getGender, getFaceType } from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
-
- const states = [
-   { value: '在职', id: 0 }, 
-   { value: '离职', id: 1 },
-  //  { value: '已删除', id: 'isDelete' }
- ]
+ 
 let vm
 
 export default {
@@ -281,7 +266,7 @@ export default {
    components: { StaffFromHandle },
   data() {
     return {
-      // 批量导入
+// 批量导入
         zipList: [],
         import_dialogVisible: true,
         importActive: 1,
@@ -308,7 +293,6 @@ export default {
       value: '华捷艾米',
       genders: getGender(),
       status: [],
-      states: states,
       faceTypes: getFaceType(),
       pickerOptions: pickerOptions(),
       date: null,
@@ -339,9 +323,6 @@ export default {
         expiredTime: null,
         createTimeFrom: null,
         createTimeTo: null,
-        states: 0,
-        status: null,
-        isDelete: null, /// 0为正常1为已删除
         
         current: 1, 
         size: 20,
@@ -351,24 +332,27 @@ export default {
 
 // 编辑参数
       addStaffForm: {
-          id: null,
+          // id: null,
           operator: this.$store.getters.username,
-          name: 'null',
-          gender: '1',
-          phone: '15652970356',
-          address: 'w',
-          idNum: '622826199811192711',
-          mail: '2@163.com',
-          employeeNum: '32',
-          companyId: '1',
-          position: 'fwe',
-          icCardId: '32',
-          gateCardId: '32',
-          enrollTime: '2021-12-20',
-          faceType: 'id',
-          files: null
+          name: null,
+          gender: null,
+          phone: null,
+          address: null,
+          idNum: null,
+          mail: null,
+          employeeNum: null,
+          companyId: null,
+          position: null,
+          icCardId: null,
+          gateCardId: null,
+          enrollTime: null,
+          faceType: null,
+          files: null,
+          imageId: null
          },
-         btn_el: ['edit']
+         btn_el: ['editErrStaff'],
+         errMsg: '未找到对应照片！',
+
     }
   },
   // filters: {
@@ -524,50 +508,17 @@ export default {
     },
     handleEdit(x, y) {
       this.dialogVisible1 = true
-      this.addStaffForm = y
+     if(y.errMsg.indexOf(this.errMsg) !== -1) {
+       y.imageId = 'null'
+       }
+       this.addStaffForm = y
+       this.addStaffForm.companyId = 1
 
 // 去除编辑无需字段
       let delEditParam = ['departmentId', 'img_height', 'img_width']
           delEditParam.forEach((item, index) => {
             delete this.addStaffForm[item]
           })
-    },
-     handleDelete(x, y) {
-      deleteStaff(y.id).then((res) => {
-        if (res.code == 0 && res.data === null) {
-          this.$message.success({message: res.msg})
-          this.getStaffList()
-        } else {
-          this.$message.warning({message: res.msg})
-        }
-      })
-    },
-    onDeletes() {
-       if (this.multipleSelection.length !== 0) {
-        this.$confirm("此操作将永久删除已选员工, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }).then(() => {
-            for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteStaff(this.multipleSelection[i].id).then((res) => {
-                if (res.code == 0) {
-                  if(i + 1 >= this.multipleSelection.length) {
-                  this.onSearch()
-                  this.$message.success(res.msg)
-                  }
-                } else {
-                  this.$message.error(res.msg)
-                }
-              })
-            }
-          }).catch(() => {
-             this.$message.info('已取消删除')
-             this.$refs.multipleTable.clearSelection()
-          })
-      } else {
-        this.$message.warning('请在列表中勾选要删除的员工')
-      }
     },
     onExport() {
       let p = this.pagingQuery
@@ -577,121 +528,31 @@ export default {
         }
       })
     },
-    handleStatus(row) {
-      row.visible = true
-      if(row.status == 0) {
-      } else {
-        
-      }
-    },
-    
-// 切换员工状态(在职)
-    changeStaffStatus(index, row) {
-      function state() {
-        return row.status == 0 ? 1 : 0
-      }
-      StaffState(
-          row.id,
-          {
-            status: 0,
-            id: row.id
-          }
-      ).then((res) => {
-        if (res.code == 0 && res.data === null) {
-          this.$message.success(res.msg)
-          this.getStaffList()
-        } else {
-          this.$message.warning(res.msg)
-        }
-      })
-    },
-    setStatusHadnle(index, row) {
-      this.changeStaffStatus(index, row)
-      this.$refs[row.id].doClose()
-    },
-
-// 设置离职时间
-  submitExpiredDate (row, el) {
-    let e = this.expiredDateForm
-      this.$refs[el].validate((valid) => {
-        if (valid) {
-        valiExpiredDate()
-      } else {
-        this.expiredDateTip = true
-        return false
-      }
-     })
-      function valiExpiredDate() {
-      function state() {
-        return row.status == 0 ? 1 : 0
-      }
-      StaffState(
-          row.id,
-          {
-            id: row.id,
-            status: 1,
-            expiredDate: e['expiredDate1']
-          }
-      ).then((res) => {
-        if (res.code == 0 && res.data === null) {
-          e['expiredDate'] = null
-          vm.$message.success(res.msg)
-          vm.getStaffList()
-        } else {
-          vm.$message.warning(res.msg)
-        }
-      })
-     vm.$refs[row.id].doClose()
-      }
-    
-    },
-    cacelStatusHandle(id) {
-      this.$refs[id].doClose()
-      this.expiredDateTip = false
-      this.expiredDateForm['expiredDate'] = null
-    },
-   changeDate(item) {
-     let a = this.pagingQuery
-         a[item] =  moment(a[item]).format('YYYY-MM-DD')
-  },
-  changeDate1() {
-    this.changeDate('enrollTime')
-  },
-  changeDate2() {
-    this.changeDate('expiredTime')
-  },
   changeExpiredDate() {
      this.expiredDateForm.expiredDate1 =  moment(this.expiredDateForm.expiredDate).format('YYYY-MM-DD')
   },
-  changeDate3() {
-    let _p = this.pagingQuery
-      this.date && this.date.length
-        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD")),
-          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
-        :  _p.createTimeFrom = _p.createTimeTo = null
-    },
-    cacelEditHandle() {
-      this.getStaffList()
-      this.dialogVisible1 = false
-    },
-    handleSizeChange(val) {
-      this.pagingQuery.size = val
-      this.getStaffList()
-    },
-    handleCurrentChange(val) {
-      this.pagingQuery.current = val
-      this.getStaffList()
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    refreshPagingQuery() {
-      this.pagingQuery = {}
-      this.onSearch()
-    },
-    goBack() {
-      this.$router.go(-1)
-    }
+  cacelEditHandle() {
+    this.getStaffList()
+    this.dialogVisible1 = false
+  },
+  handleSizeChange(val) {
+    this.pagingQuery.size = val
+    this.getStaffList()
+  },
+  handleCurrentChange(val) {
+    this.pagingQuery.current = val
+    this.getStaffList()
+  },
+  handleSelectionChange(val) {
+    this.multipleSelection = val
+  },
+  refreshPagingQuery() {
+    this.pagingQuery = {}
+    this.onSearch()
+  },
+  goBack() {
+    this.$router.go(-1)
+  }
   },
   created() {
     vm = this

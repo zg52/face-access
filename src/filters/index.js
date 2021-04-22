@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-18 11:23:20
+ * @LastEditTime: 2021-04-09 10:47:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -91,14 +91,19 @@ export function filterDate(string) {
 
 // 业务数据过滤
 
-import { 
+import {
+  getGender,
+  getFaceType,
+  getStaffStates,
+  getVisitorAuthorized,
   passWay, 
   weekParams, 
   passWayArrHandle, 
   getDeviceNames, 
   get_issuePersonStatus, 
   getPersonTypes,
-  getUserRoles
+  getUserRoles,
+  getUserStatus
 } from '@/utils/business'
 
 const businessData = [
@@ -108,11 +113,18 @@ const businessData = [
 
 /**
  * @description: 获取角色名称
- * @param {*} string
+ * @param {*} Array
  */
- export function userRoleName(string) {
-    return getUserRoles.filter((item) => item.id == string)[0].name
+let roleId = []
+getUserRoles.forEach(item => roleId.push(item.id))
+ export function filterUserRoleName(arr) {
+  if(arr && Array.isArray(arr) && arr.length !== 0) {
+   if(roleId.includes(arr[0])) {
+     let index = roleId.indexOf(arr[0])
+     return getUserRoles[index].name
+   }
 }
+ }
 
 /**
  * @description: 处理通行结果
@@ -125,6 +137,33 @@ export function trafficRersultFilter(string, row) {
     return `未通过`
   }  
 }
+
+/**
+ * @description: 处理用户状态
+ * @param {*} string
+ */
+ export function filterUserStatus(string) {
+ if(string === getUserStatus[0].id) {
+  return  '已' + getUserStatus[0].value
+} else {
+  return  '已' + getUserStatus[1].value
+}
+}
+
+/**
+ * @description: 处理访客授权状态
+ * @param {*} string
+ */
+ export function filterVisitorAuthorized(string) {
+  let authorized = null
+  
+    for(let i = 0; i < getVisitorAuthorized.length; i++) {
+      if(getVisitorAuthorized[i].id === string) {
+        authorized = getVisitorAuthorized[i].value
+      }
+    }
+    return authorized
+ }
 
 /**
  * @description: 处理通行方向
@@ -201,3 +240,30 @@ export function filterPesonType(value) {
   })
   return personTypeName
 }
+
+/**
+ * @description: 处理性别
+ */
+export function filterGenter(value) {
+ return value === getGender()[0].id ? '男' : '女'
+}
+
+/**
+ * @description: 处理头像类型
+ */
+ export function filterFaceType(value) {
+  return value === getFaceType()[0].id ? '证件照' : '生活照'
+ }
+
+ export function filterStaffStates(value, isDelete) {
+   let state = null
+   getStaffStates.forEach((item) => {
+   if(item.ID == value) {
+    state = item.value
+  }
+  if(item.ID == isDelete) {
+    state = item.value
+  }
+})
+return state
+ }

@@ -8,7 +8,7 @@ import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 import { inDoorWay } from '@/api/dashboard'
-import moment, { months } from 'moment'
+import moment from 'moment'
 const animationDuration = 6000
 
 export default {
@@ -31,8 +31,8 @@ export default {
     return {
       chart: null,
 
-     xValue: ['3-01', '3-02', '3-03', '3-05', '3-06', '3-07', '3-08', '3-09', '3-10', '3-11', '3-12', '3-13', '3-14', '3-15', '3-16', '3-17', '3-18', '3-19', '3-20', '3-21', '3-22', '3-23', '3-24', '3-25','3-26','03-27','03-28','03-29','03-30','今日'],
-     face_swiping: [120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90, 230, 210,0,20,20,20,20,20,20,20,20],
+     xValue: [],
+     face_swiping: [],
      swiping_card: [],
      qr_code: [],
      fingerprint: []
@@ -57,7 +57,7 @@ export default {
             label: {
                 backgroundColor: '#6a7985'
             }
-        }
+        },
     },
     legend: {
         data: ['刷脸', '刷卡', '二维码', '指纹']
@@ -118,13 +118,19 @@ export default {
     xAxis: [
         {
             type: 'category',
+            name: '日期',
             boundaryGap: false,
-            data: this.xValue
+            data: this.xValue,
+            axisPointer: {
+              show: true,
+            }
         }
     ],
     yAxis: [
         {
-            type: 'value'
+            type: 'value',
+            name: '数量',
+            minInterval: 1,
         }
     ],
     series: [
@@ -228,7 +234,14 @@ export default {
             },
             data: this.fingerprint
         }
-    ]
+    ],
+      grid: {
+              left: '0%',
+              right: '3%',
+              bottom: '8%',
+              top:'25%',
+              containLabel: true
+            },
   }
   )
     },
@@ -238,7 +251,6 @@ export default {
       if(res.hasOwnProperty('dates')) {
         if(Array.isArray(res.dates)) {
           if(res.dates.length !== 0) {
-            console.log(res.dates)
             this.xValue = res.dates.map((item, index) => {
               if(index === 0) { return item = '今日' }
                return item.substr(5) 
@@ -251,16 +263,26 @@ export default {
     })
   }
   },
-  
+  created() {
+   let num = 29
+   this.swiping_card = this.qr_code = this.fingerprint =  Array.from({ length: num }).map(() => 0 )
+  },
   mounted() {
     this.$nextTick(() => {
       this.initChart()
       this.onSearch()
-// 每30分刷新
       setInterval(() => {
-        
+         this.onSearch()
       },(1000 * 60) * 30)
     })
+
+  setTimeout(() => {
+    this.chart.dispatchAction({
+    type: 'showTip',
+    seriesIndex:0 ,
+    dataIndex: 0,
+    });
+  },1000)
   },
   beforeDestroy() {
     if (!this.chart) {

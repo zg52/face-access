@@ -1,13 +1,12 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-19 14:41:29
+ * @LastEditTime: 2021-04-14 10:55:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-// 详情
  .demo-table-expand {
     width: 1100px;
   }
@@ -169,6 +168,7 @@ export default {
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
+      this.date = null
       this.onSearch()
     }
   },

@@ -1,11 +1,52 @@
 <!--
- * @Author: your name
- * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-12 18:06:27
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
--->
+ * ......................................&&.........................
+ * ....................................&&&..........................
+ * .................................&&&&............................
+ * ...............................&&&&..............................
+ * .............................&&&&&&..............................
+ * ...........................&&&&&&....&&&..&&&&&&&&&&&&&&&........
+ * ..................&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&..............
+ * ................&...&&&&&&&&&&&&&&&&&&&&&&&&&&&&.................
+ * .......................&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&.........
+ * ...................&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&...............
+ * ..................&&&   &&&&&&&&&&&&&&&&&&&&&&&&&&&&&............
+ * ...............&&&&&@  &&&&&&&&&&..&&&&&&&&&&&&&&&&&&&...........
+ * ..............&&&&&&&&&&&&&&&.&&....&&&&&&&&&&&&&..&&&&&.........
+ * ..........&&&&&&&&&&&&&&&&&&...&.....&&&&&&&&&&&&&...&&&&........
+ * ........&&&&&&&&&&&&&&&&&&&.........&&&&&&&&&&&&&&&....&&&.......
+ * .......&&&&&&&&.....................&&&&&&&&&&&&&&&&.....&&......
+ * ........&&&&&.....................&&&&&&&&&&&&&&&&&&.............
+ * ..........&...................&&&&&&&&&&&&&&&&&&&&&&&............
+ * ................&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&............
+ * ..................&&&&&&&&&&&&&&&&&&&&&&&&&&&&..&&&&&............
+ * ..............&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&....&&&&&............
+ * ...........&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&......&&&&............
+ * .........&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&.........&&&&............
+ * .......&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&...........&&&&............
+ * ......&&&&&&&&&&&&&&&&&&&...&&&&&&...............&&&.............
+ * .....&&&&&&&&&&&&&&&&............................&&..............
+ * ....&&&&&&&&&&&&&&&.................&&...........................
+ * ...&&&&&&&&&&&&&&&.....................&&&&......................
+ * ...&&&&&&&&&&.&&&........................&&&&&...................
+ * ..&&&&&&&&&&&..&&..........................&&&&&&&...............
+ * ..&&&&&&&&&&&&...&............&&&.....&&&&...&&&&&&&.............
+ * ..&&&&&&&&&&&&&.................&&&.....&&&&&&&&&&&&&&...........
+ * ..&&&&&&&&&&&&&&&&..............&&&&&&&&&&&&&&&&&&&&&&&&.........
+ * ..&&.&&&&&&&&&&&&&&&&&.........&&&&&&&&&&&&&&&&&&&&&&&&&&&.......
+ * ...&&..&&&&&&&&&&&&.........&&&&&&&&&&&&&&&&...&&&&&&&&&&&&......
+ * ....&..&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&...........&&&&&&&&.....
+ * .......&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&..............&&&&&&&....
+ * .......&&&&&.&&&&&&&&&&&&&&&&&&..&&&&&&&&...&..........&&&&&&....
+ * ........&&&.....&&&&&&&&&&&&&.....&&&&&&&&&&...........&..&&&&...
+ * .......&&&........&&&.&&&&&&&&&.....&&&&&.................&&&&...
+ * .......&&&...............&&&&&&&.......&&&&&&&&............&&&...
+ * ........&&...................&&&&&&.........................&&&..
+ * .........&.....................&&&&........................&&....
+ * ...............................&&&.......................&&......
+ * ................................&&......................&&.......
+ * .................................&&..............................
+ * ..................................&..............................
+ -->
 <style lang="scss" scoped>
  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -73,7 +114,7 @@ position: absolute;
   <div class="app-container">
      <el-form :model="addStaffForm" label-width="auto" :rules="addStaffRule" ref="addStaffFormRule" class="addStaffForm" :inline="true">
        <el-form-item label="创建人："><el-input v-model="addStaffForm.operator" class="w160" disabled></el-input></el-form-item>
-       <el-form-item label="员工姓名：" prop="name"><el-input v-model.trim="addStaffForm.name" class="w160" clearable></el-input></el-form-item>
+       <el-form-item label="员工姓名：" prop="name"><el-input v-model.trim="addStaffForm.name" class="w160" maxlength="8" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w160" v-model.trim="addStaffForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
        <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model.trim="addStaffForm.phone" clearable></el-input></el-form-item>
        <el-form-item label="职务："  prop="position"><el-input v-model.trim="addStaffForm.position" class="w160" clearable></el-input></el-form-item>
@@ -118,7 +159,7 @@ position: absolute;
        </div>
       </el-form-item><br>
      <el-form-item class="save_staff">
-       <router-link to="/people-manage/staff-manage/staff-add/bulkImportStaff"><el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button></router-link>
+       <router-link to="/people-manage/staff-manage/staff-add/bulkImportStaff"><el-button type="primary" v-show="btn_el.includes('add')"><i class="el-icon-folder-add" /> 批量导入</el-button></router-link>
         <el-button class="ml10" @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveStaffHandle('addStaffFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
         <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
@@ -129,10 +170,10 @@ position: absolute;
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveStaff, editStaff } from '@/api/people-manage/staffManage'
+import { saveStaff, editStaff, editBatchStaff } from '@/api/people-manage/staffManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
-import { validPhone, validateIdCard } from '@/utils/validate.js'
+import { validPhone, validateIdCard, validName } from '@/utils/validate.js'
 import { getGender, getFaceType} from '@/utils/business'
 import {proxyUrl_1, imgUrl } from '@/api/public'
 // import { pickerOptions } from '@/utils'
@@ -149,20 +190,24 @@ export default {
           type: Array
       }
   },
-  data() {
+  data() {bgk;lfldptkgpokkj
    let validPhoneTarget = (rule, value, callback) => {
      !validPhone(value) ? callback(new Error("请输入正确的手机号格式!")) : callback()
     },
     validateIdCardTarge = (rule, value, callback) => {
      !validateIdCard(value) ? callback(new Error("请输入正确格式的身份证号格式!")) : callback()
+    },
+    validateName = (rule, value, callback) => {
+      !validName(value) ? callback(new Error('只能输入中文或英文')) :  callback()
     }
+    
     function numbers (str) {
       return (rule, value, callback) => {
      !isNaN(value) ? callback() : callback(new Error(`${ str }号只能为数字组成！`))
     }
     }
-    
     function notNull(notNullName) { return [{required: true, message: `请输入员工${ notNullName }`, trigger: "blur" }] }
+
     return {
       save_loading: false,
       addStaffFormVisible: true,
@@ -175,7 +220,10 @@ export default {
       faceType: getFaceType()[0].name,
     //   addStaffForm: formHadleParam,
       addStaffRule: {
-          name: notNull('姓名'),
+          name: [
+            notNull('姓名')[0],
+            { validator: validateName, trigger: "blur" },
+          ],
           phone: [
             { required: true, message: "请输入手机号", trigger: "blur" },
             { validator: validPhoneTarget, trigger: "blur" },
@@ -221,7 +269,22 @@ export default {
     let a = this.addStaffForm
        this.$refs[el].validate((valid) => {
         if (valid) {
-          a['files'] === null ? this.$message.warning('请上传员工头像！') : this.httpRequest()
+          a['files'] === null || imageIdHandle() ? this.$message.warning('请上传员工头像！') : this.httpRequest()
+
+           /**
+            * @description: 批量导入人员时，编辑时需要传imagdid用于服务端匹配导入失败的记录 故
+            */
+           function imageIdHandle() {
+             if(a.hasOwnProperty('imageId')) {
+               if(a.imageId === 'null') {
+                 return true
+               } else {
+                 return false
+               }
+             } else {
+               return false
+             }
+           }
       }
      })
   },
@@ -280,6 +343,10 @@ export default {
           this.imgUploading = false
           this.imageUrl = URL.createObjectURL(file.raw)
           this.addStaffForm['files'] = file.raw
+
+          if(this.addStaffForm.hasOwnProperty('imageId')) {
+            delete this.addStaffForm['imageId']
+          }
            }, 700)
       },
    async httpRequest(content){
@@ -287,10 +354,12 @@ export default {
          let a = this.addStaffForm,
           formData = new FormData()
           for(let item in a) { formData.append(item, a[item]) }
-          if(!this.btn_el.includes('edit')) {
+          if(this.btn_el.includes('add')) {
               add()
+          } else if(this.btn_el.includes('editErrStaff')) {
+            editErrStaff()
           } else {
-              edit()
+            edit()
           }
            function add() {
                saveStaff(formData).then((res) => {
@@ -309,6 +378,24 @@ export default {
            }
            function edit() {
                editStaff(vm.addStaffForm.id, formData).then((res) => {
+                if(res.code === 0) {
+                   vm.save_loading = false
+                   vm.$message.success(`${ a?.['name'] } 修改成功！`, 4000)
+                   vm.resetAddStaffForm()
+                   vm.cancelEdit()
+                     } else {
+                       vm.$message.warning(res.msg, 4000)
+                       vm.save_loading = false
+                     }
+                },(err) => {
+                   vm.save_loading = false
+                   vm.$message.error('保存失败，请重试！')
+                  })
+           }
+
+// 修改批量导入错误的员工信息
+             function editErrStaff() {
+               editBatchStaff(vm.addStaffForm.id, formData).then((res) => {
                 if(res.code === 0) {
                    vm.save_loading = false
                    vm.$message.success(`${ a?.['name'] } 修改成功！`, 4000)
@@ -348,7 +435,7 @@ export default {
   created() {
     vm = this
    this.imageUrl = ''
-   this.imageUrl = this.btn_el.includes('edit') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
+   this.imageUrl = this.btn_el.includes('edit') || this.btn_el.includes('editErrStaff') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
   },
   mounted() {
   },
