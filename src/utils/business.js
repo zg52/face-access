@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-04-14 10:51:31
+ * @LastEditTime: 2021-04-22 10:04:11
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置及信息获取
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -113,15 +113,16 @@ const
       { id: 'always_open', value: '常开门' },
       { id: 'always_close', value: '常关门' },
       { id: 'power_off', value: '已关机' },
-      { id: 'statuses:removed', value: '已删除'}
-   ],
-   operate: [
-     { id: 'open', value: '开门' },
-     { id: 'close', value: '关门' },
-     { id: 'always_open', value: '常开门' },
-     { id: 'always_close', value: '常关门' },
-     { id: 'restart', value: '重启' },
-     { id: 'shutdown', value: '关机' },
+      { id: 'statuses:removed', value: '已删除'},
+    ],
+    operate: [
+      { id: 'open', value: '开门' },
+      { id: 'close', value: '关门' },
+      { id: 'update', value: '升级' },
+      { id: 'restart', value: '重启' },
+      { id: 'always_open', value: '常开门' },
+      { id: 'always_close', value: '常关门' },
+      { id: 'shutdown', value: '关机' },
    ]
    },
    deviceISOnline = [

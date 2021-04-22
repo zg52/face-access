@@ -190,7 +190,7 @@ export default {
           type: Array
       }
   },
-  data() {
+  data() {bgk;lfldptkgpokkj
    let validPhoneTarget = (rule, value, callback) => {
      !validPhone(value) ? callback(new Error("请输入正确的手机号格式!")) : callback()
     },
