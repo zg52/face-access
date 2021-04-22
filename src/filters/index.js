@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-29 16:33:15
+ * @LastEditTime: 2021-04-09 10:47:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -95,6 +95,7 @@ import {
   getGender,
   getFaceType,
   getStaffStates,
+  getVisitorAuthorized,
   passWay, 
   weekParams, 
   passWayArrHandle, 
@@ -148,6 +149,21 @@ export function trafficRersultFilter(string, row) {
   return  '已' + getUserStatus[1].value
 }
 }
+
+/**
+ * @description: 处理访客授权状态
+ * @param {*} string
+ */
+ export function filterVisitorAuthorized(string) {
+  let authorized = null
+  
+    for(let i = 0; i < getVisitorAuthorized.length; i++) {
+      if(getVisitorAuthorized[i].id === string) {
+        authorized = getVisitorAuthorized[i].value
+      }
+    }
+    return authorized
+ }
 
 /**
  * @description: 处理通行方向

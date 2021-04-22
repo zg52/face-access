@@ -83,6 +83,18 @@ export const constantRoutes = [
   // },
 ]
 export const asyncRoutes = [
+  // {
+  //   path: '/section',
+  //   path: '/section',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       name: 'section',
+  //       meta: { title: '部门管理', icon: 'section'},
+  //      component: () => import('@/views/people-manage/section')
+  //     }
+  //   ]
+  // },
   {
     path: '/people-manage',
     component: Layout,
@@ -90,12 +102,6 @@ export const asyncRoutes = [
     meta: { title: '人员管理', icon: 'peoples' },
     redirect: '/people-manage/staff-manage/staff-list/staffList',
     children: [
-      // {
-      //   path: 'section',
-      //   component: () => import('@/views/people-manage/section'),
-      //   name: 'section',
-      //   meta: { title: '部门管理', icon: 'section'}
-      // },
       {
         path: 'staff-manage',
         component: () => import('@/views/people-manage'),
@@ -543,4 +549,3 @@ export default router
   // },
 
 // ]
-

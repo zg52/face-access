@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-24 18:26:42
+ * @LastEditTime: 2021-04-09 16:59:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -107,12 +107,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="授权状态">
-        <el-select v-model="pagingQuery.status" disabled>
-          <!-- <el-option>已授权</el-option>
-           <el-option>未授权</el-option>
-          <el-option>已过期</el-option>
-          <el-option>已拒绝</el-option> -->
-        </el-select>
+        <el-select v-model="pagingQuery.status" clearable><el-option v-for="(authorized, index) of visitorAuthorized" :key="index" :label="authorized.value" :value="authorized.id"></el-option></el-select>
       </el-form-item>
       <!-- <el-form-item label="有无人脸">
         <el-select v-model="pagingQuery.state" class="w100">
@@ -139,7 +134,7 @@
               <div class="fl mr25 imgBox"><el-form-item><div><img :src="`${ getImgUrl + props.row.imageId }`" alt="" width="120"></div></el-form-item></div>
                <el-form-item label="姓名："><span>{{ props.row.name }}</span></el-form-item>
                <el-form-item label="性别："><span>{{ props.row.gender | filterGenter }} </span></el-form-item>
-                 <el-form-item label="授权状态："><span>{{ props.row.status === 'auth' ? '已授权' : '已失效' }} </span></el-form-item>
+                 <el-form-item label="授权状态："><span>{{ props.row.status | filterVisitorAuthorized }} </span></el-form-item>
                <el-form-item label="头像类型："><span>{{ props.row.faceType | filterFaceType }} </span></span></el-form-item>
                  <el-form-item label="所在公司："> <span>{{ props.row.visitorCompany }} </span></el-form-item>
                  <el-form-item label="电话："><span>{{ props.row.phone }} </span></el-form-item>
@@ -161,23 +156,23 @@
       
       <el-table-column align="center" label="来访人姓名" width="100"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
       <el-table-column align="center" label="来访人头像" width="95">
-        <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
+        <template v-slot="scope"><span v-show="scope.row.imageId ? false : true">无</span><img v-show="scope.row.imageId ? true : false" :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"> <template v-slot="scope">{{ scope.row.gender | filterGenter }} </template></el-table-column>
-      <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'auth' ? '已授权' : '已失效' }} </template></el-table-column>
       <el-table-column align="center" label="所在公司" width="100"> <template v-slot="scope">{{ scope.row.visitorCompany }}</template></el-table-column>
       <el-table-column align="center" label="电话" width="108"><template v-slot="scope">{{ scope.row.phone }} </template></el-table-column>
-        <el-table-column align="center" label="邮箱" width="108"><template v-slot="scope">{{ scope.row.email }} </template></el-table-column>
-      <el-table-column align="center" label="身份证号" width="108"> <template v-slot="scope">{{ scope.row.idNum }} </template></el-table-column>
+        <el-table-column align="center" label="邮箱" width="115"><template v-slot="scope">{{ scope.row.email }} </template></el-table-column>
+      <el-table-column align="center" label="身份证号" width="164"> <template v-slot="scope">{{ scope.row.idNum }} </template></el-table-column>
        <el-table-column align="center" label="被访人姓名" width="108"><template v-slot="scope">{{ scope.row.intervieweeName }} </template></el-table-column>
       <el-table-column align="center" label="被访人电话" width="108"><template v-slot="scope">{{ scope.row.intervieweePhone }} </template></el-table-column>
        <el-table-column align="center" label="来访事由" width="120"><template v-slot="scope">{{ scope.row.reason }} </template></el-table-column>
-         <el-table-column align="center" label="来访时间" width="300"> <template v-slot="scope">{{ scope.row.visitStartTime }} ~ {{ scope.row.visitEndTime }}</template></el-table-column>
+        <el-table-column align="center" label="来访时间" width="300"><template v-slot="scope">{{ scope.row.visitStartTime }} ~ {{ scope.row.visitEndTime }}</template></el-table-column>
        <!-- <el-table-column align="center" label="状态" width="60"> <template v-slot="scope">{{ scope.row.isDelete == 0 ? '正常' : '已删除' }}</template> </el-table-column> -->
-      <el-table-column align="left" label="操作" width="190" fixed="right">
+      <el-table-column align="center" label="授权状态" width="80" fixed="right"><template v-slot="scope"><span :class="scope.row.status == 'auth' ? 'green' : ''">{{ scope.row.status | filterVisitorAuthorized }}</span></template></el-table-column>
+      <el-table-column align="center" label="操作" width="190" fixed="right">
         <template v-slot="scope">
-          <el-switch class="mll5" size="mini" active-text="授权" inactive-text="拒绝" v-model="isDeletes[scope.$index].state" @change="changeStaffStatus(scope.$index, scope.row)" disabled></el-switch>
-          <el-button class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
+          <el-switch v-show="expireHandle(scope.row)" class="mll5" size="mini" active-text="授权" :inactive-text="statusText(scope.row)" v-model="isAuthorized[scope.$index].status" @change="changeAuthorized(scope.$index, scope.row)"></el-switch>
+          <el-button v-show="expireHandle(scope.row)" class="radius_45 mr10" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button>
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
@@ -209,11 +204,12 @@
   </div>
 </template>
 <script>
+
 import { mapGetters } from 'vuex'
-import { visitorList, deleteVisitor, downloadVisitor } from '@/api/people-manage/visitorManage'
+import { visitorList, deleteVisitor, downloadVisitor, visitorState } from '@/api/people-manage/visitorManage'
 import { imgUrl, downVisitorXls } from '@/api/public'
 import { pickerOptions } from '@/utils'
-import { getGender, getFaceType} from '@/utils/business'
+import { getGender, getFaceType, getVisitorAuthorized} from '@/utils/business'
 import VisitorFromHandle from '../components/VisitorFromHandle'
 import moment from 'moment'
 
@@ -228,8 +224,9 @@ export default {
       dialogVisible1: false,
       value: '华捷艾米',
       genders: getGender(),
-      isDeletes: [],
+      isAuthorized: [],
       faceTypes: getFaceType(),
+      visitorAuthorized: getVisitorAuthorized,
       pickerOptions: pickerOptions(true),
       pickerOptions1: pickerOptions(),
       date1: null,
@@ -280,12 +277,12 @@ export default {
   filters: {
     splice_t(value) {
     return value.replace('T', ' ')
-    }
+    },
   },
   computed: {
     ...mapGetters([
       'username'
-    ])
+    ]),
   },
   methods: {
     getVisitorList() {
@@ -304,10 +301,10 @@ export default {
         let satatusArr = []
         this.tableData.map((x, index) => {
           satatusArr.push({
-            state: x.isDelete == 1 ? false : true
+            status: x.status == 'refuse' ||  x.status == 'unAuth' ? false : true
           })
         })
-        this.isDeletes = satatusArr
+        this.isAuthorized = satatusArr
       this.tableData = this.tableData
        } else {
           this.$message.error(res.msg)
@@ -372,23 +369,27 @@ export default {
       })
     },
     
-// 切换员工状态(在职/离职)
-    changeStaffStatus(x ,y) {
+// 更改访客授权状态
+    changeAuthorized(x ,y) {
       function state() {
-        return y.status == 0 ? 1 : 0
+        // if(y.status == 'unAuth') {
+        //   return 'refuse'
+        // } else {
+          return y.status == 'auth' ? 'refuse' : 'auth'
+        // }
       }
-    StaffState(
+    visitorState(
           y.id,
           {
             status:state(),
             id: y.id
           }
       ).then((res) => {
-        if (res.code == 0 && res.data === null) {
+        if (res.code == 0) {
           this.$message.success({message: res.msg})
           this.getVisitorList()
         } else {
-          this.$message.warning({message: res.msg})
+          this.$message.error({message: res.msg})
         }
       })
     },
@@ -408,6 +409,19 @@ export default {
    cacelEditHandle() {
       this.getVisitorList()
       this.dialogVisible1 = false
+    },
+    statusText(row) {
+     let txt = null
+     switch(row.status) {
+        case 'unAuth' : txt = '未授权';break;
+        case 'refuse' : txt = '拒绝';break;
+        default : txt = '拒绝'
+      }
+      return txt
+ 
+    },
+    expireHandle(row) {
+     return row.status === 'expire' ? false : true
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val

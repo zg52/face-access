@@ -1,13 +1,32 @@
 /*
- * @Author: your name
- * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-19 17:31:10
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
+ *                        _oo0oo_
+ *                       o8888888o
+ *                       88" . "88
+ *                       (| -_- |)
+ *                       0\  =  /0
+ *                     ___/`---'\___
+ *                   .' \\|     |// '.
+ *                  / \\|||  :  |||// \
+ *                 / _||||| -:- |||||- \
+ *                |   | \\\  - /// |   |
+ *                | \_|  ''\---/''  |_/ |
+ *                \  .-\__  '-'  ___/-. /
+ *              ___'. .'  /--.--\  `. .'___
+ *           ."" '<  `.___\_<|>_/___.' >' "".
+ *          | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+ *          \  \ `_.   \_ __\ /__ _/   .-` /  /
+ *      =====`-.____`.___ \_____/___.-`___.-'=====
+ *                        `=---='
+ * 
+ * 
+ *      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * 
+ *            佛祖保佑       永不宕机     永无BUG
  */
+
+
 import request from '@/utils/request'
-import { issuedEmployee } from '../person-issued'
+// import { issuedEmployee } from '../person-issued'
 const person = 'person/person'
 // 人员管理-员工
 
@@ -143,5 +162,17 @@ export function getEmployeeTemplate() {
   return request({
      url: 'person/getEmployeeTemplate',
      method: 'GET'
+   })
+ }
+
+
+  /**
+ * @description: 修改员工批量导入出错的信息
+ */
+ export function editBatchStaff(id, params) {
+  return request({
+     url: `person/batch/${ id }`,
+     method: 'POST',
+     data: params
    })
  }

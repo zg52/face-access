@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 15:33:26
+ * @LastEditTime: 2021-04-22 15:14:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -74,7 +74,6 @@
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
       <router-link class="ml10" to="/traffic-rules/addRules"><el-button type="primary"><svg-icon icon-class="edit"/> 新建通行规则</el-button></router-link>
     </el-form>
       
@@ -400,10 +399,6 @@ export default {
         this.$message.warning('请在列表中勾选要删除的规则')
       }
     },
-    onExport() {
-
-    },
-
 // 修改规则
     handleEdit() {
       

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 18:12:03
+ * @LastEditTime: 2021-04-21 17:20:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -332,7 +332,7 @@ export default {
 
 // 编辑参数
       addStaffForm: {
-          id: null,
+          // id: null,
           operator: this.$store.getters.username,
           name: null,
           gender: null,
@@ -347,9 +347,12 @@ export default {
           gateCardId: null,
           enrollTime: null,
           faceType: null,
-          files: null
+          files: null,
+          imageId: null
          },
-         btn_el: ['edit']
+         btn_el: ['editErrStaff'],
+         errMsg: '未找到对应照片！',
+
     }
   },
   // filters: {
@@ -505,7 +508,11 @@ export default {
     },
     handleEdit(x, y) {
       this.dialogVisible1 = true
-      this.addStaffForm = y
+     if(y.errMsg.indexOf(this.errMsg) !== -1) {
+       y.imageId = 'null'
+       }
+       this.addStaffForm = y
+       this.addStaffForm.companyId = 1
 
 // 去除编辑无需字段
       let delEditParam = ['departmentId', 'img_height', 'img_width']

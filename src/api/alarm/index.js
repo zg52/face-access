@@ -1,13 +1,12 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-30 10:52:26
+ * @LastEditTime: 2021-04-12 15:13:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'
-
 
 const exception = 'passing/exception'
 
@@ -61,3 +60,5 @@ export function exception_monitoring_person(lastId) {
      }
    })
  }
+
+ 
