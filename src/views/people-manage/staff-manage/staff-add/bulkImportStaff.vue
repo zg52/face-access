@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-21 17:20:24
+ * @LastEditTime: 2021-04-23 11:11:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -346,7 +346,7 @@ export default {
           icCardId: null,
           gateCardId: null,
           enrollTime: null,
-          faceType: null,
+          FaceType: null,
           files: null,
           imageId: null
          },
@@ -511,11 +511,14 @@ export default {
      if(y.errMsg.indexOf(this.errMsg) !== -1) {
        y.imageId = 'null'
        }
+
        this.addStaffForm = y
        this.addStaffForm.companyId = 1
+       this.addStaffForm.departmentId = 1
+      //  this.addStaffForm.FaceType = 'ID'
 
 // 去除编辑无需字段
-      let delEditParam = ['departmentId', 'img_height', 'img_width']
+      let delEditParam = ['imgHeight', 'imgWidth']
           delEditParam.forEach((item, index) => {
             delete this.addStaffForm[item]
           })

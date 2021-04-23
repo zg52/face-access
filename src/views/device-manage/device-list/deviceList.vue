@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-22 13:47:33
+ * @LastEditTime: 2021-04-22 18:14:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -603,7 +603,6 @@ export default {
   created() {
     vm = this
     this.onSearch()
- 
   },
 }
 </script>
