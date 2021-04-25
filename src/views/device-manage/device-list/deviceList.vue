@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-22 18:14:23
+ * @LastEditTime: 2021-04-25 16:57:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -149,11 +149,17 @@ margin-left: 30px;
       </el-form-item>
      <el-form-item label="设备状态"><el-select class="w100" v-model="states" clearable @change="changeStates"><el-option v-for="(deviceState, index) of deviceStates" :key="index" :label="deviceState.value" :value="deviceState.id"></el-option></el-select></el-form-item>
      
-      <el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
+     <el-form-item class="fr"><el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
+        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button></el-form-item> <br>
+ 
+      <el-form-item>
       <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
-        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
+        <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
+      <el-button type="primary" @click="addDeviceVisible = true"><i class="el-icon-view"></i><span>查看设备升级记录</span></el-button>
+       <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="update"/> <span>批量升级设备</span></el-button>
       <router-link class="ml10" to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
+      </el-form-item>
+    
     </el-form>
     
     <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
@@ -217,7 +223,7 @@ margin-left: 30px;
             <el-dropdown class="ml10" @command="handleCommand">
                <el-button type="primary" class="radius_45" size="mini">更多操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
                <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.id" @click.prevent.native="hanlecommandData(scope.row)">{{ command.value }}</el-dropdown-item>
+                 <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.id" @click.prevent.native="hanlecommandData(command.id, scope.row)">{{ command.value }}</el-dropdown-item>
                </el-dropdown-menu>
               </el-dropdown>
          </div>
@@ -277,7 +283,9 @@ margin-left: 30px;
     </div>
      </div>
   </el-dialog>
-
+  
+<!-- 应用升级 -->
+  <DeviceUpdate v-if="updateParams.updateVisible" :updateParams="updateParams" />
   </div>
 </template>
 <script>
@@ -287,10 +295,12 @@ import {
   searchDevice,  // 查设备列表
   // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
-  instructDevice // 操作设备
+  instructDevice, // 操作设备
+  updateDevice  // 设备升级
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
+import DeviceUpdate from './components/DeviceUpdate'
 import moment from "moment"
 // import { filterDate } from '@/filters'
 const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
@@ -298,6 +308,9 @@ let vm
 
 export default {
   name: "deviceList",
+  components: {
+    DeviceUpdate
+  },
   data() {
     return {
       table_loading: false,
@@ -378,7 +391,14 @@ export default {
     },
 
 // 设备操作字段
-    commandes: getDeviceStates().operate
+    commandes: getDeviceStates().operate,
+
+// 设备升级
+    updateParams: {
+       deviceUpdate_id: null,
+       deviceType: null,
+       updateVisible: true,
+    },
   }
   },
   filters: {
@@ -571,13 +591,25 @@ export default {
 // 操作设备
      handleCommand(command) {
        setTimeout(()=> {
-         instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
-       res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
-      })
+          if(command !== 'update') {
+           instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
+         res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
+        })
+          }
        })
       },
-    hanlecommandData(x) {
-        this.instructDeviceId = x.id
+    hanlecommandData(commandId, row) {
+       if(commandId !== 'update') {
+        this.instructDeviceId = row.id
+       } else {
+         if(row.online === true) {
+           this.updateParams.deviceUpdate_id = row.id
+           this.updateParams.deviceType = this.filterDiveType()
+           this.updateParams.updateVisible = true
+         } else {
+           this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
+         }
+       }
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val
@@ -598,7 +630,9 @@ export default {
     resetAddDeviceData(e) { 
     this.$refs[e].resetFields()
    },
-   
+    filterDiveType(value) {
+      return value === vm.deviceTypes[0].id ? vm.deviceTypes[0].value : vm.deviceTypes[1].value
+    },
   },
   created() {
     vm = this

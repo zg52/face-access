@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-04-13 17:46:40
+ * @LastEditTime: 2021-04-25 15:25:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -91,3 +91,14 @@ export function instructDevice1(type, params) {
    })
  }
  
+    /**
+ * @description: 设备升级
+ * @param {deviceIds}
+ */
+export function deviceUpdate(type, params) {
+  return request({
+     url: `${ passing }device/instruct/${ type }`,
+     method: 'PUT',
+     params,
+   })
+ }
