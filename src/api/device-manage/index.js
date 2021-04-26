@@ -1,12 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-04-25 15:25:54
+ * @LastEditTime: 2021-04-26 16:23:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'
+import { downFile } from '@/utils'
 
 const passing = 'passing/'
 // 设备管理
@@ -95,10 +96,39 @@ export function instructDevice1(type, params) {
  * @description: 设备升级
  * @param {deviceIds}
  */
-export function deviceUpdate(type, params) {
+export function deviceUpdate(params) {
   return request({
-     url: `${ passing }device/instruct/${ type }`,
-     method: 'PUT',
-     params,
+     url: `${ passing }device/instruct`,
+     method: 'POST',
+     data: params,
    })
  }
+ 
+ /**
+ * @description: 下载升级包
+ */
+export function downPatch(fileName) {
+	return downFile('/updata', fileName)
+}
+
+ /**
+ * @description:设备升级列表
+ */
+  export function deviceUpdateRecords(params) {
+    return request({
+      url: `${ passing }device/instruct`,
+      method: 'GET',
+      params
+    })
+  }
+
+   /**
+ * @description:设备重新升级
+ */
+    export function toUpdateDevice(params) {
+      return request({
+        url: `${ passing }device/instruct`,
+        method: 'post',
+        params
+      })
+    }

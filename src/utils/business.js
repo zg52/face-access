@@ -137,6 +137,12 @@ const
    { id: 'normal',value: '已下发' },
    { id: 'issuing', value: '下发中' },
    { id: 'removing', value: '删除中' }
+ ],
+ deviceUpdateStatus = [
+	 { id: 0, value: '已下发' },
+	 { id: 1, value: '升级成功' },
+	 { id: 2, value: '下发失败' },
+	 { id: 3, value: '升级失败' }
  ]
  
 /**
@@ -263,7 +269,7 @@ export async function getRuleNames() {
 }
 
   /**
- * @description: 员工状态、性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
+ * @description: 员工状态、性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型、设备升级状态
  */
   export { userStatus as getUserStatus }
   export { userRoles as getUserRoles }
@@ -281,5 +287,6 @@ export async function getRuleNames() {
   export function get_issuePersonStatus() { return issuePersonStatus }
   
   export { personTypes as getPersonTypes }
+  export { deviceUpdateStatus as getDeviceUpdateStatus }
   
   

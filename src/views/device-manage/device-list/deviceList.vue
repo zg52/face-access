@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-25 16:57:25
+ * @LastEditTime: 2021-04-26 19:33:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -155,8 +155,8 @@ margin-left: 30px;
       <el-form-item>
       <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
         <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
-      <el-button type="primary" @click="addDeviceVisible = true"><i class="el-icon-view"></i><span>查看设备升级记录</span></el-button>
-       <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="update"/> <span>批量升级设备</span></el-button>
+      <el-button type="primary" @click.prevent="updateRecordsShow = true"><i class="el-icon-view"></i><span>查看设备升级记录</span></el-button>
+       <el-button type="primary" @click="updateDevices"><svg-icon icon-class="update"/> <span>批量升级设备</span></el-button>
       <router-link class="ml10" to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
       </el-form-item>
     
@@ -285,7 +285,9 @@ margin-left: 30px;
   </el-dialog>
   
 <!-- 应用升级 -->
-  <DeviceUpdate v-if="updateParams.updateVisible" :updateParams="updateParams" />
+  <DeviceUpdate v-if="updateParams.updateVisible" :updateParams="updateParams" @showRecords="showRecords" />
+  <!-- 应用升级记录 -->
+  <DeviceUpdateRecords :updateRecordsShow="updateRecordsShow" @recordsHide="recordsHide" />
   </div>
 </template>
 <script>
@@ -296,11 +298,11 @@ import {
   // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
   instructDevice, // 操作设备
-  updateDevice  // 设备升级
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
 import DeviceUpdate from './components/DeviceUpdate'
+import DeviceUpdateRecords from './components/DeviceUpdateRecords'
 import moment from "moment"
 // import { filterDate } from '@/filters'
 const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
@@ -309,7 +311,8 @@ let vm
 export default {
   name: "deviceList",
   components: {
-    DeviceUpdate
+    DeviceUpdate,
+    DeviceUpdateRecords
   },
   data() {
     return {
@@ -373,7 +376,7 @@ export default {
        createTimeTo: null,
        
        current: 1, 
-       size: 20,
+       size: 30,
        total: null,
       },
 
@@ -395,10 +398,11 @@ export default {
 
 // 设备升级
     updateParams: {
-       deviceUpdate_id: null,
+       deviceId: null,
        deviceType: null,
-       updateVisible: true,
+       updateVisible: false,
     },
+    updateRecordsShow: false
   }
   },
   filters: {
@@ -602,14 +606,43 @@ export default {
        if(commandId !== 'update') {
         this.instructDeviceId = row.id
        } else {
-         if(row.online === true) {
-           this.updateParams.deviceUpdate_id = row.id
+        //  if(row.online === true) {
+           this.updateParams.deviceId = row.id
            this.updateParams.deviceType = this.filterDiveType()
            this.updateParams.updateVisible = true
-         } else {
-           this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
-         }
+        //  } else {
+        //    this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
+        //  }
        }
+    },
+
+// 批量升级设备
+    updateDevices() {
+       if (this.multipleSelection.length !== 0) {
+        this.$confirm("此操作将永久删除已选设备, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+            for (let i = 0; i < this.multipleSelection.length; i++) {
+              deleteDevice(this.multipleSelection[i].id).then((res) => {
+                if (res.code == 0) {
+                  if(i + 1 >= this.multipleSelection.length) {
+                  this.onSearch()
+                  this.$message.success(res.msg)
+                  } 
+                } else {
+                     this.$message.error(res.msg)
+                  }
+              })
+            }
+          }).catch(() => {
+             this.$message.info('已取消删除')
+             this.$refs.multipleTable.clearSelection()
+          })
+      } else {
+        this.$message.warning('请在列表中勾选要升级的同类型设备')
+      }
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val
@@ -633,6 +666,14 @@ export default {
     filterDiveType(value) {
       return value === vm.deviceTypes[0].id ? vm.deviceTypes[0].value : vm.deviceTypes[1].value
     },
+    recordsHide(x) {
+    console.log("🚀 ~ file: deviceList.vue ~ line 641 ~ recordsHide ~ x", x)
+      
+      x ? (this.updateRecordsShow = false, this.updateParams.updateVisible = false) : (this.updateRecordsShow = false, this.updateParams.updateVisible = true)
+    },
+    showRecords() {
+      this.updateRecordsShow = true
+    }
   },
   created() {
     vm = this

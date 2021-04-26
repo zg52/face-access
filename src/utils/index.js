@@ -445,6 +445,23 @@ export function pickerOptions(tomorrow) {
   }
  }
 
+ /**
+ * @description: 文件下载
+ */
+ export function downFile(url, fileName) {
+    　　 if ('download' in document.createElement('a')) {
+       　　let link = document.createElement('a')
+       　　link.setAttribute('download', `${ fileName }升级包`);
+       　　link.style.display = 'none'
+      　　 link.href = `${ process.env.VUE_APP_BASE_API }${ url }`
+      　　 document.body.appendChild(link)
+       　　link.click()
+      　　 document.body.removeChild(link)
+    　　} else {
+    　　   navigator.msSaveBlob(blob, fileName)
+    　　}
+    }
+		
 //  /**
 //  * @description: 获取系统时分秒
 //  */
