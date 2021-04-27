@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-25 16:21:15
- * @LastEditTime: 2021-04-26 19:28:53
+ * @LastEditTime: 2021-04-27 16:23:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\gitee\pc\face-recognition-access\src\views\device-manage\device-list\components\DeviceUpdate.vue
@@ -102,7 +102,7 @@
                     </el-upload>
 
                   </el-form-item>
-                   <el-form-item label="新应用版本号："><el-input class="w100" disabled type="text" v-model="form.upgradeVersion"></el-input></el-form-item>
+                   <el-form-item label="新应用版本号："><el-input class="w100" disabled type="text" v-model="form.version"></el-input></el-form-item>
               </el-form>
             </div>
             <div slot="footer">
@@ -120,9 +120,7 @@
 </template>
 <script>
 
-import { proxyUrl_1 } from '@/api/public'
-import { deviceUpdate, downPatch } from '@/api/device-manage'
-import Mock from '../../../../../mock/proxyUrl'
+import { deviceUpdateFile, deviceUpdate, downPatch } from '@/api/device-manage'
 
 export default {
     props: {
@@ -133,25 +131,26 @@ export default {
     },
    data() {
        return {
-        action: proxyUrl_1,
+        action: deviceUpdateFile(),
         updateVisible: true,
         update_loading: false,
         updateTypes: [
             {
-               id: 1,
+               id: 'APP',
                value: '应用'
            },
             {
-                id: 0,
+                id: 'OS',
                 value: '系统'
             },
         ],
        updateType: '应用',
         form: {
-            upgradeType: 1,
-            file: null,
-            deviceId: null,
-            upgradeVersion: null,
+            upgradeType: 'APP',
+            // file: null,
+            fileId: null,
+            ids: null,
+            version: null,
             operator: this.$store.getters.username
             
         }
@@ -179,11 +178,15 @@ export default {
     return this.zipRule(file.type, file.size, file)
   },
    handleZipSuccess(res, file) {
-       let [fileName, index] = [file.name, file.name.lastIndexOf('-')]
-           this.form.file = file.raw
+     if(res.code === 0) {
+        let [fileName, index] = [file.name, file.name.lastIndexOf('-')]
+        //    this.form.file = file.raw
+            this.form.fileId = res.data
+            this.open1(`${ fileName } 上传成功`, '成功', 'success')
            if(index !== -1) {
-              this.form.upgradeVersion = fileName.substr(index+ 1, 4)
-           }
+              this.form.version = fileName.substr(index+ 1, 4)
+           }             
+          }
     },
   zipError(err, file, fileList) {
     // if(this.zipType(file.raw.type, file.raw.name)) {
@@ -215,15 +218,15 @@ export default {
     },
     updateHandle() {
         let params = this.form
-        sessionStorage.setItem('prevBtn', true)
-         this.$emit('showRecords')
-        if(params?.file !== null) {
-            let formData = new FormData()
-            for(let x in this.form) {
-                formData.append(x, this.form[x])
-            }
+        // sessionStorage.setItem('prevBtn', true)
+        //  this.$emit('showRecords')
+        if(params.fileId !== null) {
+            // let formData = new FormData()
+            // for(let x in this.form) {
+            //     formData.append(x, this.form[x])
+            // }
          this.update_loading = true
-        deviceUpdate(formData).then((res) => {
+        deviceUpdate(this.form).then((res) => {
             if(res.code === 0) {
                 this.update_loading = false
                 sessionStorage.setItem('prevBtn', true)
@@ -238,17 +241,27 @@ export default {
         }
     },
     handleRemove(file, fileList) {
-     this.form.file = null
+     this.form.fileId = null
+     this.form.version = null
     },
     beforeClose(done) {
     this.$confirm('确定要取消升级？').then(_ => {
             done()
             this.cancel()
           }).catch(_ => {})
-    }
+    },
+    open1(zipName, statusName, status) {
+        this.$notify({
+          title: statusName,
+          message: zipName,
+          type: status
+        })
+      },
    },
    created() {
-       this.form.deviceId = this.updateParams.deviceId
+       this.form.ids = this.updateParams.deviceId
+   },
+   mounted() {
    },
 }
 </script>

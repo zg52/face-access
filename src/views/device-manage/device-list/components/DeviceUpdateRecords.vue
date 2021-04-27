@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-26 19:22:42
+ * @LastEditTime: 2021-04-27 20:05:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -19,7 +19,7 @@
     title="设备升级记录"
     :visible.sync="updateRecordsShow"
     :before-close="recordsHide1"
-    width="70%" top="0"
+    width="76%" top="0"
     >
     <div>
   <div>
@@ -56,12 +56,15 @@
     <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" element-loading-spinner="el-icon-loading" v-loading="table_loading"  ref="multipleTable" border>
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-      <el-table-column align="center" label="设备名称"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="设备标识"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="当前版本"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="在线状态"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="更新状态"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
-      <el-table-column align="center" label="升级时间"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
+      <el-table-column align="center" label="设备名称"><template v-slot="scope">{{ scope.row.deviceId | getDeviceId_name }}</template></el-table-column>
+       <el-table-column align="center" label="升级类型"><template v-slot="scope">{{ scope.row.upgradeType == 1 ? '应用' : '系统' }}</template></el-table-column>
+      <el-table-column align="center" label="设备标识"><template v-slot="scope">{{ scope.row.name }} </template></el-table-column>
+      <el-table-column align="center" label="当前版本"><template v-slot="scope">{{ scope.row.upgradeVersion }}</template></el-table-column>
+      <el-table-column align="center" label="在线状态"><template v-slot="scope"><span :class="scope.row.online ? 'green' : 'red'">{{ scope.row.online | filterOnline}}</span></template></el-table-column>
+      <el-table-column align="center" label="更新状态"><template v-slot="scope">{{ scope.row.status | filterStatus }}</template></el-table-column>
+      <el-table-column align="center" label="下发时间" width="200"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
+      <el-table-column align="center" label="升级时间" width="200"><template v-slot="scope">{{ scope.row.updateTime | filterDate }}</template></el-table-column>
+       <el-table-column align="center" label="操作人"><template v-slot="scope">{{ scope.row.operator }}</template></el-table-column>
       <el-table-column align="center" label="操作"><template v-slot="scope"><el-button class="radius_45" size="mini" type="primary" @click="toUpgrade(scope.row)"><svg-icon icon-class="update"/> 重新升级</el-button></template></el-table-column>
     </el-table> 
     
@@ -84,9 +87,8 @@
 </template>
 
 <script>
-import { deviceUpdateRecords, toUpdateDevice } from '@/api/device-manage'
-import { getStaffList } from '@/api/people-manage/staffManage'
-import { getDeviceNames, getDeviceUpdateStatus } from '@/utils/business'
+import { deviceUpdateRecords, deviceUpdate } from '@/api/device-manage'
+import { getDeviceNames, getDeviceUpdateStatus, getDeviceISOnline } from '@/utils/business'
 import { pickerOptions } from '@/utils'
 import moment from 'moment'
 
@@ -99,6 +101,9 @@ export default {
    updateRecordsShow: {
        type: Boolean,
        default: false
+   },
+   deviceList: {
+     type: Array
    }
   },
   data() {
@@ -106,6 +111,7 @@ export default {
       getDeviceNames: [],
       deviceUpdateStatus: getDeviceUpdateStatus,
       pickerOptions: pickerOptions(),
+      deviceISOnline: getDeviceISOnline(),
       date: null,
       multipleSelection: [],
       updateRecordsShow1: true,
@@ -118,20 +124,28 @@ export default {
         status: null,
         
         current: 1, 
-        size: 10,
+        size: 100,
         total: null,
       },
       tableData: [],
     }
   },
   filters: {
-        getDeviceId_name(value) {
+   getDeviceId_name(value) {
     let txt = null
       vm.getDeviceNames.map((item, index) => {
          item.id == value ? txt = item.name : null
       })
       return txt
   },
+  filterStatus(value) {
+    for(let i = 0; i < getDeviceUpdateStatus.length; i++) {
+      return getDeviceUpdateStatus[i].id == value ? getDeviceUpdateStatus[i].value : ''
+    }
+  },
+   filterOnline(value) {
+      return value == vm.deviceISOnline[0].id ? vm.deviceISOnline[0].value : vm.deviceISOnline[1].value
+    },
   },
   watch: {
     clearSelectionState(val) {
@@ -141,10 +155,10 @@ export default {
   computed: {
   },
   methods: {
-     getStaffList() {
+     getTablelist() {
       let [params] = [this.pagingQuery]
       this.table_loading = true
-      getStaffList(this.pagingQuery).then((res) => {
+      deviceUpdateRecords(this.pagingQuery).then((res) => {
         this.tableData = []
         if(res.code === 0) {
         params.size = res.data.size
@@ -153,6 +167,44 @@ export default {
 
         if(res.data.records.length !== 0) {
         this.tableData = res.data.records
+        this.tableData.forEach(function (item) {
+         item.online = null
+        })
+
+
+
+// 获取设备在线状态
+    // let deviceListId = []
+    //  for(let i = 0; i < this.deviceList.length; i++) {
+    //    deviceListId.push(this.deviceList[i].id)
+    //  }
+      for(let i = 0; i < this.deviceList.length; i++) {
+      //    console.log(this.deviceList[i].id)
+      // console.log( this.tableData[i].deviceId + ' 历史')
+        // if(deviceListId.includes(this.tableData[i].deviceId - 0))
+         if([this.deviceList[i].id] == this.tableData[i].deviceId - 0) {
+          this.tableData[i].online = this.deviceList[i].online
+        //  console.log( this.tableData[i].deviceId)
+        //   console.log(this.deviceList[i])
+        }
+      }
+      let d = null
+      for(let i = 0; i < this.tableData.length; i++) {
+        if(this.tableData[i].online == true) { // 如果多个设备的其中一个在线
+           d = this.tableData[i].deviceId;
+          //  for(let n = 0; n < this.tableData.length; i++) {
+          //     if(d == this.tableData[n].deviceId) {
+          //       this.tableData[n].online = true
+          //     }
+          //  }
+        }
+      }
+    for(let n = 0; n < this.tableData.length; n++) {
+              if(d == this.tableData[n].deviceId) {
+                this.tableData[n].online = true
+              }
+           }
+      
         }
         this.table_loading = false
         } else {
@@ -164,7 +216,7 @@ export default {
     onSearch() {
       let params = this.pagingQuery
       params.current = 1
-      this.getStaffList()
+      this.getTablelist()
     },
   changeDate(item) {
      let a = this.pagingQuery
@@ -183,17 +235,33 @@ export default {
 
 // 重新升级
     toUpgrade(row) {
-        toUpdateDevice({deviceId: row.deviceId}).then(res => {
-            
+      let fileId = null
+      if(row.upgradeUrl) {
+        let index = row.upgradeUrl.lastIndexOf('=')
+        fileId = row.upgradeUrl.substr(index+1)
+      }
+        deviceUpdate({
+          ids: row.deviceId,
+          operator: row.operator,
+          version: row.upgradeVersion,
+          upgradeType: row.upgradeType == 1 ? 'APP' : 'OS',
+          fileId: fileId
+        }).then(res => {
+          if(res.code === 0) {
+            this.$message.success(res.msg)
+            this.getTablelist()
+          } else {
+            this.$message.error(res.msg)
+          }
         })
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val
-      this.getStaffList()
+      this.getTablelist()
     },
     handleCurrentChange(val) {
       this.pagingQuery.current = val
-      this.getStaffList()
+      this.getTablelist()
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

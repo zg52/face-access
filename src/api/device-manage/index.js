@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-04-26 16:23:52
+ * @LastEditTime: 2021-04-27 15:45:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -10,6 +10,7 @@ import request from '@/utils/request'
 import { downFile } from '@/utils'
 
 const passing = 'passing/'
+const ota = 'ota/ota/'
 // 设备管理
 
 /**
@@ -91,32 +92,40 @@ export function instructDevice1(type, params) {
      params,
    })
  }
- 
+
+//  ----------------------------------------OTA----------------------------------------------
+
+     /**
+ * @description: 设备升级-上传文件
+ */
+export function deviceUpdateFile() {
+  return `${ process.env.VUE_APP_BASE_API }${ ota }/file/upload`
+ }
     /**
  * @description: 设备升级
  * @param {deviceIds}
  */
 export function deviceUpdate(params) {
   return request({
-     url: `${ passing }device/instruct`,
-     method: 'POST',
-     data: params,
+     url: `${ ota }upgrade/upgrade`,
+     method: 'GET',
+     params
    })
  }
  
- /**
- * @description: 下载升级包
- */
-export function downPatch(fileName) {
-	return downFile('/updata', fileName)
-}
+//  /**
+//  * @description: 下载升级包
+//  */
+// export function downPatch(fileName) {
+// 	return downFile('/updata', fileName)
+// }
 
  /**
  * @description:设备升级列表
  */
   export function deviceUpdateRecords(params) {
     return request({
-      url: `${ passing }device/instruct`,
+      url: `${ ota }/upgrade/`,
       method: 'GET',
       params
     })

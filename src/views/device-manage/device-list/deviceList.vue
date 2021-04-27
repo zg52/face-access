@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-26 19:33:51
+ * @LastEditTime: 2021-04-27 17:19:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -98,6 +98,45 @@ margin-left: 30px;
   font-size: 45px;
 }
 .pt15{padding-top: 15px!important;}
+.xuan {
+  position:relative;width:100%;
+   ::v-deep.el-form-item__content {
+    width: 100%;
+  }
+}
+.formSuspend {
+  transition: all .4s;
+  position:absolute;
+  width:100%;
+  background: #fff;
+  // box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+  border: #DCDFE6 1px solid;
+  border-left: none;
+  border-right: none;
+  height: 52px;
+  padding-top: 7px;
+  .cancel {
+    margin-left: 20px;
+  }
+  .tip i {
+    font-style: normal;
+  }
+  .tip img {
+   position: relative;
+   top:2px;
+    margin-right: 5px;
+  }
+  .fr {
+    margin-right: 2%;
+  }
+.tip1 {
+  color: #999;
+  padding-right: 30px;
+}
+}
+.theme {
+  color: #8a16ff;
+}
 </style>
 
 <template>
@@ -151,12 +190,20 @@ margin-left: 30px;
      
      <el-form-item class="fr"><el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
         <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button></el-form-item> <br>
- 
-      <el-form-item>
-      <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
+
+ <!-- 悬浮 -->
+      <el-form-item class="xuan">
+        <div class="formSuspend clearfix" v-show="formSuspend">
+          <div class="fl"><span class="tip"><img src="../../../assets/image/check.jpg"> 
+          <span>已选<i class="theme"> {{ formSuspendParams.deviceNum }}</i> 个设备，所属设备类型<i class="theme"> {{ formSuspendParams.deviceType }}</i> 种 </span></span><el-button @click="cacelSuspend" size="mini" class="cancel">取消</el-button></div>
+          <div class="fr"><span class="tip1" v-show="formSuspendTipShow"><i class="el-icon-info"></i> 提示：批量升级设备，所选设备需为同一种类型且为在线状态</span>
+          <el-button type="warning" size="mini" @click="onDeletes"><i class="el-icon-delete"></i> 删除</el-button>
+          <el-button size="mini" type="primary" :disabled="formSuspendTipShow"><svg-icon icon-class="update"/> 升级</el-button></div>
+        </div>
+      <!-- <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button> -->
         <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
       <el-button type="primary" @click.prevent="updateRecordsShow = true"><i class="el-icon-view"></i><span>查看设备升级记录</span></el-button>
-       <el-button type="primary" @click="updateDevices"><svg-icon icon-class="update"/> <span>批量升级设备</span></el-button>
+       <!-- <el-button type="primary" @click="updateDevices"><svg-icon icon-class="update"/> <span>批量升级设备</span></el-button> -->
       <router-link class="ml10" to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
       </el-form-item>
     
@@ -284,10 +331,10 @@ margin-left: 30px;
      </div>
   </el-dialog>
   
-<!-- 应用升级 -->
+<!-- ota升级 -->
   <DeviceUpdate v-if="updateParams.updateVisible" :updateParams="updateParams" @showRecords="showRecords" />
-  <!-- 应用升级记录 -->
-  <DeviceUpdateRecords :updateRecordsShow="updateRecordsShow" @recordsHide="recordsHide" />
+  <!-- ota升级记录 -->
+  <DeviceUpdateRecords :updateRecordsShow="updateRecordsShow" :deviceList="deviceList" @recordsHide="recordsHide" />
   </div>
 </template>
 <script>
@@ -298,6 +345,7 @@ import {
   // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
   instructDevice, // 操作设备
+  deviceUpdateRecords
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
@@ -326,7 +374,7 @@ export default {
       deviceTypes: getDeviceTypes(),
       deviceISOnline: getDeviceISOnline(),
       deviceStates: getDeviceStates().search,
-      multipleSelection: [], //多选删除
+      multipleSelection: [], //多选
       date: null,
       states: null,
       instructDeviceId: null,
@@ -402,7 +450,16 @@ export default {
        deviceType: null,
        updateVisible: false,
     },
-    updateRecordsShow: false
+    updateRecordsShow: false,
+    
+// form悬浮
+    formSuspend: false,
+    formSuspendParams: {
+      deviceNum: null,
+      deviceType: null,
+      deviceOnline: []
+    },
+    formSuspendTipShow: false
   }
   },
   filters: {
@@ -606,13 +663,13 @@ export default {
        if(commandId !== 'update') {
         this.instructDeviceId = row.id
        } else {
-        //  if(row.online === true) {
+         if(row.online === true) {
            this.updateParams.deviceId = row.id
            this.updateParams.deviceType = this.filterDiveType()
            this.updateParams.updateVisible = true
-        //  } else {
-        //    this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
-        //  }
+         } else {
+           this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
+         }
        }
     },
 
@@ -653,7 +710,33 @@ export default {
       this.getDeviceList()
     },
     handleSelectionChange(val) {
+      let [deviceTypeNum, deviceOnline] = [[], []]
       this.multipleSelection = val
+     this.formSuspend = val.length !== 0 ? true : false
+     this.formSuspendParams.deviceNum = val.length
+     for(let i = 0; i < val.length; i++) {
+         deviceTypeNum.push(val[i].type)
+        deviceOnline.push(val[i].online)
+     }
+     this.formSuspendParams.deviceType = [...new Set(deviceTypeNum)].length
+     this.formSuspendParams.deviceOnline = [...new Set(deviceOnline)].toString()
+     this.formSuspendTip()
+      
+    },
+    formSuspendTip() {
+    console.log(this.formSuspendParams['deviceOnline'])
+     if(!this.formSuspendParams['deviceOnline'].includes('false')) {
+       if(this.formSuspendParams['deviceType'] >= 2) {
+         this.formSuspendTipShow = true
+       } else {
+         this.formSuspendTipShow = false
+       }
+     } else {
+       this.formSuspendTipShow = true
+     }
+    },
+    cacelSuspend() {
+      this.formSuspend = false, this.multipleSelection = [], this.$refs.multipleTable.clearSelection()
     },
    refreshPagingQuery() {
       this.pagingQuery = {}
@@ -667,8 +750,6 @@ export default {
       return value === vm.deviceTypes[0].id ? vm.deviceTypes[0].value : vm.deviceTypes[1].value
     },
     recordsHide(x) {
-    console.log("🚀 ~ file: deviceList.vue ~ line 641 ~ recordsHide ~ x", x)
-      
       x ? (this.updateRecordsShow = false, this.updateParams.updateVisible = false) : (this.updateRecordsShow = false, this.updateParams.updateVisible = true)
     },
     showRecords() {
@@ -678,6 +759,8 @@ export default {
   created() {
     vm = this
     this.onSearch()
+  },
+  mounted() {
   },
 }
 </script>
