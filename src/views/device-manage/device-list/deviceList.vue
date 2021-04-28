@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-28 11:13:22
+ * @LastEditTime: 2021-04-28 16:33:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -164,7 +164,7 @@ margin-left: 30px;
     <el-form :model="pagingQuery" :inline="true">
       <!-- <el-form-item label="创建人"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索" clearable></el-input></el-form-item> -->
       <el-form-item label="设备名称"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
-      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type"><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
+      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type" clearable><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
       <el-form-item label="设备型号"><el-input v-model.trim="pagingQuery.model" clearable></el-input></el-form-item>
       <el-form-item label="设备厂商"><el-input v-model="pagingQuery.manufacturer" clearable></el-input></el-form-item>
       <el-form-item label="设备SN"><el-input v-model.trim="pagingQuery.sn" clearable></el-input></el-form-item>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-28 15:46:14
+ * @LastEditTime: 2021-04-28 17:53:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -30,11 +30,11 @@
   <div class="cons">
       <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
         <el-form-item label="设备名称">
-        <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
+        <el-select v-model.trim="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="更新状态"><el-select v-model="pagingQuery.status" clearable><el-option v-for="(UpdateStatus, index) of deviceUpdateStatus" :key="index" :label="UpdateStatus.value" :value="UpdateStatus.id"></el-option></el-select></el-form-item>
+      <el-form-item label="更新状态"><el-select v-model.trim="pagingQuery.status" clearable><el-option v-for="(UpdateStatus, index) of deviceUpdateStatus" :key="index" :label="UpdateStatus.value" :value="UpdateStatus.id"></el-option></el-select></el-form-item>
       <el-form-item label="更新时间">
         <el-date-picker
           v-model="date"
@@ -64,7 +64,7 @@
       <el-table-column align="center" label="设备标识"><template v-slot="scope">{{ scope.row.deviceId | filterUniqueDeviceIdentifier }} </template></el-table-column>
       <el-table-column align="center" label="设备型号"><template v-slot="scope">{{ scope.row.deviceId | filterModel }} </template></el-table-column>
       <el-table-column align="center" label="当前版本" width="80"><template v-slot="scope">{{ scope.row.upgradeVersion }}</template></el-table-column>
-      <el-table-column align="center" label="在线状态" width="80"><template v-slot="scope"><span :class="onelineClass">{{ scope.row.deviceId | filterOnline }}</span></template></el-table-column>
+      <el-table-column align="center" label="在线状态" width="80"><template v-slot="scope"><span :class="onelineClass" :id="`oneline${ scope.row.id }`">{{ scope.row.deviceId | filterOnline }}</span></template></el-table-column>
       <el-table-column align="center" label="更新状态"><template v-slot="scope">{{ scope.row.status | filterStatus }}</template></el-table-column>
       <el-table-column align="center" label="下发时间" width="200"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
       <el-table-column align="center" label="升级时间" width="200"><template v-slot="scope">{{ scope.row.updateTime | filterDate }}</template></el-table-column>
@@ -111,7 +111,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'second',
+      activeName: 'first',
       getDeviceNames: [],
       deviceUpdateStatus: getDeviceUpdateStatus,
       pickerOptions: pickerOptions(),
@@ -124,8 +124,8 @@ export default {
 
       pagingQuery: {
         deviceId: null,
-        createTimeFrom: null,
-        createTimeTo: null,
+        timeFrom: null,
+        timeTo: null,
         status: null,
         
         current: 1, 
@@ -186,15 +186,21 @@ export default {
   },
      getTablelist(apkSerialNumber) {
       let [params] = [this.pagingQuery]
+      for(let o in params) {
+        if(!params[o] && params[o] !== 0) {
+          delete params[o]
+        }
+      }
       if(apkSerialNumber) {
-        params.apkSerialNumber = apkSerialNumber
+        params.serialNumber = apkSerialNumber
       } else {
-        delete params.apkSerialNumber
+        delete params.serialNumber
       }
       this.table_loading = true
       deviceUpdateRecords(params).then((res) => {
         this.tableData = []
         if(res.code === 0) {
+          console.log(this.pagingQuery.deviceId)
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
@@ -224,6 +230,11 @@ export default {
     //        }
         }
         this.table_loading = false
+        // new Promise.resolver().then(() => {
+        //   console.log(document.querySelector('oneline271'))
+        // })
+        Promise.resolve()
+
         } else {
           this.$message.error(res.msg)
           this.table_loading = false
@@ -235,19 +246,13 @@ export default {
       params.current = 1
       this.dataToogle()
     },
-  changeDate(item) {
-     let a = this.pagingQuery
-         a[item] =  moment(a[item]).format('YYYY-MM-DD')
-  },
-  changeDate1() {
-    this.changeDate('enrollTime')
-  },
   changeDate3() {
+    console.log( this.date)
     let _p = this.pagingQuery
       this.date && this.date.length
-        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD HH:mm")),
-          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD HH:mm")))
-        :  _p.createTimeFrom = _p.createTimeTo = null
+        ? ((_p.timeFrom = moment( this.date[0]).format("YYYY-MM-DD HH:mm:ss")),
+          (_p.timeTo = moment( this.date[1]).format("YYYY-MM-DD HH:mm:ss")))
+        :  _p.timeFrom = _p.timeTo = null
     },
 
 // 重新升级
