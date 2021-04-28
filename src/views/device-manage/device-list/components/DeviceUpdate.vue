@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-25 16:21:15
- * @LastEditTime: 2021-04-27 16:23:54
+ * @LastEditTime: 2021-04-28 11:35:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\gitee\pc\face-recognition-access\src\views\device-manage\device-list\components\DeviceUpdate.vue
@@ -121,6 +121,7 @@
 <script>
 
 import { deviceUpdateFile, deviceUpdate, downPatch } from '@/api/device-manage'
+import Cookies from 'js-cookie'
 
 export default {
     props: {
@@ -202,11 +203,11 @@ export default {
      let [isNumber, fileName] = [/^[0-9]+.?[0-9]*$/, fileRaw.name]
    
         if (!this.zipType(fileType, fileRaw.name)) { 
-          this.$message.error('上传压缩包只能是 apk 格式！', 4000)
+          this.$message.error('上传升级包只能是 apk 格式！', 4000)
           } else if (this.zipType(fileType, fileRaw.name) && !isLt1M) {
-             this.$message.error('上传zip大小不能超过500MB！', 4000)
+             this.$message.error('上传升级包大小不能超过500MB！', 4000)
           } else if (!this.zipType(fileType, fileRaw.name) && !isLt1M) {
-             this.$message.error('上传zip大小不能超过200MB,只能是 apk 格式！', 4000)
+             this.$message.error('上传升级包大小不能超过200MB,只能是 apk 格式！', 4000)
           } else if(fileName.lastIndexOf('-v') !== -1) {
               let vIndex = fileName.lastIndexOf('-v')
                   if(!isNumber.test(fileName[vIndex + 2])) {
@@ -231,6 +232,8 @@ export default {
                 this.update_loading = false
                 sessionStorage.setItem('prevBtn', true)
                 this.$emit('showRecords')
+                Cookies.set('apkSerialNumber', res.data)
+                
             } else {
                 this.update_loading = false
                 this.$message.error(res.msg, 4000)

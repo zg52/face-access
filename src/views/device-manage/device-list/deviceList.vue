@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-27 17:19:32
+ * @LastEditTime: 2021-04-28 11:13:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -196,9 +196,9 @@ margin-left: 30px;
         <div class="formSuspend clearfix" v-show="formSuspend">
           <div class="fl"><span class="tip"><img src="../../../assets/image/check.jpg"> 
           <span>已选<i class="theme"> {{ formSuspendParams.deviceNum }}</i> 个设备，所属设备类型<i class="theme"> {{ formSuspendParams.deviceType }}</i> 种 </span></span><el-button @click="cacelSuspend" size="mini" class="cancel">取消</el-button></div>
-          <div class="fr"><span class="tip1" v-show="formSuspendTipShow"><i class="el-icon-info"></i> 提示：批量升级设备，所选设备需为同一种类型且为在线状态</span>
+          <div class="fr"><span class="tip1" v-show="formSuspendTipShow"><i class="el-icon-info"></i> 提示：如需批量升级设备，所选设备需为同一种类型且为在线状态</span>
           <el-button type="warning" size="mini" @click="onDeletes"><i class="el-icon-delete"></i> 删除</el-button>
-          <el-button size="mini" type="primary" :disabled="formSuspendTipShow"><svg-icon icon-class="update"/> 升级</el-button></div>
+          <el-button size="mini" type="primary" :disabled="formSuspendTipShow" @click="updateDevices"><svg-icon icon-class="update"/> 升级</el-button></div>
         </div>
       <!-- <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button> -->
         <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
@@ -665,7 +665,7 @@ export default {
        } else {
          if(row.online === true) {
            this.updateParams.deviceId = row.id
-           this.updateParams.deviceType = this.filterDiveType()
+           this.updateParams.deviceType = this.filterDiveType(row.type)
            this.updateParams.updateVisible = true
          } else {
            this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
@@ -675,28 +675,13 @@ export default {
 
 // 批量升级设备
     updateDevices() {
-       if (this.multipleSelection.length !== 0) {
-        this.$confirm("此操作将永久删除已选设备, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }).then(() => {
-            for (let i = 0; i < this.multipleSelection.length; i++) {
-              deleteDevice(this.multipleSelection[i].id).then((res) => {
-                if (res.code == 0) {
-                  if(i + 1 >= this.multipleSelection.length) {
-                  this.onSearch()
-                  this.$message.success(res.msg)
-                  } 
-                } else {
-                     this.$message.error(res.msg)
-                  }
-              })
-            }
-          }).catch(() => {
-             this.$message.info('已取消删除')
-             this.$refs.multipleTable.clearSelection()
-          })
+      let selections = this.multipleSelection
+       if (selections.length !== 0) {
+         let deviceIds = []
+            selections.map(item => deviceIds.push(item.id))
+            this.updateParams.deviceId = deviceIds.flat(Infinity).join()
+           this.updateParams.deviceType = this.filterDiveType(selections[0].type)
+           this.updateParams.updateVisible = true
       } else {
         this.$message.warning('请在列表中勾选要升级的同类型设备')
       }
@@ -724,7 +709,6 @@ export default {
       
     },
     formSuspendTip() {
-    console.log(this.formSuspendParams['deviceOnline'])
      if(!this.formSuspendParams['deviceOnline'].includes('false')) {
        if(this.formSuspendParams['deviceType'] >= 2) {
          this.formSuspendTipShow = true
