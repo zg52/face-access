@@ -122,6 +122,7 @@
 
 import { deviceUpdateFile, deviceUpdate, downPatch } from '@/api/device-manage'
 import Cookies from 'js-cookie'
+import bus from '@/views/eventBus.js'
 
 export default {
     props: {
@@ -200,22 +201,31 @@ export default {
    return fileType === 'application/vnd.android.package-archive' || (fileName).substr(zipFormat + 1).includes('apk')
   },
   zipRule(fileType, fileSize, fileRaw) {
+	  let _this = this
      const isLt1M = fileSize / 1024 / 1024 < 200
      let [isNumber, fileName] = [/^[0-9]+.?[0-9]*$/, fileRaw.name]
+	 function filenameTip() { _this.$message.error('文件命名格式错误！', 4000) }
    
         if (!this.zipType(fileType, fileRaw.name)) { 
           this.$message.error('上传升级包只能是 apk 格式！', 4000)
           } else if (this.zipType(fileType, fileRaw.name) && !isLt1M) {
-             this.$message.error('上传升级包大小不能超过500MB！', 4000)
+             this.$message.error('上传升级包大小不能超过200MB！', 4000)
           } else if (!this.zipType(fileType, fileRaw.name) && !isLt1M) {
              this.$message.error('上传升级包大小不能超过200MB,只能是 apk 格式！', 4000)
           } else if(fileName.lastIndexOf('-v') !== -1) {
               let vIndex = fileName.lastIndexOf('-v')
                   if(!isNumber.test(fileName[vIndex + 2])) {
-                      this.$message.error('文件命名格式错误！', 4000)
+                      filenameTip()
                       return false
                   }
-          }
+				  if(!isNumber.test(fileName.substr(-5, 1))) {
+					 filenameTip()
+					  return false
+				  }
+          } else if(fileName.lastIndexOf('-v') == -1) {
+			 filenameTip()
+			  return false
+		  }
         return this.zipType(fileType, fileRaw.name) && isLt1M
     },
     updateHandle() {
@@ -232,9 +242,9 @@ export default {
             if(res.code === 0) {
                 this.update_loading = false
                 sessionStorage.setItem('prevBtn', true)
-                this.$emit('showRecords')
                 Cookies.set('apkSerialNumber', res.data)
-                
+                this.$emit('showRecords')
+				bus.$emit('apkSerialNumberSearch')
             } else {
                 this.update_loading = false
                 this.$message.error(res.msg, 4000)

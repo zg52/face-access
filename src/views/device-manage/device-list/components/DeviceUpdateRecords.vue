@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-05-06 11:36:00
+ * @LastEditTime: 2021-05-06 11:45:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -34,15 +34,15 @@
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="更新状态"><el-select v-model.trim="pagingQuery.status" clearable><el-option v-for="(UpdateStatus, index) of deviceUpdateStatus" :key="index" :label="UpdateStatus.value" :value="UpdateStatus.id"></el-option></el-select></el-form-item>
-      <el-form-item label="更新时间">
+      <el-form-item label="升级状态"><el-select v-model.trim="pagingQuery.status" clearable><el-option v-for="(UpdateStatus, index) of deviceUpdateStatus" :key="index" :label="UpdateStatus.value" :value="UpdateStatus.id"></el-option></el-select></el-form-item>
+      <el-form-item label="升级时间">
         <el-date-picker
           v-model="date"
           type="datetimerange"
           align="right"
           unlink-panels
           range-separator="至"
-          start-placeholder="创建时间"
+          start-placeholder="开始时间"
           end-placeholder="结束时间"
           :picker-options="pickerOptions"
           :default-time="['00:00:00', '23:59:59']"
@@ -65,7 +65,7 @@
       <el-table-column align="center" label="设备型号"><template v-slot="scope">{{ scope.row.deviceId | filterModel }} </template></el-table-column>
       <el-table-column align="center" label="当前版本" width="80"><template v-slot="scope">{{ scope.row.upgradeVersion }}</template></el-table-column>
       <el-table-column align="center" label="在线状态" width="80"><template v-slot="scope"><span :class="onelineClass" :id="`oneline${ scope.row.id }`">{{ scope.row.deviceId | filterOnline }}</span></template></el-table-column>
-      <el-table-column align="center" label="更新状态"><template v-slot="scope">{{ scope.row.status | filterStatus }}</template></el-table-column>
+      <el-table-column align="center" label="更新状态"><template v-slot="scope"><span :class="statusClass(scope.row)">{{ scope.row.status | filterStatus }}</span></template></el-table-column>
       <el-table-column align="center" label="下发时间" width="200"><template v-slot="scope">{{ scope.row.createTime }}</template></el-table-column>
       <el-table-column align="center" label="升级时间" width="200"><template v-slot="scope">{{ scope.row.updateTime | filterDate }}</template></el-table-column>
        <el-table-column align="center" label="操作人"><template v-slot="scope">{{ scope.row.operator }}</template></el-table-column>
@@ -96,6 +96,7 @@ import { getDeviceNames, getDeviceUpdateStatus, getDeviceISOnline } from '@/util
 import { pickerOptions } from '@/utils'
 import moment from 'moment'
 import Cookies from 'js-cookie'
+import bus from '@/views/eventBus.js'
 
 let vm
 
@@ -144,10 +145,13 @@ export default {
       return txt
   },
   filterStatus(value) {
-    console.log(value + 'll')
+	  let txt
     for(let i = 0; i < getDeviceUpdateStatus.length; i++) {
-      return getDeviceUpdateStatus[i].id == value ? getDeviceUpdateStatus[i].value : ''
+	  switch(getDeviceUpdateStatus[i].id) {
+		  case value : txt = getDeviceUpdateStatus[i].value;break;
+	  }
     }
+	return txt
   },
    filterOnline(value) {
      let txt = null
@@ -184,6 +188,8 @@ export default {
       },
   dataToogle() {
     this.activeName === 'first' ? this.getTablelist(Cookies.get('apkSerialNumber')) : this.getTablelist(null)
+	
+	// sessionStorage.setItem('apkSerialNumber', res.data)
   },
      getTablelist(apkSerialNumber) {
       let [params] = [this.pagingQuery]
@@ -319,13 +325,25 @@ export default {
      prevBtnShow() {
         return sessionStorage.getItem('prevBtn') ? true : false
     },
+	statusClass(row) {
+		let s;
+		switch(row.status) {
+			case 1 : s = 'green'; break;
+			case 3 : s = 'red'; break;
+		}
+		return s
+	}
   },
   created() {
+
     vm = this
    getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
-  this.onSearch()
+	  this.onSearch()
+	  bus.$on('apkSerialNumberSearch',res => {
+	  				this.onSearch()
+	   })
   },
   mounted() {
     this.prevBtnShow()

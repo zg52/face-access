@@ -116,6 +116,7 @@ const
       { id: 'statuses:removed', value: '已删除'},
     ],
     operate: [
+	 { id: 'deviceActivate', value: '激活' },
       { id: 'open', value: '开门' },
       { id: 'close', value: '关门' },
       { id: 'restart', value: '重启' },

@@ -342,9 +342,10 @@ import {
   addDevice,  // 增设备
   editDevice, // 编辑设备
   searchDevice,  // 查设备列表
-  // getDeviceDetails, // 查设备详情
+ // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
   instructDevice, // 操作设备
+  deviceActivationMsg, // 设备激活信息
   // deviceUpdateRecords
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
@@ -352,7 +353,7 @@ import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/busi
 import DeviceUpdate from './components/DeviceUpdate'
 import DeviceUpdateRecords from './components/DeviceUpdateRecords'
 import moment from "moment"
-// import { filterDate } from '@/filters'
+import Cookies from 'js-cookie'
 const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
 let vm
 
@@ -459,7 +460,12 @@ export default {
       deviceType: null,
       deviceOnline: []
     },
-    formSuspendTipShow: false
+    formSuspendTipShow: false,
+	
+// 设备激活信息
+	mqtt_deviceId_http: {
+		
+	}
   }
   },
   filters: {
@@ -652,7 +658,7 @@ export default {
 // 操作设备
      handleCommand(command) {
        setTimeout(()=> {
-          if(command !== 'update') {
+          if(command !== 'update' && command !== 'deviceActivate') {
            instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
          res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
         })
@@ -662,7 +668,7 @@ export default {
     hanlecommandData(commandId, row) {
        if(commandId !== 'update') {
         this.instructDeviceId = row.id
-       } else {
+       } else if(commandId == 'update') {
          if(row.online === true) {
            this.updateParams.deviceId = row.id
            this.updateParams.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
@@ -672,6 +678,9 @@ export default {
            this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
          }
        }
+	   if(commandId == 'deviceActivate') {
+		   alert(0)
+		   }
     },
 
 // 批量升级设备
@@ -744,6 +753,17 @@ export default {
   created() {
     vm = this
     this.onSearch()
+	
+// 获取设备激活信息
+	deviceActivationMsg().then(res => {
+		if(res.code === 0) {
+			this.mqtt_deviceId_http = {
+				mqtt: res.mqttServer,
+				http: res.httpServer,
+				deviceId: null
+			}
+		}
+	})
   },
   mounted() {
   },
