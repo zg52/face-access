@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-28 16:33:35
+ * @LastEditTime: 2021-05-06 11:22:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -345,7 +345,7 @@ import {
   // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
   instructDevice, // 操作设备
-  deviceUpdateRecords
+  // deviceUpdateRecords
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
@@ -665,6 +665,7 @@ export default {
        } else {
          if(row.online === true) {
            this.updateParams.deviceId = row.id
+           this.updateParams.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
            this.updateParams.deviceType = this.filterDiveType(row.type)
            this.updateParams.updateVisible = true
          } else {

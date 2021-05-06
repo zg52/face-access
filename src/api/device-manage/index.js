@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-04-27 15:45:00
+ * @LastEditTime: 2021-05-06 11:01:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -108,8 +108,8 @@ export function deviceUpdateFile() {
 export function deviceUpdate(params) {
   return request({
      url: `${ ota }upgrade/upgrade`,
-     method: 'GET',
-     params
+     method: 'POST',
+     data: params
    })
  }
  

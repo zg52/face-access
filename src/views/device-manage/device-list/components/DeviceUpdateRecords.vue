@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-28 17:53:56
+ * @LastEditTime: 2021-05-06 11:36:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -61,7 +61,7 @@
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="设备名称"><template v-slot="scope">{{ scope.row.deviceId | getDeviceId_name }}</template></el-table-column>
        <el-table-column align="center" label="升级类型" width="80"><template v-slot="scope">{{ scope.row.upgradeType == 1 ? '应用' : '系统' }}</template></el-table-column>
-      <el-table-column align="center" label="设备标识"><template v-slot="scope">{{ scope.row.deviceId | filterUniqueDeviceIdentifier }} </template></el-table-column>
+      <el-table-column align="center" label="设备标识"><template v-slot="scope">{{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
       <el-table-column align="center" label="设备型号"><template v-slot="scope">{{ scope.row.deviceId | filterModel }} </template></el-table-column>
       <el-table-column align="center" label="当前版本" width="80"><template v-slot="scope">{{ scope.row.upgradeVersion }}</template></el-table-column>
       <el-table-column align="center" label="在线状态" width="80"><template v-slot="scope"><span :class="onelineClass" :id="`oneline${ scope.row.id }`">{{ scope.row.deviceId | filterOnline }}</span></template></el-table-column>
@@ -70,7 +70,7 @@
       <el-table-column align="center" label="升级时间" width="200"><template v-slot="scope">{{ scope.row.updateTime | filterDate }}</template></el-table-column>
        <el-table-column align="center" label="操作人"><template v-slot="scope">{{ scope.row.operator }}</template></el-table-column>
       <el-table-column align="center" fixed="right" width="117" label="操作"><template v-slot="scope"><el-button class="radius_45" size="mini" type="primary" @click="toUpgrade(scope.row)"><svg-icon icon-class="update"/> 重新升级</el-button></template></el-table-column>
-    </el-table> 
+    </el-table>
     
     <el-pagination
          @size-change="handleSizeChange"
@@ -144,6 +144,7 @@ export default {
       return txt
   },
   filterStatus(value) {
+    console.log(value + 'll')
     for(let i = 0; i < getDeviceUpdateStatus.length; i++) {
       return getDeviceUpdateStatus[i].id == value ? getDeviceUpdateStatus[i].value : ''
     }
@@ -200,7 +201,7 @@ export default {
       deviceUpdateRecords(params).then((res) => {
         this.tableData = []
         if(res.code === 0) {
-          console.log(this.pagingQuery.deviceId)
+          // console.log(this.pagingQuery.deviceId)
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
@@ -247,7 +248,7 @@ export default {
       this.dataToogle()
     },
   changeDate3() {
-    console.log( this.date)
+    // console.log( this.date)
     let _p = this.pagingQuery
       this.date && this.date.length
         ? ((_p.timeFrom = moment( this.date[0]).format("YYYY-MM-DD HH:mm:ss")),
@@ -274,6 +275,7 @@ export default {
       if(onelineId) {
         deviceUpdate({
           ids: row.deviceId,
+          uniqueDeviceIdentifier: row.uniqueDeviceIdentifier,
           operator: row.operator,
           version: row.upgradeVersion,
           upgradeType: row.upgradeType == 1 ? 'APP' : 'OS',

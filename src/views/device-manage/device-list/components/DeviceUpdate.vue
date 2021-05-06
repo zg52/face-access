@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-25 16:21:15
- * @LastEditTime: 2021-04-28 11:35:04
+ * @LastEditTime: 2021-05-06 11:23:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\gitee\pc\face-recognition-access\src\views\device-manage\device-list\components\DeviceUpdate.vue
@@ -151,6 +151,7 @@ export default {
             // file: null,
             fileId: null,
             ids: null,
+            uniqueDeviceIdentifier: null,
             version: null,
             operator: this.$store.getters.username
             
@@ -263,6 +264,7 @@ export default {
    },
    created() {
        this.form.ids = this.updateParams.deviceId
+       this.form.uniqueDeviceIdentifier = this.updateParams.uniqueDeviceIdentifier
    },
    mounted() {
    },
