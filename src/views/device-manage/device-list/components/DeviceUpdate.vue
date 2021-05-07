@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-25 16:21:15
- * @LastEditTime: 2021-05-06 11:23:15
+ * @LastEditTime: 2021-05-07 16:50:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\gitee\pc\face-recognition-access\src\views\device-manage\device-list\components\DeviceUpdate.vue
@@ -187,7 +187,9 @@ export default {
             this.form.fileId = res.data
             this.open1(`${ fileName } 上传成功`, '成功', 'success')
            if(index !== -1) {
-              this.form.version = fileName.substr(index+ 1, 4)
+              let subName = fileName.substr(index+ 1)
+              let apkIndex = subName.lastIndexOf('.apk')
+               this.form.version = subName.substr(0, apkIndex)
            }             
           }
     },

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-04-09 10:47:11
+ * @LastEditTime: 2021-05-07 17:06:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -223,8 +223,10 @@ export function verificationModes_handle(value) {
       return get_issuePersonStatus()[0].value
     } else if(value.includes(get_issuePersonStatus()[1].id)) {
       return get_issuePersonStatus()[1].value
-    } else {
+    } else if(value.includes(get_issuePersonStatus()[2].id)) {
       return get_issuePersonStatus()[2].value
+    } else {
+      return get_issuePersonStatus()[3].value
     }
   }
 

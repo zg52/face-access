@@ -149,7 +149,7 @@ export function toUpdateDevice(params) {
  */
 export function deviceActivationMsg(params) {
 	return request({
-		url: `${ passing }/config/server`,
+		url: `${ passing }config/server`,
 		method: 'GET',
 		params
 	})

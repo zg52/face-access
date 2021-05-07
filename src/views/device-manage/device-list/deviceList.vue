@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-05-06 11:22:47
+ * @LastEditTime: 2021-05-07 17:26:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -333,8 +333,10 @@ margin-left: 30px;
   
 <!-- ota升级 -->
   <DeviceUpdate v-if="updateParams.updateVisible" :updateParams="updateParams" @showRecords="showRecords" />
-  <!-- ota升级记录 -->
+<!-- ota升级记录 -->
   <DeviceUpdateRecords :updateRecordsShow="updateRecordsShow" :deviceList="deviceList" @recordsHide="recordsHide" />
+  <!-- 设备激活信息 -->
+  <DeviceActivation :mqtt_deviceId_http="mqtt_deviceId_http" :actionShow="actionShow" :deviceName="deviceName" @actionHide="actionHide" />
   </div>
 </template>
 <script>
@@ -352,6 +354,7 @@ import { pickerOptions } from '@/utils'
 import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
 import DeviceUpdate from './components/DeviceUpdate'
 import DeviceUpdateRecords from './components/DeviceUpdateRecords'
+import DeviceActivation from './components/DeviceActivation'
 import moment from "moment"
 import Cookies from 'js-cookie'
 const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
@@ -361,7 +364,8 @@ export default {
   name: "deviceList",
   components: {
     DeviceUpdate,
-    DeviceUpdateRecords
+    DeviceUpdateRecords,
+    DeviceActivation
   },
   data() {
     return {
@@ -465,7 +469,9 @@ export default {
 // 设备激活信息
 	mqtt_deviceId_http: {
 		
-	}
+	},
+  actionShow: false,
+  deviceName: null
   }
   },
   filters: {
@@ -679,7 +685,9 @@ export default {
          }
        }
 	   if(commandId == 'deviceActivate') {
-		   alert(0)
+		   this.mqtt_deviceId_http.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
+       this.deviceName = row.name
+       this.actionShow = true
 		   }
     },
 
@@ -748,6 +756,9 @@ export default {
     },
     showRecords() {
       this.updateRecordsShow = true
+    },
+    actionHide() {
+      this.actionShow = false
     }
   },
   created() {
@@ -758,9 +769,9 @@ export default {
 	deviceActivationMsg().then(res => {
 		if(res.code === 0) {
 			this.mqtt_deviceId_http = {
-				mqtt: res.mqttServer,
-				http: res.httpServer,
-				deviceId: null
+				"mqtt": res.data.mqttServer,
+				"http": res.data.httpServer,
+				"uniqueDeviceIdentifier": null
 			}
 		}
 	})

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-04-25 15:30:39
+ * @LastEditTime: 2021-05-07 17:00:59
  * @LastEditors: Please set LastEditors
  * @Description: 全局业务参数配置及信息获取
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
@@ -137,7 +137,9 @@ const
  issuePersonStatus = [
    { id: 'normal',value: '已下发' },
    { id: 'issuing', value: '下发中' },
-   { id: 'removing', value: '删除中' }
+   { id: 'removing', value: '删除中' },
+   { id: 'issue_failed', value: '下发失败' },
+   { id: 'remove_failed', value: '删除失败' }
  ],
  deviceUpdateStatus = [
 	 { id: 0, value: '已下发' },
