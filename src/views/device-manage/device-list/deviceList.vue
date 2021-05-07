@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-22 18:14:23
+ * @LastEditTime: 2021-05-07 17:26:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -98,6 +98,45 @@ margin-left: 30px;
   font-size: 45px;
 }
 .pt15{padding-top: 15px!important;}
+.xuan {
+  position:relative;width:100%;
+   ::v-deep.el-form-item__content {
+    width: 100%;
+  }
+}
+.formSuspend {
+  transition: all .4s;
+  position:absolute;
+  width:100%;
+  background: #fff;
+  // box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+  border: #DCDFE6 1px solid;
+  border-left: none;
+  border-right: none;
+  height: 52px;
+  padding-top: 7px;
+  .cancel {
+    margin-left: 20px;
+  }
+  .tip i {
+    font-style: normal;
+  }
+  .tip img {
+   position: relative;
+   top:2px;
+    margin-right: 5px;
+  }
+  .fr {
+    margin-right: 2%;
+  }
+.tip1 {
+  color: #999;
+  padding-right: 30px;
+}
+}
+.theme {
+  color: #8a16ff;
+}
 </style>
 
 <template>
@@ -125,7 +164,7 @@ margin-left: 30px;
     <el-form :model="pagingQuery" :inline="true">
       <!-- <el-form-item label="创建人"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索" clearable></el-input></el-form-item> -->
       <el-form-item label="设备名称"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
-      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type"><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
+      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type" clearable><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
       <el-form-item label="设备型号"><el-input v-model.trim="pagingQuery.model" clearable></el-input></el-form-item>
       <el-form-item label="设备厂商"><el-input v-model="pagingQuery.manufacturer" clearable></el-input></el-form-item>
       <el-form-item label="设备SN"><el-input v-model.trim="pagingQuery.sn" clearable></el-input></el-form-item>
@@ -149,11 +188,25 @@ margin-left: 30px;
       </el-form-item>
      <el-form-item label="设备状态"><el-select class="w100" v-model="states" clearable @change="changeStates"><el-option v-for="(deviceState, index) of deviceStates" :key="index" :label="deviceState.value" :value="deviceState.id"></el-option></el-select></el-form-item>
      
-      <el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
-      <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
-        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
+     <el-form-item class="fr"><el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
+        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button></el-form-item> <br>
+
+ <!-- 悬浮 -->
+      <el-form-item class="xuan">
+        <div class="formSuspend clearfix" v-show="formSuspend">
+          <div class="fl"><span class="tip"><img src="../../../assets/image/check.jpg"> 
+          <span>已选<i class="theme"> {{ formSuspendParams.deviceNum }}</i> 个设备，所属设备类型<i class="theme"> {{ formSuspendParams.deviceType }}</i> 种 </span></span><el-button @click="cacelSuspend" size="mini" class="cancel">取消</el-button></div>
+          <div class="fr"><span class="tip1" v-show="formSuspendTipShow"><i class="el-icon-info"></i> 提示：如需批量升级设备，所选设备需为同一种类型且为在线状态</span>
+          <el-button type="warning" size="mini" @click="onDeletes"><i class="el-icon-delete"></i> 删除</el-button>
+          <el-button size="mini" type="primary" :disabled="formSuspendTipShow" @click="updateDevices"><svg-icon icon-class="update"/> 升级</el-button></div>
+        </div>
+      <!-- <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button> -->
+        <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
+      <el-button type="primary" @click.prevent="updateRecordsShow = true"><i class="el-icon-view"></i><span>查看设备升级记录</span></el-button>
+       <!-- <el-button type="primary" @click="updateDevices"><svg-icon icon-class="update"/> <span>批量升级设备</span></el-button> -->
       <router-link class="ml10" to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
+      </el-form-item>
+    
     </el-form>
     
     <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
@@ -217,7 +270,7 @@ margin-left: 30px;
             <el-dropdown class="ml10" @command="handleCommand">
                <el-button type="primary" class="radius_45" size="mini">更多操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
                <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.id" @click.prevent.native="hanlecommandData(scope.row)">{{ command.value }}</el-dropdown-item>
+                 <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.id" @click.prevent.native="hanlecommandData(command.id, scope.row)">{{ command.value }}</el-dropdown-item>
                </el-dropdown-menu>
               </el-dropdown>
          </div>
@@ -277,7 +330,13 @@ margin-left: 30px;
     </div>
      </div>
   </el-dialog>
-
+  
+<!-- ota升级 -->
+  <DeviceUpdate v-if="updateParams.updateVisible" :updateParams="updateParams" @showRecords="showRecords" />
+<!-- ota升级记录 -->
+  <DeviceUpdateRecords :updateRecordsShow="updateRecordsShow" :deviceList="deviceList" @recordsHide="recordsHide" />
+  <!-- 设备激活信息 -->
+  <DeviceActivation :mqtt_deviceId_http="mqtt_deviceId_http" :actionShow="actionShow" :deviceName="deviceName" @actionHide="actionHide" />
   </div>
 </template>
 <script>
@@ -285,19 +344,29 @@ import {
   addDevice,  // 增设备
   editDevice, // 编辑设备
   searchDevice,  // 查设备列表
-  // getDeviceDetails, // 查设备详情
+ // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
-  instructDevice // 操作设备
+  instructDevice, // 操作设备
+  deviceActivationMsg, // 设备激活信息
+  // deviceUpdateRecords
  } from '@/api/device-manage'
 import { pickerOptions } from '@/utils'
 import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
+import DeviceUpdate from './components/DeviceUpdate'
+import DeviceUpdateRecords from './components/DeviceUpdateRecords'
+import DeviceActivation from './components/DeviceActivation'
 import moment from "moment"
-// import { filterDate } from '@/filters'
+import Cookies from 'js-cookie'
 const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
 let vm
 
 export default {
   name: "deviceList",
+  components: {
+    DeviceUpdate,
+    DeviceUpdateRecords,
+    DeviceActivation
+  },
   data() {
     return {
       table_loading: false,
@@ -310,7 +379,7 @@ export default {
       deviceTypes: getDeviceTypes(),
       deviceISOnline: getDeviceISOnline(),
       deviceStates: getDeviceStates().search,
-      multipleSelection: [], //多选删除
+      multipleSelection: [], //多选
       date: null,
       states: null,
       instructDeviceId: null,
@@ -360,7 +429,7 @@ export default {
        createTimeTo: null,
        
        current: 1, 
-       size: 20,
+       size: 30,
        total: null,
       },
 
@@ -378,7 +447,31 @@ export default {
     },
 
 // 设备操作字段
-    commandes: getDeviceStates().operate
+    commandes: getDeviceStates().operate,
+
+// 设备升级
+    updateParams: {
+       deviceId: null,
+       deviceType: null,
+       updateVisible: false,
+    },
+    updateRecordsShow: false,
+    
+// form悬浮
+    formSuspend: false,
+    formSuspendParams: {
+      deviceNum: null,
+      deviceType: null,
+      deviceOnline: []
+    },
+    formSuspendTipShow: false,
+	
+// 设备激活信息
+	mqtt_deviceId_http: {
+		
+	},
+  actionShow: false,
+  deviceName: null
   }
   },
   filters: {
@@ -571,13 +664,45 @@ export default {
 // 操作设备
      handleCommand(command) {
        setTimeout(()=> {
-         instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
-       res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
-      })
+          if(command !== 'update' && command !== 'deviceActivate') {
+           instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
+         res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
+        })
+          }
        })
       },
-    hanlecommandData(x) {
-        this.instructDeviceId = x.id
+    hanlecommandData(commandId, row) {
+       if(commandId !== 'update') {
+        this.instructDeviceId = row.id
+       } else if(commandId == 'update') {
+         if(row.online === true) {
+           this.updateParams.deviceId = row.id
+           this.updateParams.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
+           this.updateParams.deviceType = this.filterDiveType(row.type)
+           this.updateParams.updateVisible = true
+         } else {
+           this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
+         }
+       }
+	   if(commandId == 'deviceActivate') {
+		   this.mqtt_deviceId_http.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
+       this.deviceName = row.name
+       this.actionShow = true
+		   }
+    },
+
+// 批量升级设备
+    updateDevices() {
+      let selections = this.multipleSelection
+       if (selections.length !== 0) {
+         let deviceIds = []
+            selections.map(item => deviceIds.push(item.id))
+            this.updateParams.deviceId = deviceIds.flat(Infinity).join()
+           this.updateParams.deviceType = this.filterDiveType(selections[0].type)
+           this.updateParams.updateVisible = true
+      } else {
+        this.$message.warning('请在列表中勾选要升级的同类型设备')
+      }
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val
@@ -588,7 +713,32 @@ export default {
       this.getDeviceList()
     },
     handleSelectionChange(val) {
+      let [deviceTypeNum, deviceOnline] = [[], []]
       this.multipleSelection = val
+     this.formSuspend = val.length !== 0 ? true : false
+     this.formSuspendParams.deviceNum = val.length
+     for(let i = 0; i < val.length; i++) {
+         deviceTypeNum.push(val[i].type)
+        deviceOnline.push(val[i].online)
+     }
+     this.formSuspendParams.deviceType = [...new Set(deviceTypeNum)].length
+     this.formSuspendParams.deviceOnline = [...new Set(deviceOnline)].toString()
+     this.formSuspendTip()
+      
+    },
+    formSuspendTip() {
+     if(!this.formSuspendParams['deviceOnline'].includes('false')) {
+       if(this.formSuspendParams['deviceType'] >= 2) {
+         this.formSuspendTipShow = true
+       } else {
+         this.formSuspendTipShow = false
+       }
+     } else {
+       this.formSuspendTipShow = true
+     }
+    },
+    cacelSuspend() {
+      this.formSuspend = false, this.multipleSelection = [], this.$refs.multipleTable.clearSelection()
     },
    refreshPagingQuery() {
       this.pagingQuery = {}
@@ -598,11 +748,35 @@ export default {
     resetAddDeviceData(e) { 
     this.$refs[e].resetFields()
    },
-   
+    filterDiveType(value) {
+      return value === vm.deviceTypes[0].id ? vm.deviceTypes[0].value : vm.deviceTypes[1].value
+    },
+    recordsHide(x) {
+      x ? (this.updateRecordsShow = false, this.updateParams.updateVisible = false) : (this.updateRecordsShow = false, this.updateParams.updateVisible = true)
+    },
+    showRecords() {
+      this.updateRecordsShow = true
+    },
+    actionHide() {
+      this.actionShow = false
+    }
   },
   created() {
     vm = this
     this.onSearch()
+	
+// 获取设备激活信息
+	deviceActivationMsg().then(res => {
+		if(res.code === 0) {
+			this.mqtt_deviceId_http = {
+				"mqtt": res.data.mqttServer,
+				"http": res.data.httpServer,
+				"uniqueDeviceIdentifier": null
+			}
+		}
+	})
+  },
+  mounted() {
   },
 }
 </script>
