@@ -108,10 +108,11 @@ import QRCode from 'qrcodejs2'
 		this.$emit('actionHide')
 			},
 	creatQrCode() {
-		console.log(JSON.stringify(this.mqtt_deviceId_http))
 	    this.loading = true
 		this.$refs.qrCodeUrl.innerHTML = ''
-		let txt = `${ this.mqtt_deviceId_http.mqtt }#${ this.mqtt_deviceId_http.uniqueDeviceIdentifier }`
+		let txt = `${ this.mqtt_deviceId_http.mqtt }#${ this.mqtt_deviceId_http.http }#${ this.mqtt_deviceId_http.uniqueDeviceIdentifier }`
+		console.log(txt)
+		console.log(this.encode(txt))
 		setTimeout(() => {
 		new QRCode(this.$refs.qrCodeUrl, {
 			text: this.encode(txt),
@@ -119,7 +120,7 @@ import QRCode from 'qrcodejs2'
             height: 200,
             colorDark: '#000',
             colorLight: '#fff',
-            correctLevel: QRCode.CorrectLevel.H
+            correctLevel: QRCode.CorrectLevel.L
         })
 	    this.loading = false}, 400)
     },
