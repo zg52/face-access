@@ -154,8 +154,7 @@ $light_gray:#eee;
 .verifyCode_btn {
   width: 126px;
   height: 40px;
-    letter-spacing: 1px;
-
+  letter-spacing: 1px;
 }
 .verify {
   width: 232px;

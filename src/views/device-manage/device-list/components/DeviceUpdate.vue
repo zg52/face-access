@@ -94,6 +94,7 @@
                         :on-success="handleZipSuccess"
                         :on-remove="handleRemove"
                         :limit="1"
+						@clearFiles="clearFiles"
                         >
                       <el-button slot="trigger"><i class="el-icon-upload2"></i> 上传文件</el-button> 
                       <!-- <span class="d" @click="getBatchHandle"><i class="el-icon-download"></i> 获取固件</span> -->
@@ -180,6 +181,9 @@ export default {
        beforeZipUpload(file) {
     return this.zipRule(file.type, file.size, file)
   },
+  clearFiles() {
+	
+  },
    handleZipSuccess(res, file) {
      if(res.code === 0) {
         let [fileName, index] = [file.name, file.name.lastIndexOf('-')]
@@ -191,7 +195,11 @@ export default {
               let apkIndex = subName.lastIndexOf('.apk')
                this.form.version = subName.substr(0, apkIndex)
            }             
-          }
+          } else {
+			   this.$refs.uploadZip.clearFiles()
+			  this.$message.error(res.msg, 4000)
+			  this.open1(`${ fileName } 上传失败`, '失败', 'error')
+		  }
     },
   zipError(err, file, fileList) {
     // if(this.zipType(file.raw.type, file.raw.name)) {
@@ -242,6 +250,7 @@ export default {
          this.update_loading = true
         deviceUpdate(this.form).then((res) => {
             if(res.code === 0) {
+				this.handleRemove()
                 this.update_loading = false
                 sessionStorage.setItem('prevBtn', true)
                 Cookies.set('apkSerialNumber', res.data)

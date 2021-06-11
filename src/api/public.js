@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-12 17:56:39
+ * @LastEditTime: 2021-06-08 17:44:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\article.js
@@ -18,7 +18,7 @@ export { proxyUrl as  proxyUrl_1}
  * @description: 公用图片地址
  */
 export function imgUrl(target, imgId) {
-   return `_api/api/v1/person/person-images?imageId=` // 海草上传
+   return `_api/api/v1/person/person-images?imageId=` // 海草图片下载
 }
 
   /**

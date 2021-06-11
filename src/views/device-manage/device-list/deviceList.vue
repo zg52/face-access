@@ -686,8 +686,8 @@ export default {
        }
 	   if(commandId == 'deviceActivate') {
 		   this.mqtt_deviceId_http.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
-       this.deviceName = row.name
-       this.actionShow = true
+           this.deviceName = row.name
+           this.actionShow = true
 		   }
     },
 

@@ -28,7 +28,6 @@
 <template>
   <div class="app-container1">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.personName" clearable></el-input></el-form-item>
       <el-form-item label="通行设备">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
@@ -118,7 +117,6 @@ export default {
       multipleSelection: [],
       
       pagingQuery: {
-        personName: null,
         deviceId: null,
         ruleName: null,
         direction: null,

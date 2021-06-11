@@ -23,10 +23,12 @@ module.exports = {
   assetsDir: 'static',
   // lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
+  lintOnSave: false,
   devServer: {
     proxy: {
       "/_api": {
-        target: "http://192.168.10.148:31181/",
+        target: "http://192.168.10.148:28888/",
+        // target: "http://192.168.10.148:31181/",
         // target: "http://192.168.10.148:8082/",
         pathRewrite: { "^/_api": "" },
         changeOrigin: true,
@@ -37,7 +39,7 @@ module.exports = {
     open: true,
     overlay: {
       warnings: false,
-      errors: true
+      errors: false
     },
     // before: require('./mock/mock-server.js')
   },

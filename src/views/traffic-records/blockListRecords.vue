@@ -98,7 +98,6 @@ export default {
       getImgUrl: imgUrl(),
       
       pagingQuery: {
-        personName: null,
         deviceId: null,
         ruleName: null,
         direction: null,

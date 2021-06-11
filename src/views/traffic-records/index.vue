@@ -27,6 +27,7 @@
 </div>
 </template>
 <script>
+import { getStaff_name_id } from '@/utils/business'
 import allPersonRecords from './allPersonRecords'
 import staffRecords from './staffRecords'
 import visitorRecords from './visitorRecords'
@@ -59,22 +60,28 @@ import blockListRecords from './blockListRecords'
         isShow3: false,
         isShow4: false
       };
+	  
     },
     watch: {
-      activeName(val) {
-         this.$router.push(`${ this.$route.path }?tab=${ val }`)
-         sessionStorage.setItem('personRecords', val)
-         if(val == 0) {
-           this.isShow1 = false, this.isShow2 = false, this.isShow3 = false,this.isShow4 = false, this.isShow0 = true
-         } else if(val == 1) {
-           this.isShow0 = false,this.isShow2 = false, this.isShow3 = false,this.isShow4 = false, this.isShow1 = true
-         } else if(val == 2) {
-           this.isShow0 = false, this.isShow1 = false, this.isShow3 = false,this.isShow4 = false, this.isShow2 = true
-         } else if(val == 3) {
-           this.isShow0 = false, this.isShow1 = false, this.isShow2 = false,this.isShow4 = false, this.isShow3 = true
-         } else {
-           this.isShow0 = false, this.isShow1 = false, this.isShow2 = false, this.isShow3 = false, this.isShow4 = true
-         }
+      activeName: {
+		  handler(val) {
+			  this.$router.push(`${ this.$route.path }?tab=${ val }`)
+			  sessionStorage.setItem('personRecords', val)
+			  if(val == 0) {
+			    this.isShow1 = false, this.isShow2 = false, this.isShow3 = false,this.isShow4 = false, this.isShow0 = true
+
+			  } else if(val == 1) {
+			    this.isShow0 = false,this.isShow2 = false, this.isShow3 = false,this.isShow4 = false, this.isShow1 = true
+			  } else if(val == 2) {
+			    this.isShow0 = false, this.isShow1 = false, this.isShow3 = false,this.isShow4 = false, this.isShow2 = true
+			  } else if(val == 3) {
+			    this.isShow0 = false, this.isShow1 = false, this.isShow2 = false,this.isShow4 = false, this.isShow3 = true
+			  } else {
+			    this.isShow0 = false, this.isShow1 = false, this.isShow2 = false, this.isShow3 = false, this.isShow4 = true
+			  }
+		  },
+		  immediate: true
+         
        }
     },
     created() {
@@ -87,6 +94,7 @@ import blockListRecords from './blockListRecords'
         this.$router.push(`${ this.$route.path }?tab=${ getTabIndex }`)
     },
     mounted() {
+			
     }
   }
 </script>

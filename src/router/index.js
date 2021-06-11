@@ -230,7 +230,6 @@ export const asyncRoutes = [
   },
   {
     path: '/alarm',
-    name: 'alarm',
     component: Layout,
     meta: { title: '告警中心', icon: 'alarm' },
     redirect: '/alarm/deviceAlarm',
@@ -260,6 +259,47 @@ export const asyncRoutes = [
         meta: { title: '黑名单管理', icon: 'blocklist' },
       }
     ]
+  },
+  {
+   path: '/banner-manage',
+   component: Layout,
+   meta: { title: '广告管理', icon: 'ban' },
+   redirect: '/banner-manage/dtotal/ban-list/banList',
+   children: [
+     {
+       path: 'dtotal',
+       meta: { title: '广告库', icon: 'banku' },
+       component: () => import('@/views/banner-manage/dtotal'),
+       redirect: '/banner-manage/dtotal/ban-list/banList',
+       alwaysShow: true,
+       children: [
+         {
+           path: 'ban-list/banList',
+           name: 'banList',
+           component: () => import('@/views/banner-manage/dtotal/ban-list/banList'),
+           meta: { title: '广告列表'},
+         },
+         {
+          path: 'add-ban/addBan',
+          name: 'addBan',
+          component: () => import('@/views/banner-manage/dtotal/add-ban/addBan'),
+          meta: { title: '广告新增'},
+         }
+       ]
+     },
+     {
+      path: 'issue-ban',
+      component: () => import('@/views/banner-manage/issue-ban/issueBan'),
+      name: 'issueBan',
+      meta: { title: '广告投放', icon: 'guide' }
+    },
+    {
+      path: 'ban-info',
+      component: () => import('@/views/banner-manage/ban-info/banInfo'),
+      name: 'banInfo',
+      meta: { title: '广告统计', icon: 'banInfo' },
+    }
+   ]
   },
   {
     path: '/task',

@@ -120,3 +120,12 @@ export function validateIdCard(idCard){
 export function validateChinese(str){
   return /[^\w]/.test(str) ? true : false
 }
+
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ * @description 不能输入特殊字符
+ */
+ export function validateChars(str){
+  return /[^\u4e00-\u9fa5\w]/.test(str) ? true : false
+}

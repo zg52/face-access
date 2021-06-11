@@ -31,6 +31,7 @@ html {
 *:before,
 *:after {
   box-sizing: inherit;
+  font-style: normal;
 }
 
 .no-padding {
@@ -199,15 +200,18 @@ aside {
 .ml10{margin-left:10px;}
 .ml0{margin-left: 0!important;}
 .ml-5{margin-left: -5px;}
+.mt5{margin-top: 5px;}
 
 // 内边距
 .pl0{padding-left: 0;}
 .pt10 {padding-top: 10px;}
 .pr-5 {padding-right: 5px;}
 .pl-5 {padding-left: 5px;}
+.pl8{padding-left: 8px;}
 
 // 宽高圆角
 .w100 { width: 100px; }
+.w100w{width: 100vw;}
 .w120 {width: 120px;}
 .w130 {width: 130px;}
 .w150 {width: 150px;}
@@ -298,6 +302,7 @@ border-radius: 50%;
 .red {color: red;}
 .green{color: #13ce66;}
 .themeColor {color: #8a16ff;}
+.icon_warn {color: #e6a23c;}
 
 // 弹性盒
 .flex {
@@ -306,4 +311,10 @@ border-radius: 50%;
 .flexbetween {
   display: flex;
   justify-content: space-between;
+}
+
+// 文本提示
+.desTip {
+  color: #999;
+    font-size: 12px;
 }

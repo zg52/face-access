@@ -27,9 +27,13 @@
 <template>
   <div class="app-container1">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
+      <el-form-item label="姓名">
+		  <el-select v-model="pagingQuery.personId" placeholder="请选择/输入" filterable clearable>
+		   <el-option v-for="(name, index) of getStaff_name_ids" :key="index" :label="name.name" :value="name.id"></el-option>
+		  </el-select>
+	  </el-input></el-form-item>
       <el-form-item label="通行设备">
-        <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
+        <el-select v-model="pagingQuery.deviceId" placeholder="请选择/输入" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
         </el-select>
       </el-form-item>
@@ -100,7 +104,7 @@
 </template>
 <script>
 
-import {getDirection, getTrafficResult, getDeviceNames } from '@/utils/business'
+import {getDirection, getTrafficResult, getDeviceNames, getStaff_name_id } from '@/utils/business'
 import { trafficRecords } from '@/api/traffic-records'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -124,7 +128,7 @@ export default {
       multipleSelection: [],
       
       pagingQuery: {
-        name: null,
+        personId: null,
         deviceId: null,
         ruleName: null,
         direction: null,
@@ -141,6 +145,7 @@ export default {
         total: null,
       },
       painingQueryList: [],
+	  getStaff_name_ids: []
     }
   },
   filters: {
@@ -210,6 +215,9 @@ export default {
    getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
+   getStaff_name_id().then(res => {
+		this.getStaff_name_ids = res
+		})
   //  getRuleNames().then((res) => {
   //      this.getRuleNames = res
   //   })
@@ -218,6 +226,7 @@ export default {
     this.onSearch()
     },360_0000)
   },
-  mounted() {},
+  mounted() {
+	},
 }
 </script>

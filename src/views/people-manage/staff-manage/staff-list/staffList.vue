@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 17:48:30
+ * @LastEditTime: 2021-06-09 18:13:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -135,11 +135,18 @@
           <el-option></el-option>
         </el-select>
       </el-form-item> -->
-
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
+      <el-dropdown @command="onExport" trigger="click">
+      <el-button type="primary" class="ml10"> 
+       <svg-icon icon-class="excel" style="fill:#fff" /> <span style="color:#fff">导出</span><i class="el-icon-arrow-down el-icon--right" style="color:#fff"></i>
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="a"><svg-icon icon-class="excel" /><span class="pl8">文本信息</span></el-dropdown-item>
+        <el-dropdown-item command="b"><svg-icon icon-class="banku" /><span class="pl8">指定 / 全部图片</span></el-dropdown-item>
+      </el-dropdown-menu>
+      </el-dropdown>
       <router-link to="/people-manage/staff-manage/staff-add/staffAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增员工</el-button></router-link>
     </el-form>
     
@@ -195,7 +202,7 @@
         <template v-slot="scope">
       <div v-show="scope.row.isDelete == 1 ? false : true">
              <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible" >
-              <el-form ref="expiredDateFormRule" :model="expiredDateForm" :rules="expiredDateFormRule">
+              <el-form :ref="scope.row.id+'s'" :model="expiredDateForm" :rules="expiredDateFormRule">
                 <el-form-item label="请选择离职日期：" prop="expiredDate">
                   <el-date-picker class="w300" v-model="expiredDateForm.expiredDate" type="date" align="right" unlink-panels start-placeholder="离职日期" @change="changeExpiredDate"></el-date-picker>
                 </el-form-item>
@@ -203,7 +210,7 @@
               </el-form>
             <div class="change_staff_btn mt10">
               <el-button v-show="scope.row.status == 1 ? true : false" size="mini" type="primary" @click="setStatusHadnle(scope.$index, scope.row)">设为在职</el-button>
-              <el-button type="primary" size="mini" @click="submitExpiredDate(scope.row, 'expiredDateFormRule')">确定</el-button>
+              <el-button type="primary" size="mini" @click="submitExpiredDate(scope.row, scope.row.id)">确定</el-button>
               <el-button size="mini" type="button" @click="cacelStatusHandle(scope.row.id)">取消</el-button>
             </div>
             <div class="change_staff_status" slot="reference">
@@ -248,7 +255,7 @@
 import { mapGetters } from 'vuex'
 import { getStaffList, deleteStaff, StaffState, downloadEmployee } from '@/api/people-manage/staffManage'
 import { imgUrl, downStaffXls } from '@/api/public'
-import { pickerOptions } from '@/utils'
+import { pickerOptions, DOWNFILE } from '@/utils'
 import { getGender, getFaceType, getStaffStates } from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
@@ -366,9 +373,9 @@ export default {
           this.tableData = res.data.records
           
 // 设置visible解决elemenui pover 弹出异常缺陷
-        this.tableData.forEach(function (item) {
-         item.visible = true
-        })
+			this.tableData.forEach(function (item) {
+			 item.visible = true
+			})
 
 //  转换status为Boolean
         let satatusArr = []
@@ -438,13 +445,44 @@ export default {
         this.$message.warning('请在列表中勾选要删除的员工')
       }
     },
-    onExport() {
+    onExport(command) {
       let p = this.pagingQuery
-      downloadEmployee(p.current, p.size).then(res => {
+        if(command === 'a') {
+          exportExcel()
+        } else if(command === 'b') {
+          exportImg()
+        }
+      function exportExcel () {
+       downloadEmployee(p.current, p.size).then(res => {
         if(res) {
           downStaffXls(p.current, p.size)
         }
       })
+       }
+      function exportImg() {
+        vm.multipleSelection.length !== 0 ? downAssingImg() : downAllImg()
+        function downAssingImg() {
+          let imgIdArr = []
+          new Promise((resolve) => {
+            imgIdArr.length === 0 ? resolve() : String
+          }).then(() => {
+            vm.multipleSelection.forEach(item => imgIdArr.push({
+              imageId: item.imageId,
+              name: item.name
+            }))
+            for(let i = 0; i <= imgIdArr.length; i++) {
+              try {
+                DOWNFILE.downloadIamge(`person/person-images?imageId=${ imgIdArr[i].imageId }`, imgIdArr[i].name)
+              } catch (error) {
+                this.$message.error('下载失败，请重试')
+              }
+            }
+          })
+        }
+        function downAllImg() {
+          alert('all')
+        }
+      }
     },
     handleStatus(row) {
       row.visible = true
@@ -482,7 +520,7 @@ export default {
 // 设置离职时间
   submitExpiredDate (row, el) {
     let e = this.expiredDateForm
-      this.$refs[el].validate((valid) => {
+      this.$refs[el + 's'].validate((valid) => {
         if (valid) {
         valiExpiredDate()
       } else {
@@ -565,5 +603,5 @@ export default {
   },
   mounted() {
   },
-};
+}
 </script>

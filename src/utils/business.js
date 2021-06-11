@@ -205,14 +205,10 @@ export function passWayArrHandle() {
                })
              }
           })
-                   return deviceName
-          } else {
-           this.$message.warning('无可用设备，请添加设备')
+             return deviceName
           }
         })
-     } else {
-           this.$message.warning(res.msg)
-        }
+     }
     }
     )
   }
@@ -234,13 +230,9 @@ export async function getRuleNames() {
               })
                  })
                  return ruleName
-        } else {
-        //  this.$message.warning('无可用规则，请添加规则')
         }
       })
-   } else {
-         this.$message.warning(res.msg)
-      }
+   }
   }
   )
 }
@@ -261,12 +253,10 @@ export async function getRuleNames() {
                  id: x.id
               })
                  })
-                 return staff_name_id
+           return staff_name_id
         }
       })
-   } else {
-         this.$message.warning(res.msg)
-      }
+   }
   }
   )
 }

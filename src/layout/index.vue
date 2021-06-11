@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-04-01 09:45:55
+ * @LastEditTime: 2021-06-04 18:59:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\layout\index.vue
@@ -102,7 +102,7 @@
         <settings />
       </right-panel>
     </div>
-    <p class="copyright">CopyRight © 2016-2021 华捷艾米 版权所有 京ICP备18040828号-1</p>
+    <p class="copyright">{{ `版权信息： CopyRight © 2016-${ new Date().getFullYear() } 华捷艾米 版权所有 京ICP备18040828号-1` }}}</p>
   </div>
 </template>
 
@@ -123,7 +123,6 @@ export default {
       lastId2: null,
       blockListHtm: '',
       getImgUrl: imgUrl()
-
     }
   },
   components: {
@@ -175,7 +174,6 @@ export default {
       },
       websocketonmessage(e){ //数据接收
         const redata = JSON.parse(e.data)
-        console.log("🚀 ~ file: index.vue ~ line 136 ~ websocketonmessage ~ redata", redata)
         
       },
       websocketsend(Data){//数据发送

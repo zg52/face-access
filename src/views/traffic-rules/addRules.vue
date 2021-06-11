@@ -254,7 +254,7 @@ export default {
     changeDeviceIds() {
        this.addRules.deviceIds = this.deviceIds
     },
-
+		
 // 获取通行方式参数
     changeRuleNode() {
         let newArr = [],

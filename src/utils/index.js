@@ -1,6 +1,4 @@
-/**
- * Created by PanJiaChen on 16/11/18.
- */
+
 
 /**
  * Parse the time to string
@@ -445,22 +443,65 @@ export function pickerOptions(tomorrow) {
   }
  }
 
+
  /**
  * @description: 文件下载
  */
- export function downFile(url, fileName) {
-    　　 if ('download' in document.createElement('a')) {
-       　　let link = document.createElement('a')
-       　　link.setAttribute('download', `${ fileName }升级包`);
-       　　link.style.display = 'none'
-      　　 link.href = `${ process.env.VUE_APP_BASE_API }${ url }`
-      　　 document.body.appendChild(link)
-       　　link.click()
-      　　 document.body.removeChild(link)
-    　　} else {
-    　　   navigator.msSaveBlob(blob, fileName)
-    　　}
-    }
+ class DownFile {
+
+// 此方法只针对浏览器不能解析的文件进行下载，若是带后缀名的图片和pdf等不支持
+   parse_file(url, fileName) {
+    if ('download' in document.createElement('a')) {
+      　　let link = document.createElement('a')
+      　　link.setAttribute('download', `${ fileName }`);
+      　　link.style.display = 'none'
+     　　 link.href = `${ process.env.VUE_APP_BASE_API }${ url }`
+     　　 document.body.appendChild(link)
+      　　link.click()
+     　　 document.body.removeChild(link)
+   　　} else {
+   　　   navigator.msSaveBlob(blob, fileName)
+   　　}
+   }
+
+//  支持所有文件下载(单文件)
+   nslookup_file(url, value) {
+    let domForm = document.createElement('form'),
+    npt = document.createElement('input')
+    domForm.appendChild(npt)
+    npt.setAttribute('name', 'imageId')
+    npt.setAttribute('value', value)
+    domForm.setAttribute('method', 'get')
+    domForm.setAttribute('action', `${ process.env.VUE_APP_BASE_API }${ url }`)
+    domForm.style.display = 'none'
+    document.body.appendChild(domForm)
+      domForm.submit()
+    document.body.removeChild(domForm)
+   }
+
+// 支持所有图片下载
+   downloadIamge(imgsrc, name) {
+    let image = new Image();
+    // 解决跨域 Canvas 污染问题
+    image.setAttribute("crossOrigin", "anonymous")
+    image.onload = function() {
+      let canvas = document.createElement("canvas")
+      canvas.width = image.width
+      canvas.height = image.height
+      let context = canvas.getContext("2d")
+      context.drawImage(image, 0, 0, image.width, image.height)
+      let url = canvas.toDataURL("image/png"), //得到图片的base64编码数据
+          a = document.createElement("a"),
+          event = new MouseEvent("click")
+      a.download = name || "photo"
+      a.href = url
+      a.dispatchEvent(event)
+    };
+    image.src = `${ process.env.VUE_APP_BASE_API }${ imgsrc }`
+  }
+ }
+export const DOWNFILE = new DownFile()
+
 		
 //  /**
 //  * @description: 获取系统时分秒
