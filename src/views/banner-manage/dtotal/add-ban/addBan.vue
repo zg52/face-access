@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-04 17:23:44
- * @LastEditTime: 2021-06-11 10:38:17
+ * @LastEditTime: 2021-06-15 18:38:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\gitlab\pc\face-recognition-access\src\views\banner-manage\addBan\addBan.vue
@@ -15,25 +15,43 @@
 <template>
     <div class="app-container">
         <el-form class="banForm" ref="banForm" :model="banForm" :rules="banFormRule" label-width="100px">
-            <el-form-item label="广告类型：" :rules="{required: true}">
+            <el-form-item label="广告类型：">
                 <el-radio-group v-model="banType" @change="banTypeHandle">
                    <el-radio v-for="(banTit, index) of banTypeList" :key="index" :label="banTit.id">{{ banTit.name }}</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="广告名称：" prop="adTitle"><el-input maxlength="30" v-model="banForm.adTitle" placeholder="请输入广告名称"></el-input></el-form-item>
+            <el-form-item label="广告名称：" prop="adTitle"><el-input maxlength="30" v-model.trim="banForm.adTitle" placeholder="请输入广告名称" clearable></el-input></el-form-item>
             <el-form-item class="w100w" label="广告素材：" :rules="{required: true}">
-              <ImgUpload />
+              <ImgUpload @getImgIdHadnle="getImgIdHadnle" />
             </el-form-item>
-            <el-form-item label="播放时间："><el-input v-model.trim="banForm.banTit" placeholder="请输入广告名称"></el-input></el-form-item>
-            <el-form-item label="选择广告库："><el-input v-model.trim="banForm.banTit" placeholder="请输入广告名称"></el-input></el-form-item>
-            <el-form-item label="投放页面："><el-input v-model.trim="banForm.banTit" placeholder="请输入广告名称"></el-input></el-form-item>
-            <div class="text-center"><el-button type="primary" @click="handleAdd_edit('banForm')" :disabled="SateLoading" v-loading="SateLoading"><i class="el-icon-check"></i> 保存</el-button></div>
+            <el-form-item label="播放时间：" prop="banTime">
+               <el-date-picker
+                  v-model="banForm.banTime"
+                  type="datetimerange"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :default-time="['12:00:00']"
+                  @change="changeDate"
+                  >
+             </el-date-picker>
+            </el-form-item>
+            <!-- <el-form-item label="选择广告库："><el-input v-model.trim="banForm.banTit" placeholder="请输入广告名称"></el-input></el-form-item> -->
+             <el-form-item label="投放页面：">
+                <el-radio-group v-model="banForm.page" @change="banTypeHandle">
+                   <el-radio v-for="(page, index) of pages" :key="index" :label="page.id">{{ page.name }}</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <div class="text-center w90w">
+                <el-button type="primary" @click="handleAdd_edit('banForm')" :disabled="SateLoading" v-loading="SateLoading"><i class="el-icon-check"></i> 保存</el-button>
+                 <router-link to="/banner-manage/dtotal/ban-list/banList" class="ml10"><el-button><i class="el-icon-view"></i> 查看广告列表</el-button></router-link>
+                </div>
         </el-form>
     </div>
 </template>
 <script>
 import { validateChars } from '@/utils/validate'
-
+import { uploadBanMsg } from '@/api/banner-mannage'
+import moment from 'moment'
 import './index'
 export default {
     name: 'addBan',
@@ -51,21 +69,36 @@ export default {
             SateLoading: false,
             banTypeList: [
                 {
-                  id: 1,
-                  name: '图片'
+                     id: 1,
+                    name: '图片'
                 },
                 {
-                 id: 2,
-                 name: '视频'
+                    id: 2,
+                    name: '视频'
                 }
             ],
-            
+            pages: [
+                {
+                    id: 1,
+                    name: '待机页面'
+                },
+                {
+                    id: 2,
+                    name: '识别页面'
+                }
+            ],
            banForm: {
                adTitle: '',
-               banTit: 'dd'
+               banTit: 'dd',
+               createTimeFrom: '',
+               createTimeTo: '',
+               banTime: null,
+               page: 1,
+               imgId: []
             },
             banFormRule: {
-                adTitle: [notNull('广告名称')[0], { validator: validateAdTitle, trigger: "blur"  }]
+                adTitle: [notNull('广告名称')[0], { validator: validateAdTitle, trigger: "blur"  }],
+                banTime: notNull('播放时间')
             }
         }
     },
@@ -75,13 +108,38 @@ export default {
     handleAdd_edit(el) {
       this.$refs[el].validate((valid) => {
           if (valid) {
- 
-            
-          } else {
-            return false
+              let params = {...this.banForm}; delete params.banTime
+              let formData = new FormData()
+              for(let i in params) {
+                  formData.append(i, params[i])
+              }
+              if(this.getImgIdHadnle().length !== 0) {
+                console.log("🚀 ~ file: addBan.vue ~ line 117 ~ this.$refs[el].validate ~ this.getImgIdHadnle", this.getImgIdHadnle)
+                uploadBanMsg(formData).then(res => {
+                    if(res.code === 0) {
+                        this.$message.success(res.msg)
+                    } else {
+                        this.$message.error(res.msg)
+                    }
+                })               
+              } else {
+                  this.$message.warning('请上传广告图', 4000)
+              }
           }
         })
     },
+    getImgIdHadnle(imgId) {
+        console.log(imgId)
+        this.banForm.imgId = imgId
+        return imgId || []
+    },
+    changeDate() {
+    let _p = this.banForm
+      _p.banTime && _p.banTime.length
+        ? ((_p.createTimeFrom = moment( _p.banTime[0]).format("YYYY-MM-DD HH:DD:ss")),
+          (_p.createTimeTo = moment( _p.banTime[1]).format("YYYY-MM-DD HH:DD:ss")))
+        :  _p.createTimeFrom = _p.createTimeTo = null
+    }
     }
 }
 </script>

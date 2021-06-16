@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-06-09 18:13:50
+ * @LastEditTime: 2021-06-15 10:05:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -475,6 +475,10 @@ export default {
                 DOWNFILE.downloadIamge(`person/person-images?imageId=${ imgIdArr[i].imageId }`, imgIdArr[i].name)
               } catch (error) {
                 this.$message.error('下载失败，请重试')
+              } finally {
+                setTimeout(() => {
+                  vm.$refs.multipleTable.clearSelection()
+                }, 1000)
               }
             }
           })

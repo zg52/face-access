@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-21 10:35:12
- * @LastEditTime: 2021-03-23 17:41:37
+ * @LastEditTime: 2021-06-15 10:25:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
@@ -54,7 +54,7 @@ export default {
           fontSize: 14
         }
     },
-    color:['#FC7D02'],
+    color:['#ff993c'],
     textStyle: {
       color: '#FC7D02'
     },
@@ -131,7 +131,7 @@ export default {
         data: this.yValue,
             axisLine: {
             lineStyle: {
-            color: '#FC7D02' ,
+            color: '#FC7D02',
             }
        },
     },

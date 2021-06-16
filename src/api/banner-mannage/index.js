@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-06-11 11:09:00
+ * @LastEditTime: 2021-06-16 16:51:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
@@ -15,7 +15,7 @@ const passing = 'passing/blocklist'
  */
 export function uploadBan(params) {
   return request({
-     url: passing,
+     url: 'person/getSerialList',
      method: 'POST',
      data: params
    })
@@ -33,26 +33,14 @@ export function delBan(params) {
      })
     }
 
-/**
- * @description: 查黑名单
+    /**
+ * @description: 上传广告图信息
  * @param {*}
  */
-export function blockList(params) {
+export function uploadBanMsg(params) {
   return request({
      url: passing,
-     method: 'GET',
-     params
+     method: 'POST',
+     data: params
    })
- }
-
- /**
- * @description: 删黑名单
- * @param {*}
- */
-export function deleteBlock(ids) {
-  return request({
-     url: passing,
-     method: 'DELETE',
-     data: { ids: ids }
-   })
- }
+  }
