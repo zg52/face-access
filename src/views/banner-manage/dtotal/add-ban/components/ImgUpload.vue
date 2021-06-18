@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-10 11:45:08
- * @LastEditTime: 2021-06-16 18:38:00
+ * @LastEditTime: 2021-06-18 10:07:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\gitlab\pc\face-recognition-access\src\views\banner-manage\dtotal\add-ban\components\ImgUpload.vue
@@ -56,53 +56,90 @@
     }
     .desTip {
         margin:0;
+        position: relative;
+        top:9px;
     }
+    .banTime {
+ 
+    }
+    .banUp {
+      border-bottom: 1px #eee solid;
+      padding-bottom: 10px;
+      
+    }
+    .banTime{
+    //   border-right: 1px #DCDFE6 solid;
+    // padding-bottom: 120px;
+    padding-right: 50px;
+    margin-left: 20px;
+    &::v-deep .el-form-item__label {
+      top: 110px;
+    position: relative;
+    }
+    }
+    .banBtn {
+ 
+    background: transparent;
+    
+    }
+    .add_ban {
+      border-left: 1px #eee solid;
+      padding-left: 50px;
+    padding-bottom: 47px;
+    margin-top: 5px;
+    }
+    .banmsg {
+          position: relative;
+   left: -145px;
+   p {
+        margin:0;
+        line-height: 28px;
+        color: #777;
+      }
+}
 </style>
 <template>
-    <div class="addBan">
-    <el-upload
-            ref="upload"
-            class="avatar-uploader"
-            list-type="picture-card"
-            :action="proxyUrl"
-            :data="upLoadParams"
-            :on-change="imgChangeHandle"
-            :on-success="fileSuccess"
-            :before-upload="imgBeforeHandle"
-            :on-preview="handlePictureCardPreview"
-            :on-exceed="imgExceedHandle"
-            :on-error="imgError"
-            :show-file-list="true"
-            :before-remove="handleBeforeRemove"
-            :on-remove="handleRemove"
-            :on-progress="hadnleProgress"
-            :limit="1"
-            multiple
-            drag
-            >
-            <span><i class="el-icon-upload"></i><i slot="tip">拖拽至此或点击上传</i></span>
-       </el-upload>
-        <el-button class="mt10" @click="resetFaceList" v-show="fileList.length !== 0"><i class="el-icon-delete"></i> 清空</el-button>
-        <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
-       <p class="desTip w100w"><i class="el-icon-info"></i>上传素材文件支持图片（支持PNG、JPG、JPEG、BMP，大小不超过2M，尺寸为800px x 800px）、视频（支持avi、rmvb、mp4、wmv、vob，大小不超过20M，尺寸为800px x 800px）</p>
+    <div class="addBan" ref="addBan">
+      <div class="banUp clearfix" v-for="(banUp, index) in banUps" :key="index">
+        <el-form-item class="fl" :rules="{ required: true }" :label="`第${ index + 1 }则广告`"></el-form-item>
+         <el-upload
+               :ref="`upload${ banUp.id }`"
+               :class="`avatar-uploader${ banUp.id } fl`"
+               list-type="picture-card"
+               :action="proxyUrl"
+               :on-change="imgChangeHandle"
+               :on-success="fileSuccess"
+               :before-upload="imgBeforeHandle"
+               :on-preview="handlePictureCardPreview"
+               :on-exceed="imgExceedHandle"
+               :on-error="imgError"
+               :show-file-list="true"
+               :before-remove="handleBeforeRemove"
+               :on-remove="handleRemove"
+               :on-progress="hadnleProgress"
+               :limit="1"
+               multiple
+               drag
+               @mouseenter.native="getUploadNum(index)"
+               >
+               <span><i class="el-icon-upload"></i><i slot="tip">拖拽至此或点击上传</i></span>
+          </el-upload>
+           <el-form-item v-show="banUp.banTimeShow" class="banTime fl mt10" label="播放时长(单位：秒)：" :rules="{ required: true }" label-width="170px">
+            <div class="banmsg">
+              <p>名称：{{ banUp.name }}</p>
+              <p>格式：{{ banUp.format }}</p>
+              <p>尺寸：{{ banUp.px }}</p>
+              <p>大小：{{ banUp.size }}</p>
+            </div>
+            <el-input-number class="w150" v-model="banUp.time" @change="handleBanTimeChange(index)" :min="5" :max="60"></el-input-number>
+           </el-form-item>
+           <div class="add_ban fl" v-show="banUp.banTimeBtn"><el-button class="mt70 banBtn" type="primary" plain  @click="addBanHandle(index)"><i class="el-icon-circle-plus-outline"></i> 第 {{ index + 2 }} 则广告</el-button></div>
+      </div>
 
+       <p class="desTip w100w"><i class="el-icon-info"></i>上传素材文件支持图片（支持PNG、JPG、JPEG、BMP，大小不超过2M，尺寸为800px * 800px）、视频（支持avi、rmvb、mp4、wmv、vob，大小不超过20M，尺寸为800px * 800px）</p>
        <el-dialog :visible.sync="dialogVisible1" title="素材预览" id="video_img" :destroy-on-close="true">
          <img width="100%" :src="dialogImageUrl">
          </el-dialog>
-       
-       <!-- <el-dialog
-         title="提示"
-         :visible.sync="dialogVisible2"
-         :close-on-click-modal="false"
-         width="30%"
-         >
-         <span class="tip"><i class="el-icon-warning icon_warn"></i> 此操作将永久删除当前已上传文件, 是否继续?</span>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="delNoTip">不在提示</el-button> -->
-    <!-- <el-button @click="dialogVisible2 = false">取 消</el-button> -->
-    <!-- <el-button type="primary" @click="removeImgHandle('ok')">确 定</el-button> -->
-  <!-- </span>  -->
-<!-- </el-dialog> -->
     </div>
 </template>
 <script>
@@ -122,17 +159,61 @@ export default {
             proxyUrl: proxyUrl_1,
             dialogImageUrl: '',
             dialogVideoUrl: '',
+            banTimeShow: false,
+            MB: (1024 * 1024), // 1字节＝1/1048576M约为0.000001M
             
+            banUps: [
+              {
+                id: 0,
+                banTimeShow: false,
+                banTimeBtn: false,
+                time: 5,
+                name: '',
+                format: '',
+                px: '800px * 800px',
+                size: '',
+                imageId: null
+              },
+            ],
+            uploadNum: null,
             imgTip: imgTip(),
             video_img_width: 'auto',
             fileList: [],
             delState: null,
             fileStatus: null,
-            upLoadParams: [],
-            imgId: []
+            upLoadParams: {
+              imageId: [],
+              banTime: []
+            },
+            imageId: [],
+            banTime: {
+              one: 1
+            }
         }
     },
     methods: {
+    getUploadNum(index) {
+      this.uploadNum = index
+    },
+    addBanHandle(index) {
+      this.banUps.push({
+          id: index + 1,
+          banTimeShow: false,
+          banTimeBtn: false,
+          time: 5,
+          name: '',
+          format: '',
+          px: '800px * 800px',
+          size: ''
+      })
+      new Promise((reslove) => {
+        this.banUps[0] ? reslove() : String
+      }).then(() => {
+        this.btnFalse(index)
+        
+      })
+
+    },
     cutImageName(filename) {
       let fileReg = /\.{1}[a-z]{1,}$/
         if (fileReg.exec(filename) !== null) {
@@ -162,12 +243,12 @@ export default {
     imgChangeHandle(file,fileList) {
     },
     async imgBeforeHandle(file) {
+     console.log("🚀 ~ file: ImgUpload.vue ~ line 246 ~ imgBeforeHandle ~ file", file)
      return await new Promise((RESOLVE, REJECT) => {
       if(file.type) {
         const fileType = file.type.substr(0, file.type.indexOf('/'))
         const isLt2M = file.size / 1024 / 1024 < 2
         const readers = new FileReader()
-        console.log(file.type)
            
         if(fileType === 'image') {
         function imageType () { return ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type) }
@@ -197,7 +278,7 @@ export default {
                 
 // 视频
         } else if(fileType === 'video') {
-                const isLt50M = file.size / 1024 / 1024 < 50
+                const isLt50M = file.size / 1024 / 1024 < 100
                       if (!vType()) {
                         this.$message.error('上传视频只能是四种格式（avi、rmvb、mp4、wmv、vob）!')
                         this.fileStatus = false, REJECT()
@@ -207,7 +288,7 @@ export default {
                       } else {
                           this.fileStatus = true
                           
-                          let ul_el = document.getElementsByClassName('avatar-uploader')[0].getElementsByTagName('ul')[0]
+                          let ul_el = document.getElementsByClassName(`avatar-uploader${ vm.uploadNum }`)[0].getElementsByTagName('ul')[0]
                           let videoUrl = URL.createObjectURL(file),
 		                            videoObj = document.createElement('video')
                                 videoObj.setAttribute('autoplay','true')
@@ -219,7 +300,7 @@ export default {
 		                          videoObj.onloadedmetadata = function (evt) {
 		                            URL.revokeObjectURL(videoUrl)
 		                            videoObj.width = videoObj.videoWidth
-                              console.log("🚀 ~ file: ImgUpload.vue ~ line 222 ~ newPromise ~ videoObj.videoWidth", videoObj.videoWidth)
+                                console.log("🚀 ~ file: ImgUpload.vue ~ line 222 ~ newPromise ~ videoObj.videoWidth", videoObj.videoWidth)
 		                            videoObj.height = videoObj.videoHeight
 		                            resolve(videoObj)
 	                          }
@@ -239,9 +320,9 @@ export default {
                                                el_dialog__body.getElementsByTagName('img')[0].style.display = 'none'
                                            readers.onload = (evt) => {
                                              let video_el = document.createElement('video')
-                                                video_el.autoplay = 'true', video_el.controls = 'true'
-                                                video_el.src = evt.target.result
-                                                el_dialog__body.appendChild(video_el)
+                                                 video_el.autoplay = 'true', video_el.controls = 'true'
+                                                 video_el.src = evt.target.result
+                                                 el_dialog__body.appendChild(video_el)
                                               }
                                               readers.readAsDataURL(file)
                                          },100)
@@ -262,10 +343,9 @@ export default {
           console.log("🚀 ~ file: ImgUpload.vue ~ line 261 ~ pxRule ~ w, h", w, h)
           try {
           if(w[0] !== w[1]) {
-            alert(0)
-            vm.$message.error(`${ file.name } ${ name }宽度不能大于800px!`, 4000), vm.fileStatus = false; REJECT()
+            vm.$message.error(`${ file.name } ${ name }宽度不是800px!`, 4000), vm.fileStatus = false; REJECT()
           } else if(h[0] !== h[1]) {
-            vm.$message.error(`${ file.name } ${ name }高度不能大于800px!`, 4000), vm.fileStatus = false; REJECT()
+            vm.$message.error(`${ file.name } ${ name }高度不是800px!`, 4000), vm.fileStatus = false; REJECT()
           } else {
             RESOLVE()
           }
@@ -279,14 +359,46 @@ export default {
         REJECT()
       }
   })
-
-
     },
+    btnFalse(index) {
+          vm.$set(vm.banUps[index], 'banTimeBtn', false)
+        },
      fileSuccess(res, file, fileList) {
-       const fileType = file.raw.type.substr(0, file.raw.type.indexOf('/'))
+      //  setTimeout(() => {
+        if(res.code === 0) {
+          let upLoadParams = this.upLoadParams
+          this.banUps[this.uploadNum]['imageId'] = res.code // 获取成功的imageId
+          this.upLoadParams['imageId'].push(res.code) 
+          this.upLoadParams['banTime'].push(res.msg)        // 获取播放时长
+          new Promise((reslove) => {
+            if(upLoadParams['imageId'].length !== 0) reslove()
+          }).then(() => {
+            this.getimageIdHadnle(upLoadParams)
+          })
+
+         let fileType = file.raw.type.substr(0, file.raw.type.indexOf('/')),
+             fileName = file.name, 
+             raw = file.raw,
+             avatar_uploader = document.getElementsByClassName(`avatar-uploader${ this.uploadNum }`)[0], 
+             el_upload_picture_card = avatar_uploader.getElementsByClassName('el-upload--picture-card')[0], 
+             face_el = avatar_uploader.getElementsByTagName('ul')[0]
+
+             this.$message.success(`${ file.name } 上传成功`)
+             
+             el_upload_picture_card.style.display = 'none', this.$set(this.banUps[this.uploadNum], 'banTimeShow', true), this.$set(this.banUps[this.uploadNum], 'banTimeBtn', true)
+             
+             if(this.uploadNum === 7) {
+               this.btnFalse(this.uploadNum)
+               this.banUps.forEach((item) => {
+                vm.$set(item, 'banTimeBtn', false)
+               })
+         }
+         
+// 获取图片信息
+        this.banUps[this.uploadNum]['name'] = fileName, this.banUps[this.uploadNum]['format'] = raw.type, this.banUps[this.uploadNum]['size'] = `${ (Number(raw.size) / this.MB).toFixed(3) }M`
+         
        if(fileType === 'image') {
-         this.getImgIdHadnle(fileList), this.fileList = fileList
-         let face_el = document.getElementsByClassName('avatar-uploader')[0].getElementsByTagName('ul')[0]
+             this.fileList = fileList
               new Promise((resolve) => {
                   face_el ? resolve() : String
               }).then(() => {
@@ -299,8 +411,9 @@ export default {
           })
        })
        } else if(fileType === 'video') {
-
        }
+      }
+      //  },100)
       },
       removeImgHandle() {
             this.delState = true
@@ -308,7 +421,7 @@ export default {
       handleBeforeRemove(file, fileList) {
         const fileType = file.raw.type.substr(0, file.raw.type.indexOf('/'))
         if(fileType === 'image') {
-          let face_el = document.getElementsByClassName('avatar-uploader')[0].getElementsByTagName('ul')[0]
+          let face_el = document.getElementsByClassName(`avatar-uploader${ this.uploadNum }`)[0].getElementsByTagName('ul')[0]
           Array.prototype.forEach.call(face_el.getElementsByTagName('li'), function (el, index) {
             el.onclick = function() {
              vm.fileStatus = true
@@ -318,7 +431,7 @@ export default {
           return new Promise((resolve, reject) => {
            // if(this.delState === true) {
                 delBan({
-                  imgId: 1
+                  imageId: 1
                   }).then((res) => {
                   if(res.code === 0) {
                    //  this.dialogVisible2 = false
@@ -340,12 +453,12 @@ export default {
       console.log("🚀 ~ file: ImgUpload.vue ~ line 266 ~ hadnleProgress ~ file", file)
 
       },
-      getImgIdHadnle(imgId) {
-        this.$emit('getImgIdHadnle',imgId)
-        return imgId || []
+      getimageIdHadnle(upLoadParams) {
+        this.$emit('getImageIdHandle', upLoadParams)
+        return upLoadParams || this.upLoadParams
       },
       submitUpload() {
-        this.$refs.upload.submit();
+        // this.$refs.upload.submit()
       },
       delNoTip() {
         sessionStorage.setItem('delImgNoTip', 'true')
@@ -369,6 +482,8 @@ export default {
                  type: "error"
             })
      },
+     handleBanTimeChange() {
+     }
     },
     created() {
       vm = this

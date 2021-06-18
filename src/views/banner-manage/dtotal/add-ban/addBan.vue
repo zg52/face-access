@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-04 17:23:44
- * @LastEditTime: 2021-06-15 18:38:47
+ * @LastEditTime: 2021-06-18 15:16:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\gitlab\pc\face-recognition-access\src\views\banner-manage\addBan\addBan.vue
@@ -15,14 +15,15 @@
 <template>
     <div class="app-container">
         <el-form class="banForm" ref="banForm" :model="banForm" :rules="banFormRule" label-width="100px">
-            <el-form-item label="广告类型：">
+            <!-- <el-form-item label="广告类型：">
                 <el-radio-group v-model="banType" @change="banTypeHandle">
                    <el-radio v-for="(banTit, index) of banTypeList" :key="index" :label="banTit.id">{{ banTit.name }}</el-radio>
                 </el-radio-group>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="广告名称：" prop="adTitle"><el-input maxlength="30" v-model.trim="banForm.adTitle" placeholder="请输入广告名称" clearable></el-input></el-form-item>
+            <el-form-item label="广告类型：" prop="adTitle"><el-input maxlength="30" v-model.trim="banForm.type" placeholder="请输入广告类型" clearable></el-input></el-form-item>
             <el-form-item class="w100w" label="广告素材：" :rules="{required: true}">
-              <ImgUpload @getImgIdHadnle="getImgIdHadnle" />
+              <ImgUpload @getImageIdHandle="getImageIdHandle" />
             </el-form-item>
             <el-form-item label="播放时间：" prop="banTime">
                <el-date-picker
@@ -35,7 +36,8 @@
                   >
              </el-date-picker>
             </el-form-item>
-            <!-- <el-form-item label="选择广告库："><el-input v-model.trim="banForm.banTit" placeholder="请输入广告名称"></el-input></el-form-item> -->
+            <el-form-item label="选择广告库："><el-input v-model.trim="banForm.banTit" placeholder="请选择广告库" disabled></el-input></el-form-item>
+              <el-form-item label="描述："><el-input v-model.trim="banForm.description" placeholder="请输入描述信息"></el-input></el-form-item>
              <el-form-item label="投放页面：">
                 <el-radio-group v-model="banForm.page" @change="banTypeHandle">
                    <el-radio v-for="(page, index) of pages" :key="index" :label="page.id">{{ page.name }}</el-radio>
@@ -53,6 +55,8 @@ import { validateChars } from '@/utils/validate'
 import { uploadBanMsg } from '@/api/banner-mannage'
 import moment from 'moment'
 import './index'
+let vm 
+
 export default {
     name: 'addBan',
     data() {
@@ -89,12 +93,14 @@ export default {
             ],
            banForm: {
                adTitle: '',
-               banTit: 'dd',
+            //    banTit: 'dd',
                createTimeFrom: '',
                createTimeTo: '',
                banTime: null,
+               description: '',
                page: 1,
-               imgId: []
+               imageId: [],
+               banTime: []
             },
             banFormRule: {
                 adTitle: [notNull('广告名称')[0], { validator: validateAdTitle, trigger: "blur"  }],
@@ -108,13 +114,12 @@ export default {
     handleAdd_edit(el) {
       this.$refs[el].validate((valid) => {
           if (valid) {
-              let params = {...this.banForm}; delete params.banTime
+              let params = {...this.banForm}
               let formData = new FormData()
               for(let i in params) {
                   formData.append(i, params[i])
               }
-              if(this.getImgIdHadnle().length !== 0) {
-                console.log("🚀 ~ file: addBan.vue ~ line 117 ~ this.$refs[el].validate ~ this.getImgIdHadnle", this.getImgIdHadnle)
+              if(this.banForm.imageId.length !== 0) {
                 uploadBanMsg(formData).then(res => {
                     if(res.code === 0) {
                         this.$message.success(res.msg)
@@ -128,10 +133,10 @@ export default {
           }
         })
     },
-    getImgIdHadnle(imgId) {
-        console.log(imgId)
-        this.banForm.imgId = imgId
-        return imgId || []
+    getImageIdHandle(upLoadParams) {
+        this.banForm.imageId = upLoadParams?.['imageId']
+        this.banForm.banTime = upLoadParams?.['banTime']
+        return upLoadParams
     },
     changeDate() {
     let _p = this.banForm
@@ -140,6 +145,9 @@ export default {
           (_p.createTimeTo = moment( _p.banTime[1]).format("YYYY-MM-DD HH:DD:ss")))
         :  _p.createTimeFrom = _p.createTimeTo = null
     }
+    },
+    created() {
+      vm = this
     }
 }
 </script>

@@ -1,4 +1,4 @@
-
+import moment from 'moment'
 
 /**
  * Parse the time to string
@@ -503,24 +503,24 @@ export function pickerOptions(tomorrow) {
 export const DOWNFILE = new DownFile()
 
 		
-//  /**
-//  * @description: 获取系统时分秒
-//  */
-// export function getSystemTime() {
-//   let timer = null
-//  setInterval(function(){
-//     let time = new Date()
-//     let hour = checkTime(time.getHours())
-//     let minite = checkTime(time.getMinutes())
-//     let second = checkTime(time.getSeconds())
-//     function checkTime(i){
-//         if(i<10) return "0"+i
-//         return i
-//     }
-//     timer = hour+":"+minite+":"+second  
-//     return timer
-//    },1000)
-// }
+ /**
+ * @description: 获取系统时分秒
+ */
+export function getSystemTime() {
+  let timer = null
+ setInterval(function(){
+    let time = new Date()
+    let hour = checkTime(time.getHours())
+    let minite = checkTime(time.getMinutes())
+    let second = checkTime(time.getSeconds())
+    function checkTime(i){
+        if(i<10) return "0"+i
+        return i
+    }
+    timer = hour+":"+minite+":"+second  
+    return timer
+   },1000)
+}
 
  /**
  * @description: 信息转为base64
@@ -655,4 +655,20 @@ export function encodes(str){
   
   }
   return Base64.encode(str)
+  }
+
+  /**
+ * @description 按需格式化 年月日分秒
+ * @param {obj, ...string}
+ * @returns {Date}
+ */
+
+  export function getDates(obj, rawDare, createTimeFrom, createTimeTo, switchParam, onece) {
+    if(onece === 2) {
+      rawDare && rawDare.length
+        ? ( obj[createTimeFrom] = moment( rawDare[0]).format(`YYYY-MM-DD${ switchParam }`), (obj[createTimeTo] = moment( rawDare[1]).format(`YYYY-MM-DD${ switchParam }`)) )
+        :  obj[createTimeFrom] = obj[createTimeTo] = null
+    } else if(onece === 1) {
+      obj[createTimeFrom] = moment(rawDare[0]).format(`YYYY-MM-DD${ switchParam }`)
+    }
   }

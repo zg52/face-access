@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-06-15 10:05:31
+ * @LastEditTime: 2021-06-18 19:12:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -255,7 +255,7 @@
 import { mapGetters } from 'vuex'
 import { getStaffList, deleteStaff, StaffState, downloadEmployee } from '@/api/people-manage/staffManage'
 import { imgUrl, downStaffXls } from '@/api/public'
-import { pickerOptions, DOWNFILE } from '@/utils'
+import { pickerOptions, DOWNFILE, getDates } from '@/utils'
 import { getGender, getFaceType, getStaffStates } from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
@@ -566,20 +566,17 @@ export default {
          a[item] =  moment(a[item]).format('YYYY-MM-DD')
   },
   changeDate1() {
-    this.changeDate('enrollTime')
+    getDates(this.pagingQuery, this.pagingQuery.enrollTime, 'enrollTime', '', '', 1)
   },
   changeDate2() {
-    this.changeDate('expiredTime')
+     getDates(this.pagingQuery, this.pagingQuery.expiredTime, 'expiredTime', '', '', 1)
   },
   changeExpiredDate() {
-     this.expiredDateForm.expiredDate1 =  moment(this.expiredDateForm.expiredDate).format('YYYY-MM-DD')
+    //  getDates(this.expiredDateForm, this.expiredDateForm['expiredDate'], 'expiredDate1', '', '', 1)
+    this.expiredDateForm.expiredDate1 =  moment(this.expiredDateForm.expiredDate).format('YYYY-MM-DD')
   },
   changeDate3() {
-    let _p = this.pagingQuery
-      this.date && this.date.length
-        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD")),
-          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
-        :  _p.createTimeFrom = _p.createTimeTo = null
+    getDates(this.pagingQuery, this.date, 'createTimeFrom', 'createTimeTo', '', 2)
     },
     cacelEditHandle() {
       this.getStaffList()
