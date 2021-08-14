@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-04-02 17:23:46
+ * @LastEditTime: 2021-07-22 14:27:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -28,7 +28,6 @@
 <template>
   <div class="app-container1">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
       <el-form-item label="通行设备">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
@@ -74,7 +73,12 @@
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
       <el-table-column align="center" label="通行设备" width="200"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
-      <el-table-column align="center" label="设备标识" width="174"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
+			<el-table-column align="center" label="与原图相似度" width="105" prop="similarity"></el-table-column>
+      <el-table-column align="center" label="设备标识" width="100">
+        <template v-slot="scope">
+        <el-tooltip effect="light" :content="scope.row.uniqueDeviceIdentifier" placement="top"> 
+             <span class="block cell">{{ scope.row.uniqueDeviceIdentifier }}</span></el-tooltip> 
+        </template></el-table-column>
       <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
       <span v-show="scope.row.result !== 'success'" class="red"><i v-if="scope.row.reason ? true : false">（{{ scope.row.reason }}）</i></span></template></el-table-column>
       <el-table-column align="center" label="体温" width="90"> <template v-slot="scope"><span :class="scope.row.temperature >= 37.5 ? 'red' : ''">{{ scope.row.temperature }}℃</span></template></el-table-column>
@@ -100,7 +104,7 @@
 </template>
 <script>
 
-import { getDirection, getTrafficResult, getDeviceNames } from '@/utils/business'
+import { getDirection, getTrafficResult, getDeviceNames, getStaff_name_id } from '@/utils/business'
 import { trafficRecords } from '@/api/traffic-records'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
@@ -116,6 +120,7 @@ export default {
       table_loading: true,
       pickerOptions: pickerOptions(),
       getDeviceNames: [],
+      getStaff_name_id: [],
       // getRuleNames: [],
       getDirections: getDirection(),
       getTrafficResult: getTrafficResult(),
@@ -209,6 +214,7 @@ export default {
    getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
+    getStaff_name_id().then(res => this.getStaff_name_id = res)
   //  getRuleNames().then((res) => {
   //      this.getRuleNames = res
   //   })
@@ -217,6 +223,7 @@ export default {
       this.onSearch()
     },360_0000)
   },
-  mounted() {},
+  mounted() {
+  },
 }
 </script>

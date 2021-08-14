@@ -1,13 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-26 17:43:24
+ * @LastEditTime: 2021-07-15 14:49:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\utils\request.js
  */
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken, removeToken } from '@/utils/auth'
 import qs from 'qs'
@@ -26,11 +26,20 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    
+
     const conType = config.headers.post['Content-Type']
-    if (store.getters.token) {
-    config.headers['Authorization'] = getToken()
-    }
+    // console.log(config.url)
+    
+// 请求不同模块api地址
+    //     if (config.url.indexOf('tenant') !== -1 || config.url.indexOf('account/') !== -1) {
+    //       config.baseURL = process.env.VUE_APP_BASE_TENANT
+    //  } else {
+    //      config.baseURL = process.env.VUE_APP_BASE_API
+    //  }
+
+       if (store.getters.token) {
+       config.headers['Authorization'] = getToken()
+       }
 
 // 凡是post发送的请求一律序列化为formdata格式
     if (config.data !== undefined && config.data !== null && !config.data.append) {

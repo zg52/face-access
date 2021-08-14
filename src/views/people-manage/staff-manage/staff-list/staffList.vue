@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 17:48:30
+ * @LastEditTime: 2021-07-27 13:41:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -88,12 +88,30 @@
     display: block;
     height: 20px;
     }
-</style>
+    .groupR {
+      display: block;
+      margin-right: 20px;
+    }
+    .groupRelative {
+     position: relative;
+     background: transparent!important;
+     left:-50px;
+     z-index: 999999;
+     padding-left: 50px;
+    }
+    .groups {
+          margin-left: 20px!important;
+ } </style>
 <template>
   <div class="app-container">
   <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
       <el-form-item label="创建人"><el-input v-model.trim="pagingQuery.operator" clearable></el-input></el-form-item>
-      <el-form-item label="员工姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
+	  <el-form-item label="姓名"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
+<!--     <el-form-item label="姓名">
+		  <el-select v-model="pagingQuery.name" placeholder="请选择/输入" filterable clearable>
+		   <el-option v-for="(name, index) of getStaff_name_ids" :key="index" :label="name.name" :value="name.name"></el-option>
+		  </el-select>
+	  </el-form-item> -->
       <el-form-item label="性别："><el-select class="w160" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
       <el-form-item label="工号"><el-input v-model.trim="pagingQuery.employeeNum" clearable></el-input></el-form-item>
       <el-form-item label="电话"><el-input v-model.trim="pagingQuery.phone" clearable></el-input></el-form-item>
@@ -130,17 +148,37 @@
           >
         </el-date-picker>
       </el-form-item>
-      <!-- <el-form-item label="有无人脸">
-        <el-select v-model="pagingQuery.state" class="w100">
-          <el-option></el-option>
-        </el-select>
-      </el-form-item> -->
+      <el-form-item label="分组名称：">
+        <el-cascader
+        :options="getStaffGroup_name_ids"
+        :props="props"
+        v-model="pagingQuery.groupId"
+        collapse-tags
+        clearable
+        @change="changeGroupId"
+        >
+        <template v-slot="{ data }">
+         <div class="flexbetween">
+           <span>{{ data.label }}</span>
+           <span class="lineColor pl15">{{ data.personCount }}人</span>
+         </div>
+        </template>
+        </el-cascader>
+        </el-form-item>
 
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel" /> <span>导出</span></el-button>
-      <router-link to="/people-manage/staff-manage/staff-add/staffAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增员工</el-button></router-link>
+      <el-dropdown @command="onExport" trigger="click">
+      <el-button type="primary" class="ml10"> 
+       <svg-icon icon-class="excel" style="fill:#fff" /> <span style="color:#fff">导出</span><i class="el-icon-arrow-down el-icon--right" style="color:#fff"></i>
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="a"><svg-icon icon-class="excel" /><span class="pl8">文本信息</span></el-dropdown-item>
+        <el-dropdown-item command="b"><svg-icon icon-class="banku" /><span class="pl8">指定 / 全部图片</span></el-dropdown-item>
+      </el-dropdown-menu>
+      </el-dropdown>
+      <router-link to="/people-manage/staff-manage/staffAdd" class="ml10"><el-button type="primary"><svg-icon icon-class="edit" /> 新增员工</el-button></router-link>
     </el-form>
     
     <el-table :data="tableData" class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
@@ -173,6 +211,13 @@
                   <el-form-item label="状态："><span>{{ props.row.status | filterStaffStates(props.row.isDelete) }}</span> </el-form-item>
                  <el-form-item label="备注："><span></span></el-form-item>
                 <el-form-item label="创建人："><span>{{ props.row.operator }}</span></el-form-item>
+                 <el-form-item label="所在分组：">
+					 <el-tag v-if="props.row.groupList.length === 0" class="block w100 ellipsis1" type="info">{{ props.row.groupList | filterGroupList }}</el-tag>
+                    <el-popover v-else width="200" placement="left-end" trigger="hover">
+               <div>{{ props.row.groupList | filterGroupList }}</div>
+               <div slot="reference" class="relative pointer top4"><el-tag class="block w100 ellipsis1" type="info">{{ props.row.groupList | filterGroupList }}</el-tag></div>
+          </el-popover>
+                 </el-form-item>
            </el-form>
            </template>
      </el-table-column>
@@ -183,7 +228,14 @@
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender | filterGenter }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
-      <el-table-column align="center" label="工号" width="180"><template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
+      <el-table-column align="center" label="工号" width="100"><template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
+      <el-table-column align="center" label="所在分组" width="120" v-slot="scope"><template>
+	   <el-tag v-if="scope.row.groupList.length === 0" class="block w100 ellipsis1" type="info">{{ scope.row.groupList | filterGroupList }}</el-tag>
+        <el-popover v-else width="200" placement="left-end" trigger="hover">
+               <div>{{ scope.row.groupList | filterGroupList }}</div>
+               <div slot="reference" class="pointer"><el-tag class="block w100 ellipsis1" type="info">{{ scope.row.groupList | filterGroupList }}</el-tag></div>
+          </el-popover>
+          </template></el-table-column>
       <el-table-column align="center" label="电话" width="108"><template v-slot="scope"> {{ scope.row.phone }} </template></el-table-column>
       <el-table-column align="center" label="邮箱" width="180"><template v-slot="scope"> {{ scope.row.mail }} </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"><template v-slot="scope"> {{ scope.row.position }} </template></el-table-column>
@@ -194,8 +246,8 @@
       <el-table-column align="left" label="操作" width="190" fixed="right">
         <template v-slot="scope">
       <div v-show="scope.row.isDelete == 1 ? false : true">
-             <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible" >
-              <el-form ref="expiredDateFormRule" :model="expiredDateForm" :rules="expiredDateFormRule">
+             <el-popover :ref="scope.row.id" placement="left" width="260" v-show="scope.row.visible">
+              <el-form :ref="scope.row.id+'s'" :model="expiredDateForm" :rules="expiredDateFormRule">
                 <el-form-item label="请选择离职日期：" prop="expiredDate">
                   <el-date-picker class="w300" v-model="expiredDateForm.expiredDate" type="date" align="right" unlink-panels start-placeholder="离职日期" @change="changeExpiredDate"></el-date-picker>
                 </el-form-item>
@@ -203,7 +255,7 @@
               </el-form>
             <div class="change_staff_btn mt10">
               <el-button v-show="scope.row.status == 1 ? true : false" size="mini" type="primary" @click="setStatusHadnle(scope.$index, scope.row)">设为在职</el-button>
-              <el-button type="primary" size="mini" @click="submitExpiredDate(scope.row, 'expiredDateFormRule')">确定</el-button>
+              <el-button type="primary" size="mini" @click="submitExpiredDate(scope.row, scope.row.id)">确定</el-button>
               <el-button size="mini" type="button" @click="cacelStatusHandle(scope.row.id)">取消</el-button>
             </div>
             <div class="change_staff_status" slot="reference">
@@ -228,7 +280,7 @@
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
          :current-page="pagingQuery['current']"
-         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400]"
+         :page-sizes="[10, 20, 40, 60, 80, 100, 200, 300, 400, 500]"
          :page-size="pagingQuery['size']"
          layout="total, sizes, prev, pager, next, jumper"
          :total="pagingQuery['total']"
@@ -248,8 +300,8 @@
 import { mapGetters } from 'vuex'
 import { getStaffList, deleteStaff, StaffState, downloadEmployee } from '@/api/people-manage/staffManage'
 import { imgUrl, downStaffXls } from '@/api/public'
-import { pickerOptions } from '@/utils'
-import { getGender, getFaceType, getStaffStates } from '@/utils/business'
+import { pickerOptions, DOWNFILE, getDates } from '@/utils'
+import { getGender, getFaceType, getStaffStates, getStaff_name_id, getStaff_groupName_id } from '@/utils/business'
 import StaffFromHandle from '../components/StaffFromHandle'
 import moment from 'moment'
 
@@ -265,10 +317,13 @@ export default {
       dialogVisible1: false,
       value: '华捷艾米',
       genders: getGender(),
+      props: { multiple: true },
       status: [],
       states: getStaffStates,
       faceTypes: getFaceType(),
       pickerOptions: pickerOptions(),
+      getStaff_name_ids: [],
+      getStaffGroup_name_ids: [],
       date: null,
       multipleSelection: [],
       getImgUrl: imgUrl(),
@@ -279,6 +334,7 @@ export default {
       expiredDateFormRule: {
         expiredDate: [{type:'date', required: true, message: '请选择离职日期', trigger: ['blur', 'change'] }]
       },
+      checked: true,
 
       getStates: null,
       pagingQuery: {
@@ -301,8 +357,9 @@ export default {
         status: null,
         isDelete: null, /// 0为正常 1为已删除 2为删除中
         states: null,
+        groupId: null,
         
-        current: 1, 
+        current: 1,
         size: 20,
         total: null,
       },
@@ -316,6 +373,7 @@ export default {
           gender: '1',
           phone: null,
           address: null,
+          groupIds: [],
           idNum: null,
           mail: null,
           employeeNum:null,
@@ -330,15 +388,24 @@ export default {
          btn_el: ['edit']
     }
   },
-  // filters: {
- 
-  // },
+  filters: {
+ filterGroupList(val) {
+  if(val.length !== 0) {
+		return val.map(item => {
+		  return item.name
+		}).join('，')
+	} else {
+		return '未分组'
+	}
+ }
+  },
   computed: {
     ...mapGetters([
       'username'
     ])
   },
   methods: {
+
     changeStatus() {
       let p = this.pagingQuery
        p['states'] = vm['getStates']
@@ -354,21 +421,25 @@ export default {
     getStaffList() {
       let [params] = [this.pagingQuery]
       this.table_loading = true
-      
+      if(Array.isArray(params.groupId)) {
+        params.groupId = params.groupId.join(',')
+      }
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
         if(res.code === 0) {
         params.size = res.data.size
         params.current = res.data.current
         params.total = res.data.total
-
+res.data.records.forEach(function (item) {
+			 console.log(item.name)
+			})
         if(res.data.records.length !== 0) {
           this.tableData = res.data.records
           
 // 设置visible解决elemenui pover 弹出异常缺陷
-        this.tableData.forEach(function (item) {
-         item.visible = true
-        })
+			this.tableData.forEach(function (item) {
+			 item.visible = true
+			})
 
 //  转换status为Boolean
         let satatusArr = []
@@ -394,6 +465,13 @@ export default {
     handleEdit(x, y) {
       this.dialogVisible1 = true
       this.addStaffForm = y
+      if(Array.isArray(y.groupList) && y.groupList.length != 0) {
+        this.addStaffForm.groupIds = []
+        y.groupList.forEach(item => this.addStaffForm.groupIds.push(item.groupId))
+        delete this.addStaffForm.groupList
+      } else {
+        this.addStaffForm.groupIds = []
+      }
 
 // 去除编辑无需字段
       let delEditParam = ['departmentId', 'img_height', 'img_width']
@@ -438,13 +516,48 @@ export default {
         this.$message.warning('请在列表中勾选要删除的员工')
       }
     },
-    onExport() {
+    onExport(command) {
       let p = this.pagingQuery
-      downloadEmployee(p.current, p.size).then(res => {
+        if(command === 'a') {
+          exportExcel()
+        } else if(command === 'b') {
+          exportImg()
+        }
+      function exportExcel () {
+       downloadEmployee(p.current, p.size).then(res => {
         if(res) {
           downStaffXls(p.current, p.size)
         }
       })
+       }
+      function exportImg() {
+        vm.multipleSelection.length !== 0 ? downAssingImg() : downAllImg()
+        function downAssingImg() {
+          let imgIdArr = []
+          new Promise((resolve) => {
+            imgIdArr.length === 0 ? resolve() : String
+          }).then(() => {
+            vm.multipleSelection.forEach(item => imgIdArr.push({
+              imageId: item.imageId,
+              name: item.name
+            }))
+            for(let i = 0; i <= imgIdArr.length; i++) {
+              try {
+                DOWNFILE.downloadIamge(`person/person-images?imageId=${ imgIdArr[i].imageId }`, imgIdArr[i].name)
+              } catch (error) {
+                this.$message.error('下载失败，请重试')
+              } finally {
+                setTimeout(() => {
+                  vm.$refs.multipleTable.clearSelection()
+                }, 1000)
+              }
+            }
+          })
+        }
+        function downAllImg() {
+          alert('开发中ing')
+        }
+      }
     },
     handleStatus(row) {
       row.visible = true
@@ -482,7 +595,7 @@ export default {
 // 设置离职时间
   submitExpiredDate (row, el) {
     let e = this.expiredDateForm
-      this.$refs[el].validate((valid) => {
+      this.$refs[el + 's'].validate((valid) => {
         if (valid) {
         valiExpiredDate()
       } else {
@@ -524,46 +637,61 @@ export default {
          a[item] =  moment(a[item]).format('YYYY-MM-DD')
   },
   changeDate1() {
-    this.changeDate('enrollTime')
+    getDates(this.pagingQuery, this.pagingQuery.enrollTime, 'enrollTime', '', '', 1)
   },
   changeDate2() {
-    this.changeDate('expiredTime')
+     getDates(this.pagingQuery, this.pagingQuery.expiredTime, 'expiredTime', '', '', 1)
   },
   changeExpiredDate() {
-     this.expiredDateForm.expiredDate1 =  moment(this.expiredDateForm.expiredDate).format('YYYY-MM-DD')
+    this.expiredDateForm.expiredDate1 =  moment(this.expiredDateForm.expiredDate).format('YYYY-MM-DD')
   },
   changeDate3() {
-    let _p = this.pagingQuery
-      this.date && this.date.length
-        ? ((_p.createTimeFrom = moment( this.date[0]).format("YYYY-MM-DD")),
-          (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
-        :  _p.createTimeFrom = _p.createTimeTo = null
-    },
-    cacelEditHandle() {
-      this.getStaffList()
-      this.dialogVisible1 = false
-    },
-    handleSizeChange(val) {
-      this.pagingQuery.size = val
-      this.getStaffList()
-    },
-    handleCurrentChange(val) {
-      this.pagingQuery.current = val
-      this.getStaffList()
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    refreshPagingQuery() {
-      this.pagingQuery = {}
-      this.onSearch()
+  getDates(this.pagingQuery, this.date, 'createTimeFrom', 'createTimeTo', '', 2)
+  },
+  changeGroupId() {
+    let groupId = this.pagingQuery.groupId
+    if(groupId && groupId.length > 10) {
+      let oldGroupId = [...groupId]
+      oldGroupId.splice(10, 1)
+      this.pagingQuery.groupId = oldGroupId
+      this.$message.warning('分组查询最多可选则 10 项')
+    } else {
+      this.pagingQuery.groupId = this.pagingQuery.groupId.join(',')
     }
+  },
+  cacelEditHandle() {
+    this.getStaffList()
+    this.dialogVisible1 = false
+  },
+  handleSizeChange(val) {
+    this.pagingQuery.size = val
+    this.getStaffList()
+  },
+  handleCurrentChange(val) {
+    this.pagingQuery.current = val
+    this.getStaffList()
+  },
+  handleSelectionChange(val) {
+    this.multipleSelection = val
+  },
+  refreshPagingQuery() {
+      this.pagingQuery = {groupId: null}
+      this.onSearch()
+    },
   },
   created() {
     vm = this
+	getStaff_name_id().then(res => {
+			this.getStaff_name_ids = res
+			})
     this.onSearch()
   },
   mounted() {
+    this.$nextTick(() => {
+    getStaff_groupName_id().then(res => {
+		this.getStaffGroup_name_ids = res
+		})
+    })
   },
-};
+}
 </script>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-29 17:12:53
+ * @LastEditTime: 2021-06-25 15:41:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\components\Account.vue
@@ -16,20 +16,20 @@
 </style>
 <template>
  <el-form :model="changePsw" :rules="changePswRule" ref="changePswForm" label-position="right" label-width="92px">
-    <el-form-item prop="username" label="用户名"> <el-input type="email" v-model="changePsw.username" placeholder="请输入用户名" disabled></el-input></el-form-item>
-    <el-form-item prop="email" label="邮箱"><el-input type="email" v-model="changePsw.email" placeholder="请输入邮箱"></el-input></el-form-item>
+    <el-form-item prop="username" label="账号"> <el-input type="email" v-model="changePsw.username" placeholder="请输入用户名" disabled clearable></el-input></el-form-item>
+    <el-form-item prop="email" label="邮箱"><el-input type="email" v-model="changePsw.email" placeholder="请输入邮箱" clearable></el-input></el-form-item>
     <el-form-item label="验证码:" prop="verifyCode">
-      <el-input type="text" v-model.trim="changePsw.verifyCode" placeholder="请输入验证码" class="verifyCode w300"></el-input>
+      <el-input type="text" v-model.trim="changePsw.verifyCode" placeholder="请输入验证码" class="verifyCode w300" clearable></el-input>
       <el-button type="primary" size="small" class="verifyCode_btn ml10" :disabled="changePsw.verifyCodeBtnStatus" @click.prevent="getverifyCodeHandler_psw('changePswForm')">{{ changePsw.verifyCodeTxt }}</el-button>
     </el-form-item>
      <el-form-item prop="oldPass" label="旧密码">
-      <el-input type="oldPass" :show-password="true" v-model="changePsw.oldPass" maxlength="16" placeholder="请输入旧密码"></el-input>
+      <el-input type="oldPass" :show-password="true" v-model="changePsw.oldPass" maxlength="16" placeholder="请输入旧密码" clearable></el-input>
     </el-form-item>
     <el-form-item prop="newPass" label="新密码">
-      <el-input type="newPass" :show-password="true" v-model="changePsw.newPass" maxlength="16" placeholder="请输入大于6位数字和字母组合的密码"></el-input>
+      <el-input type="newPass" :show-password="true" v-model="changePsw.newPass" maxlength="16" placeholder="请输入大于6位数字和字母组合的密码" clearable></el-input>
     </el-form-item>
     <el-form-item prop="checkPsw" label="确认新密码">
-      <el-input type="password" :show-password="true" v-model="changePsw.checkPsw" placeholder="请输入确认密码"></el-input>
+      <el-input type="password" :show-password="true" v-model="changePsw.checkPsw" placeholder="请输入确认密码" clearable></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="changePswHandler('changePswForm')" :disabled="changePsw_loading"><i :class="{'el-icon-loading':changePsw_loading}"></i> 更改密码</el-button>
@@ -41,6 +41,7 @@
 import { getVerifyCode, updatePass } from "@/api/user"
 import { mapMutations } from 'vuex'
 import md5 from 'js-md5'
+import { validatePass } from '@/utils/validate.js'
 import Cookies from 'js-cookie'
 let vm
 
@@ -48,13 +49,22 @@ export default {
   name: 'personalCenter',
   data() {
     let validatePsw1 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error("请再次输入密码"))
-      } else if (value !== this.changePsw.newPass) {
-        callback(new Error("两次输入密码不一致!"))
-      } else {
-        callback()
-      }
+      value === ""
+        ? callback(new Error("请输入密码"))
+        : !validatePass(value)
+        ? callback(new Error("请输入6~16位数字、字母和符号组合的密码"))
+        : this.changePsw.checkPsw !== ""
+        ? callback()
+        : String
+          callback()
+    },
+    validatePsw2 = (rule, value, callback) => {
+      value === ""
+        ? callback(new Error("请再次输入密码"))
+        : value !== this.changePsw.newPass
+        ? callback(new Error("两次输入密码不一致!"))
+        : String
+          callback()
     }
     function notNull(notNullName) { return [{required: true, message: `请输入${ notNullName }`, trigger: "blur" }] }
     return {
@@ -82,15 +92,8 @@ export default {
         ],
         oldPass: notNull('旧密码'),
         verifyCode:notNull('验证码'),
-        newPass: [
-          notNull('新密码')[0],
-          {
-            min: 6,
-            message: "请输入大于6位数字和字母组合的密码",
-            trigger: "blur",
-          },
-        ],
-        checkPsw: [{required: true, validator: validatePsw1, trigger: 'blur' }],
+        newPass: { required: true, validator: validatePsw1, trigger: 'blur' },
+        checkPsw: [{required: true, validator: validatePsw2, trigger: 'blur' }],
       }
     }
   },
@@ -161,28 +164,37 @@ export default {
               newPass: md5(changePswOld.newPass).toUpperCase()
             })).then((res) => {
               if (res.code === 0) {
-
+               try {
+                vm.$store.dispatch('user/tenantList').then((tenantName) => {
                 if (_this.changePsw_loading) { return }
                 _this.changePsw_loading = true
                 let users = {
+                  tenantName: tenantName.tenantName,
                   username: user['username'],
                   password: user['newPass']
                 }
  
-         _this.$store.dispatch('user/login',users).then(() => {
-           _this.$message.success('密码修改成功，系统已为您自动登录！', 4000)
-           _this.$refs.changePswForm.resetFields()
-           if(Cookies.get('username')) {
-              Cookies.set('username', users['username'], {expires: 10})
-             Cookies.set('password', users['password'], {expires: 10})
-             Cookies.set('checkedStatus', true)
-           } else {
-             Cookies.remove('username')
-             Cookies.remove('checkedStatus')
-           }
-            }).finally(() => {
-                    _this.changePsw_loading = false
-                  })
+                _this.$store.dispatch('user/login',users).then(() => {
+                  _this.$message.success('密码修改成功，系统已为您自动登录！', 4000)
+                  _this.$refs.changePswForm.resetFields()
+                  if(Cookies.get('username')) {
+                    Cookies.set('tenantName', tenantName.tenantName, {expires: 10})
+                    Cookies.set('username', users['username'], {expires: 10})
+                    Cookies.set('password', users['password'], {expires: 10})
+                    Cookies.set('checkedStatus', true)
+                  } else {
+                    Cookies.remove('tenantName')
+                    Cookies.remove('username')
+                    Cookies.remove('checkedStatus')
+                  }
+                   }).finally(() => {
+                       _this.changePsw_loading = false
+                      }) 
+                   })
+               } catch {
+                 vm.$message.success('密码修改成功，请重新登录', 4000)
+                 vm.loginOut()
+               }
               } else {
                _this.$message.error(res.msg)
               }
@@ -192,8 +204,10 @@ export default {
       })
     }
   },
-  created() {
+  beforeCreate() {
     vm = this
+  },
+  created() {
   },
   mounted() {
   }

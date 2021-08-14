@@ -1,13 +1,12 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-24 16:46:47
+ * @LastEditTime: 2021-06-30 11:36:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
 -->
 <style lang="scss" scoped>
-// 详情
  .demo-table-expand {
     width: 1100px;
   }
@@ -56,11 +55,17 @@
     <el-table :data="painingQueryList" border class="people_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
+			 <el-table-column align="center" label="姓名" width="100"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
       <el-table-column align="center" label="已抓拍人脸" width="95" class="ppp">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
+	  <el-table-column align="center" label="与原图相似度" width="105" prop="similarity"></el-table-column>
       <el-table-column align="center" label="通行设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
-       <el-table-column align="center" label="设备标识" width="174"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
+       <el-table-column align="center" label="设备标识" width="100">
+        <template v-slot="scope">
+        <el-tooltip effect="light" :content="scope.row.uniqueDeviceIdentifier" placement="top"> 
+             <span class="block cell">{{ scope.row.uniqueDeviceIdentifier }}</span></el-tooltip> 
+        </template></el-table-column>
       <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
       <span v-show="scope.row.result !== 'success'" class="red"><i v-if="scope.row.reason ? true : false">（{{ scope.row.reason }}）</i></span></template></el-table-column>
       <!-- <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column> -->
@@ -99,7 +104,6 @@ export default {
       getImgUrl: imgUrl(),
       
       pagingQuery: {
-        personName: null,
         deviceId: null,
         ruleName: null,
         direction: null,

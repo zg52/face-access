@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-19 14:40:42
+ * @LastEditTime: 2021-06-30 11:36:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -60,7 +60,11 @@
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
       <el-table-column align="center" label="通行设备" width="200"> <template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
-       <el-table-column align="center" label="设备标识" width="174"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
+       <el-table-column align="center" label="设备标识" width="100">
+        <template v-slot="scope">
+        <el-tooltip effect="light" :content="scope.row.uniqueDeviceIdentifier" placement="top"> 
+             <span class="block cell">{{ scope.row.uniqueDeviceIdentifier }}</span></el-tooltip> 
+        </template></el-table-column>
       <el-table-column align="center" label="通行结果" width="110"><template v-slot="scope"><span :class="scope.row.result !== 'success' ? 'red' : 'green'">{{ scope.row.result | trafficRersultFilter(scope.row) }}</span> <br>
       <span v-show="scope.row.result !== 'success'" class="red"><i v-if="scope.row.reason ? true : false">（{{ scope.row.reason }}）</i></span></template></el-table-column>
       <!-- <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationMode | verificationModes_handle }}</template></el-table-column> -->
@@ -99,7 +103,6 @@ export default {
       getImgUrl: imgUrl(),
       
       pagingQuery: {
-        personName: null,
         deviceId: null,
         ruleName: null,
         direction: null,

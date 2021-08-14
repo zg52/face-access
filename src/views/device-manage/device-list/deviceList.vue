@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 16:25:21
+ * @LastEditTime: 2021-07-26 15:13:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -48,7 +48,6 @@ margin-left: 30px;
     width: 1100px;
     
   }
- 
   .demo-table-expand .el-form-item {
   margin-right: 0!important;
     margin-bottom: 0;
@@ -98,6 +97,51 @@ margin-left: 30px;
   font-size: 45px;
 }
 .pt15{padding-top: 15px!important;}
+.xuan {
+  position:relative;width:100%;
+   ::v-deep.el-form-item__content {
+    width: 100%;
+  }
+}
+.formSuspend {
+  transition: all .4s;
+  position:absolute;
+  width:100%;
+  background: #fff;
+  border: #DCDFE6 1px solid;
+  border-left: none;
+  border-right: none;
+  height: 52px;
+  padding-top: 7px;
+  .cancel {
+    margin-left: 20px;
+  }
+  .tip i {
+    font-style: normal;
+  }
+  .tip img {
+   position: relative;
+   top:2px;
+    margin-right: 5px;
+  }
+  .fr {
+    margin-right: 2%;
+  }
+.tip1 {
+  color: #999;
+  padding-right: 30px;
+}
+}
+.theme {
+  color: #8a16ff;
+}
+</style>
+<style lang="scss">
+// #deviceList {
+// .el-popper .popper__arrow, .el-popper .popper__arrow::after {
+//     left: 20px!important;
+//   }
+// }
 </style>
 
 <template>
@@ -125,7 +169,7 @@ margin-left: 30px;
     <el-form :model="pagingQuery" :inline="true">
       <!-- <el-form-item label="创建人"><el-input v-model.trim="roles.roleName" placeholder="输入姓名搜索" clearable></el-input></el-form-item> -->
       <el-form-item label="设备名称"><el-input v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
-      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type"><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
+      <el-form-item label="设备类型"><el-select v-model="pagingQuery.type" clearable><el-option v-for="(deviceType, index) of deviceTypes" :key="index" :label="deviceType.value" :value="deviceType.id"></el-option></el-select></el-form-item>
       <el-form-item label="设备型号"><el-input v-model.trim="pagingQuery.model" clearable></el-input></el-form-item>
       <el-form-item label="设备厂商"><el-input v-model="pagingQuery.manufacturer" clearable></el-input></el-form-item>
       <el-form-item label="设备SN"><el-input v-model.trim="pagingQuery.sn" clearable></el-input></el-form-item>
@@ -149,15 +193,28 @@ margin-left: 30px;
       </el-form-item>
      <el-form-item label="设备状态"><el-select class="w100" v-model="states" clearable @change="changeStates"><el-option v-for="(deviceState, index) of deviceStates" :key="index" :label="deviceState.value" :value="deviceState.id"></el-option></el-select></el-form-item>
      
-      <el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
-      <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button>
-      <el-button type="primary" @click="onExport"><svg-icon icon-class="excel"/> <span>导出</span></el-button>
-        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
-      <router-link class="ml10" to="/device-manage/person-issued/issued-add/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
+     <el-form-item class="fr"><el-button type="success" @click="onSearch" class="search"><i class="el-icon-search"></i><span>查询</span></el-button>
+        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button></el-form-item> <br>
+
+ <!-- 悬浮 -->
+      <el-form-item class="xuan">
+        <div class="clearfix formSuspend" v-show="formSuspend">
+          <div class="fl"><span class="tip"><img src="../../../assets/image/check.jpg"> 
+          <span>已选<i class="theme"> {{ formSuspendParams.deviceNum }}</i> 个设备，所属设备类型<i class="theme"> {{ formSuspendParams.deviceType }}</i> 种 </span></span><el-button @click="cacelSuspend" size="mini" class="cancel">取消</el-button></div>
+          <div class="fr"><span class="tip1" v-show="formSuspendTipShow"><i class="el-icon-info"></i> 提示：如需批量升级设备，所选设备需为同一种类型且为在线状态</span>
+          <el-button type="warning" size="mini" @click="onDeletes"><i class="el-icon-delete"></i> 删除</el-button>
+          <el-button size="mini" type="primary" :disabled="formSuspendTipShow" @click="updateDevices"><svg-icon icon-class="update"/> 升级</el-button></div>
+        </div>
+      <!-- <el-button type="warning" @click="onDeletes"><i class="el-icon-delete"></i><span>批量删除</span></el-button> -->
+        <el-button type="primary" @click="addDeviceVisible = true"><svg-icon icon-class="edit"/> <span>新增设备</span></el-button>
+      <el-button type="primary" @click.prevent="updateRecordsShow = true"><i class="el-icon-view"></i><span>查看设备升级记录</span></el-button>
+       <!-- <el-button type="primary" @click="updateDevices"><svg-icon icon-class="update"/> <span>批量升级设备</span></el-button> -->
+      <router-link class="ml10" to="/device-manage/person-issued/issuedAdd?tab=0"><el-button type="primary"><svg-icon icon-class="guide"/> <span>下发人员</span></el-button></router-link>
+      </el-form-item>
+    
     </el-form>
     
-    <el-table :data="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
+    <el-table :data="deviceList" id="deviceList" class="device_list" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable">
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
       <el-table-column :width="50" type="selection" fixed></el-table-column>
       <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
@@ -183,11 +240,19 @@ margin-left: 30px;
                <el-form-item label="设备末次心跳同步时间："><span>{{ props.row.astHeartbeatTime | filterDate }}</span></el-form-item>
                <el-form-item label="创建时间："><span>{{ props.row.createTime | filterDate }}</span></el-form-item>
                <el-form-item label="修改时间："><span>{{ props.row.lastUpdateTime | filterDate}}</span></el-form-item>
+               <el-form-item label="描述："><span>{{ props.row.description }}</span></el-form-item>
            </el-form>
            </template>
      </el-table-column>
-      <el-table-column align="center" label="设备名称" :width="100"><template v-slot="scope">{{ scope.row.name }}</template></el-table-column>
-       <el-table-column align="center" label="设备标识" :width="100"><template v-slot="scope">{{ scope.row.uniqueDeviceIdentifier }}</template></el-table-column>
+      <el-table-column align="center" label="设备名称" :width="100" prop="name"></el-table-column>
+       <el-table-column align="center" label="设备标识" :width="100">
+         <template v-slot="scope">
+             <el-popover width="200" placement="left-end" trigger="hover">
+               <div>{{ scope.row.uniqueDeviceIdentifier }}</div>
+              <div class="fr pt5"><el-button size="mini" @click="copyIndentifier(scope.row.uniqueDeviceIdentifier)">复制</el-button></div>
+               <span slot="reference" class="dblock ellipsis1">{{ scope.row.uniqueDeviceIdentifier }}</span>
+          </el-popover>
+        </template></el-table-column>
       <el-table-column align="center" label="设备类型" :width="80"><template v-slot="scope">{{ scope.row.type | filterDiveType}}</template></el-table-column>
       <el-table-column align="center" label="设备型号" :width="80"><template v-slot="scope">{{ scope.row.model }}</template></el-table-column>
       <el-table-column align="center" label="设备厂商" :width="80"><template v-slot="scope">{{ scope.row.manufacturer }}</template></el-table-column>
@@ -203,27 +268,28 @@ margin-left: 30px;
       <el-table-column align="center" label="设备信息" :width="140"><template v-slot="scope">{{ scope.row.information }} </template> </el-table-column>
       <el-table-column align="center" label="创建时间" :width="150"><template v-slot="scope">{{scope.row.createTime | filterDate }}</template> </el-table-column>
 
-      <el-table-column align="center" label="操作" :width="300" fixed="right">
+      <el-table-column align="center" label="操作" :width="335" fixed="right">
         <template v-slot="scope">
          <div v-show="scope.row.status !== 'removed' ? true : false">
-            <el-button class="radius_45" type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i><span>编辑</span></el-button >
+            <el-button class="radius_45" type="primary" plain size="mini" @click="handleEdit(scope.$index, scope.row)" ><i class="el-icon-edit"></i></el-button >
           <el-popconfirm
             confirmButtonText="确认"
             cancelButtonText="取消"
             title="确定要删除该设备？"
             @onConfirm="handleDelete(scope.$index, scope.row)">
-            <el-button  class="radius_45 ml10" size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i><span>删除</span></el-button>
+            <el-button  class="radius_45 ml10" plain size="mini" type="danger" slot="reference"><i class="el-icon-delete"></i></el-button>
           </el-popconfirm>
+          <el-button class="radius_45 ml10" type="primary" plain size="mini" @click="showDeviceConfig(scope.row)"><i class="el-icon-view"></i> 设置</el-button>
             <el-dropdown class="ml10" @command="handleCommand">
-               <el-button type="primary" class="radius_45" size="mini">更多操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+               <el-button type="primary" plain class="radius_45" size="mini">更多操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
                <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.id" @click.prevent.native="hanlecommandData(scope.row)">{{ command.value }}</el-dropdown-item>
+                 <el-dropdown-item v-for="(command, index) of commandes" :key="index" :command="command.id" @click.prevent.native="hanlecommandData(command.id, scope.row)">{{ command.value }}</el-dropdown-item>
                </el-dropdown-menu>
               </el-dropdown>
          </div>
             </template>
       </el-table-column>
-    </el-table>   
+    </el-table>
 
    <el-pagination
      @size-change="handleSizeChange"
@@ -277,7 +343,15 @@ margin-left: 30px;
     </div>
      </div>
   </el-dialog>
-
+  
+<!-- ota升级 -->
+  <DeviceUpdate v-if="updateParams.updateVisible" :updateParams="updateParams" @showRecords="showRecords" />
+<!-- ota升级记录 -->
+  <DeviceUpdateRecords :updateRecordsShow="updateRecordsShow" :deviceList="deviceList" @recordsHide="recordsHide" />
+<!-- 设备设置信息 -->
+  <DeviceConfig :deviceConfigShow="deviceConfigShow" :deviceName="deviceName_c" :deviceConfig="deviceConfig" @deviceConfigHide="deviceConfigHide" />
+<!-- 设备激活信息 -->
+  <DeviceActivation :mqtt_deviceId_http="mqtt_deviceId_http" :actionShow="actionShow" :deviceName="deviceName" @actionHide="actionHide" />
   </div>
 </template>
 <script>
@@ -285,19 +359,30 @@ import {
   addDevice,  // 增设备
   editDevice, // 编辑设备
   searchDevice,  // 查设备列表
-  // getDeviceDetails, // 查设备详情
+ // getDeviceDetails, // 查设备详情
   deleteDevice,  // 删设备
-  instructDevice // 操作设备
+  instructDevice, // 操作设备
+  deviceActivationMsg, // 设备激活信息
+  // deviceUpdateRecords
  } from '@/api/device-manage'
-import { pickerOptions } from '@/utils'
+import { pickerOptions, copyhandle } from '@/utils'
 import { getDeviceStates, getDeviceISOnline, getDeviceTypes } from '@/utils/business'
+import DeviceUpdate from './components/DeviceUpdate'
+import DeviceUpdateRecords from './components/DeviceUpdateRecords'
+import DeviceActivation from './components/DeviceActivation'
+import DeviceConfig from './components/DeviceConfig'
 import moment from "moment"
-// import { filterDate } from '@/filters'
 const notNull = [{required: true, message:'不能为空', trigger: "blur" }]
 let vm
 
 export default {
   name: "deviceList",
+  components: {
+    DeviceUpdate,
+    DeviceUpdateRecords,
+    DeviceActivation,
+    DeviceConfig
+  },
   data() {
     return {
       table_loading: false,
@@ -310,7 +395,7 @@ export default {
       deviceTypes: getDeviceTypes(),
       deviceISOnline: getDeviceISOnline(),
       deviceStates: getDeviceStates().search,
-      multipleSelection: [], //多选删除
+      multipleSelection: [], //多选
       date: null,
       states: null,
       instructDeviceId: null,
@@ -360,7 +445,7 @@ export default {
        createTimeTo: null,
        
        current: 1, 
-       size: 20,
+       size: 30,
        total: null,
       },
 
@@ -378,7 +463,36 @@ export default {
     },
 
 // 设备操作字段
-    commandes: getDeviceStates().operate
+    commandes: getDeviceStates().operate,
+
+// 设备升级
+    updateParams: {
+       deviceId: null,
+       deviceType: null,
+       updateVisible: false,
+    },
+    updateRecordsShow: false,
+    
+// form悬浮
+    formSuspend: false,
+    formSuspendParams: {
+      deviceNum: null,
+      deviceType: null,
+      deviceOnline: []
+    },
+    formSuspendTipShow: false,
+	
+// 设备激活信息
+	mqtt_deviceId_http: {
+		
+	},
+  actionShow: false,
+  deviceName: null,
+
+// 设备设置信息
+  deviceConfigShow: false,
+  deviceConfig: {},
+  deviceName_c: null
   }
   },
   filters: {
@@ -571,17 +685,50 @@ export default {
 // 操作设备
      handleCommand(command) {
        setTimeout(()=> {
-         instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
-       res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
-      })
+        if(!['update', 'deviceActivate', 'set'].includes(command))
+          {
+           instructDevice(command, {deviceIds: this.instructDeviceId}).then((res) => {
+         res.code === 0 ? this.$message.success(res.msg) : this.$message.error(res.msg, 5000)
+        })
+          }
        })
       },
-    hanlecommandData(x) {
-        this.instructDeviceId = x.id
+    hanlecommandData(commandId, row) {
+       if(commandId !== 'update') {
+        this.instructDeviceId = row.id
+       } else if(commandId == 'update') {
+         if(row.online === true) {
+           this.updateParams.deviceId = row.id
+           this.updateParams.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
+           this.updateParams.deviceType = this.filterDiveType(row.type)
+           this.updateParams.updateVisible = true
+         } else {
+           this.$message.error('设备不可用,请检查设备的状态及是否在线', 4000)
+         }
+       }
+	   if(commandId == 'deviceActivate') {
+		   this.mqtt_deviceId_http.uniqueDeviceIdentifier = row.uniqueDeviceIdentifier
+           this.deviceName = row.name
+           this.actionShow = true
+		   }
+      if(commandId == 'set') {
+        this.$router.push({path: '/device-manage/setDevice'})
+      }
+        
     },
- 
-    onExport() {
 
+// 批量升级设备
+    updateDevices() {
+      let selections = this.multipleSelection
+       if (selections.length !== 0) {
+         let deviceIds = []
+            selections.map(item => deviceIds.push(item.id))
+            this.updateParams.deviceId = deviceIds.flat(Infinity).join()
+           this.updateParams.deviceType = this.filterDiveType(selections[0].type)
+           this.updateParams.updateVisible = true
+      } else {
+        this.$message.warning('请在列表中勾选要升级的同类型设备')
+      }
     },
     handleSizeChange(val) {
       this.pagingQuery.size = val
@@ -592,22 +739,87 @@ export default {
       this.getDeviceList()
     },
     handleSelectionChange(val) {
+      let [deviceTypeNum, deviceOnline] = [[], []]
       this.multipleSelection = val
+     this.formSuspend = val.length !== 0 ? true : false
+     this.formSuspendParams.deviceNum = val.length
+     for(let i = 0; i < val.length; i++) {
+         deviceTypeNum.push(val[i].type)
+        deviceOnline.push(val[i].online)
+     }
+     this.formSuspendParams.deviceType = [...new Set(deviceTypeNum)].length
+     this.formSuspendParams.deviceOnline = [...new Set(deviceOnline)].toString()
+     this.formSuspendTip()
+      
+    },
+    formSuspendTip() {
+     if(!this.formSuspendParams['deviceOnline'].includes('false')) {
+       if(this.formSuspendParams['deviceType'] >= 2) {
+         this.formSuspendTipShow = true
+       } else {
+         this.formSuspendTipShow = false
+       }
+     } else {
+       this.formSuspendTipShow = true
+     }
+    },
+    cacelSuspend() {
+      this.formSuspend = false, this.multipleSelection = [], this.$refs.multipleTable.clearSelection()
     },
    refreshPagingQuery() {
       this.pagingQuery = {}
       this.date = null
       this.onSearch()
     },
-    resetAddDeviceData(e) { 
+    resetAddDeviceData(e) {
     this.$refs[e].resetFields()
    },
-   
+    filterDiveType(value) {
+      return value === vm.deviceTypes[0].id ? vm.deviceTypes[0].value : vm.deviceTypes[1].value
+    },
+    recordsHide(x) {
+      x ? (this.updateRecordsShow = false, this.updateParams.updateVisible = false) : (this.updateRecordsShow = false, this.updateParams.updateVisible = true)
+    },
+    showRecords() {
+      this.updateRecordsShow = true
+    },
+    actionHide() {
+      this.actionShow = false
+    },
+    deviceConfigHide() {
+      this.deviceConfigShow = false
+    },
+    copyIndentifier(row) {
+	  copyhandle(row)
+    },
+    showDeviceConfig(row) {
+      if(row.config) {
+        this.deviceConfig = JSON.parse(row.config)
+        this.deviceName_c = row.name
+        this.deviceConfigShow = true
+     console.log(this.deviceConfig)
+      } else {
+        this.$message('该设备暂无远程设置的信息')
+      }
+
+    }
   },
   created() {
     vm = this
     this.onSearch()
- 
+	
+// 获取设备激活信息
+	deviceActivationMsg().then(res => {
+		if(res.code === 0) {
+			this.mqtt_deviceId_http = {
+				"mqtt": res.data.mqttServer,
+				"http": res.data.httpServer,
+				"uniqueDeviceIdentifier": null
+			}
+		}
+	})
+  },
+  mounted() {
   },
 }
 </script>

@@ -7,5 +7,5 @@
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\task\index.vue
 -->
 <template>
-    <div>暂无任务</div>
+    <div class="app-container">暂无任务</div>
 </template>

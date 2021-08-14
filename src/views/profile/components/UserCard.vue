@@ -73,8 +73,9 @@
         </pan-thumb>
       </div>
       <div class="box-center">
-        <div class="user-name text-center">{{ user.username }}</div>
-        <!-- <div class="user-role text-center text-muted">{{ user.role | filterUserRoleName }}</div> -->
+        <div class="text-center user-name">所属租户：{{ user.tenantName }}</div>
+        <div class="text-center user-role text-muted">角色：{{ user.role | filterUserRoleName }}</div>
+        <div class="text-center user-role text-muted">企业名称：{{ user.organizationName }}（  <span class="themeColor">ID：{{ user.organizationId }}</span> ）</div>
       </div>
     </div>
   </el-card>
@@ -82,7 +83,10 @@
 
 <script>
 import PanThumb from '@/components/PanThumb'
-
+import { getUserRoles } from '@/utils/business'
+// import {createNamespacedHelpers, mapActions } from 'vuex'
+// const { mapActions } = createNamespacedHelpers('user')
+let vm
 
 export default {
   components: { PanThumb },
@@ -91,23 +95,35 @@ export default {
       type: Object,
       default: () => {
         return {
-          username: '',
-          email: '',
           avatar: require('../../../assets/image/logo.png'),
-          role: ''
         }
       }
     }
   },
-  filters: {
-    getRoleName(value) {
-      return 'dd'
-    }
-  },
   data() {
     return {
-      avatar: require('../../../assets/image/logo.png')
+      avatar: require('../../../assets/image/logo.png'),
+      name: '',
+      tenantName: ''
     }
-  }
+  },
+  filters: {
+    filterUserRoleName(value) {
+      let roleName = null
+      getUserRoles.forEach(item => {
+      if(item.id == value) roleName = item.name
+      })
+      return roleName
+    }
+  },
+  methods: {
+  // ...mapActions('user', ['tenantList']),
+    // ...mapActions(['getTenant']),
+  },
+  beforeCreate() {
+    vm = this
+  },
+  created() {
+}
 }
 </script>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-18 15:33:26
+ * @LastEditTime: 2021-07-06 10:22:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -12,7 +12,7 @@
 <template>
   <div class="app-container">
     <el-form :model="pagingQuery" :inline="true">
-      <el-form-item label="创建人"><el-input class="w100" v-model.trim="pagingQuery.operator"></el-input></el-form-item>
+      <!-- <el-form-item label="创建人"><el-input class="w100" v-model.trim="pagingQuery.operator"></el-input></el-form-item> -->
       <el-form-item label="选择设备名称">
         <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
@@ -26,7 +26,7 @@
              <el-cascader class="w250" v-model="pagingQuery.verificationModes" :options="passWay" :props="passWayProps" clearable @change="changeRuleNode"></el-cascader>
          </div>
       </el-form-item> -->
-     <el-form-item label="通行人员类型">
+     <el-form-item label="通行人员类型"> 
         <el-select v-model="pagingQuery.personType" class="w130" @change="personTypeHandle">
         <el-option v-for="(personType, index) of personTypes" :key="index" :label="personType.name" :value="personType.id"></el-option>
         </el-select>
@@ -74,7 +74,6 @@
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
       <el-button type="warning" @click="onDeletes"> <i class="el-icon-delete"></i><span>批量删除</span></el-button>
       <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-      <el-button type="primary" @click="onExport"> <svg-icon icon-class="excel"/> <span>导出</span></el-button>
       <router-link class="ml10" to="/traffic-rules/addRules"><el-button type="primary"><svg-icon icon-class="edit"/> 新建通行规则</el-button></router-link>
     </el-form>
       
@@ -83,7 +82,10 @@
       <el-table-column label="序列" width="50" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="通行规则名称" width="110"><template v-slot="scope"> {{ scope.row.name }}</template></el-table-column>
       <el-table-column align="center" label="所在设备" width="120"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name}}</template></el-table-column>
-        <el-table-column align="center" label="设备标识" width="120"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier}}</template></el-table-column>
+        <el-table-column align="center" label="设备标识" width="100"><template v-slot="scope"> 
+             <el-tooltip :disabled="scope.row.uniqueDeviceIdentifier.length >= 10 ? false : true" effect="light" :content="scope.row.uniqueDeviceIdentifier" placement="top"> 
+             <span class="block cell">{{ scope.row.uniqueDeviceIdentifier }}</span></el-tooltip>
+          </template></el-table-column>
       <el-table-column align="center" label="通行方式" width="180"><template v-slot="scope">{{ scope.row.verificationModes | verificationModes_handle }}</template></el-table-column>
       <el-table-column align="center" label="通行人员类型" width="125"> <template v-slot="scope">{{ scope.row.personType | personTypeFilter(scope.row)}}</template></el-table-column>
       <!-- <el-table-column align="center" label="通行人员数量" width="120"><template v-slot="scope"> {{ scope.row.dfs }} </template></el-table-column> -->
@@ -400,10 +402,6 @@ export default {
         this.$message.warning('请在列表中勾选要删除的规则')
       }
     },
-    onExport() {
-
-    },
-
 // 修改规则
     handleEdit() {
       
@@ -473,7 +471,6 @@ export default {
     }
   },
   mounted() {
-    
   },
 };
 </script>

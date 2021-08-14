@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-22 15:59:14
+ * @LastEditTime: 2021-07-02 17:30:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\PanelGroup.vue
@@ -266,7 +266,7 @@ export default {
     reservation_number().then((res) => { this.reservation_number = res }),
     faceNum().then((res) => { this.faceNum = res }),
     offline_device().then((res) => { this.offline_device = res }),
-    failure_device().then((res) => { this.failure_device = res })
+    failure_device().then((res) => { this.failure_device = res }),
     temperature_number().then((res) => { this.temperature_number = res })
   },
   },

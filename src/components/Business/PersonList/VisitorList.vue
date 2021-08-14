@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 17:51:50
+ * @LastEditTime: 2021-07-13 17:54:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -36,14 +36,6 @@
         </el-date-picker>
       </el-form-item>
       <!-- <el-form-item label="下发状态："><el-select class="w100" v-model.trim="pagingQuery.gender" disabled><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item> -->
-       <el-form-item label="授权状态">
-        <el-select v-model="pagingQuery.status" disabled>
-          <!-- <el-option>已授权</el-option>
-           <el-option>未授权</el-option>
-          <el-option>已过期</el-option>
-          <el-option>已拒绝</el-option> -->
-        </el-select>
-      </el-form-item>
       <el-form-item label="来访日期">
         <el-date-picker
           v-model="date1"
@@ -58,9 +50,14 @@
           @change="changeDate1">
         </el-date-picker>
       </el-form-item>
-
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
+       
+      <el-form-item class="block1 multipleTable_suspend" v-if="multipleSelection.length !== 0 ? true : false">
+         <div class="fl"><span class="tip"><img src="../../../assets/image/check.jpg"></span>
+          <span>已选择<i class="theme"> {{ formSuspendParams.num }}</i> 项</span><el-button type="primary" @click="confirmSuspend" size="mini" class="cancel">确定</el-button><el-button @click="cacelSuspend" size="mini" class="cancel">取消</el-button>
+         </div>
+       </el-form-item>
     </el-form>
     
     <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" v-loading="table_loading" element-loading-spinner="el-icon-loading" ref="multipleTable" border>
@@ -72,14 +69,12 @@
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender | filterGenter }} </template></el-table-column>
-       <el-table-column align="center" label="授权状态" width="80"><template v-slot="scope">{{ scope.row.status === 'auth' ? '已授权' : '已失效' }} </template></el-table-column>
       <el-table-column align="center" label="被访人姓名" width="100"> <template v-slot="scope"> {{ scope.row.intervieweeName }} </template></el-table-column>
       <!-- <el-table-column align="center" label="下发状态" width="160"><template v-slot="scope">{{ scope.row.status == 0 ? '已下发' : '未下发' }}</template> </el-table-column> -->
        <el-table-column align="center" label="来访时间"><template v-slot="scope">{{ scope.row.visitStartTime }} ~ {{ scope.row.visitEndTime }}</template></el-table-column>
       <el-table-column align="center" label="来访事由"><template v-slot="scope">{{ scope.row.reason }}</template></el-table-column>
       <el-table-column align="center" label="创建时间"><template v-slot="scope">{{ scope.row.createTime | filterDate }}</template></el-table-column>
     </el-table> 
-    
       <el-pagination
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange"
@@ -134,6 +129,9 @@ export default {
         size: 20,
         total: null,
       },
+      formSuspendParams: {
+        num: null,
+    },
       tableData: [],
     }
   },
@@ -193,14 +191,21 @@ changeDate(x, y, z, m) {
       this.getVisitorList()
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
-      this.$emit('visitorIds', this.multipleSelection)
+     this.multipleSelection = val
+     this.formSuspendParams.num = val.length
+     this.$emit('visitorIds', this.multipleSelection)
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
       this.date = null, this.date1 = null
       this.onSearch()
     },
+    confirmSuspend() {
+     this.$emit('visitorHandleTo')
+    },
+    cacelSuspend() {
+      this.multipleSelection = [], this.$refs.multipleTable.clearSelection()
+    }
   },
   created() {
     vm = this

@@ -12,7 +12,7 @@ $light_gray:#eee;
     position: relative;
     width: 440px;
     max-width: 100%;
-    padding: 0 35px 65px;
+    padding: 0 35px 40px;
     margin: 0 auto;
     overflow: hidden;
     background: #272c40;
@@ -128,6 +128,9 @@ $light_gray:#eee;
   width:100%;margin-top: 20px;
   padding: 12px 0!important;font-size: 20px!important;font-family: cursive!important;font-weight: bold;
 }
+.go_reg {
+  padding-top:20px;
+}
 </style>
 <style lang="scss">
 .login-container {
@@ -154,8 +157,7 @@ $light_gray:#eee;
 .verifyCode_btn {
   width: 126px;
   height: 40px;
-    letter-spacing: 1px;
-
+  letter-spacing: 1px;
 }
 .verify {
   width: 232px;
@@ -169,19 +171,20 @@ $light_gray:#eee;
 
     <el-form ref="loginForm" v-if="loginShow" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container"><h3 class="title">人脸辨识云·门禁系统</h3></div>
-      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input ref="username" v-model.trim="loginForm.username" placeholder="用户名" name="username" type="text" clearable /></el-form-item>
+      <el-form-item prop="tenantName"><span class="svg-container"><svg-icon icon-class="tenantName" /></span><el-input ref="tenantName" v-model.trim="loginForm.tenantName" placeholder="租户名" name="tenantName" type="text" clearable /></el-form-item>
+      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input ref="username" v-model.trim="loginForm.username" placeholder="账号" name="username" type="text" clearable /></el-form-item>
       <el-form-item prop="password">
           <span class="svg-container"><svg-icon icon-class="password" /></span>
           <el-input ref="password" v-model.trim="loginForm.password" placeholder="密码" type="password" clearable />
         </el-form-item>
-       <div class="flex flexbetween"><el-checkbox v-model.trim="checked">记住密码</el-checkbox><span class="forget" @click="loginShowHandle">忘记密码？</span></div>
+       <div class="flex flexbetween"><el-checkbox v-model.trim="checked">记住信息</el-checkbox><span class="forget" @click="loginShowHandle">忘记密码？</span></div>
       <el-button class="handle_login" :loading="loading" type="primary" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
     
 <!-- ###########找回密码 ##########--> 
  <el-form ref="findPassRule" v-if="findPassShow" :model="findPassForm" :rules="findPassRule" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container"><h3 class="title">人脸辨识云·门禁系统</h3></div>
-      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input v-model.trim="findPassForm.username" placeholder="用户名" type="text" clearable /></el-form-item>
+      <el-form-item prop="username"><span class="svg-container"><svg-icon icon-class="user" /></span><el-input v-model.trim="findPassForm.username" placeholder="账号" type="text" clearable /></el-form-item>
       <el-form-item prop="email"><span class="svg-container"><svg-icon icon-class="emial" /></span><el-input v-model.trim="findPassForm.email" placeholder="邮箱" name="emial" type="text" clearable /></el-form-item>
       <el-form-item prop="verifyCode" class="verify inline_block"><span class="svg-container"><svg-icon icon-class="authCode" /></span><el-input v-model.trim="findPassForm.verifyCode" placeholder="邮箱验证码" type="text" clearable/></el-form-item>
       <el-button type="primary" class="verifyCode_btn ml10 inline_block" :disabled="findPassForm.verifyCodeBtnStatus" @click.prevent="getverifyCodeHandler_psw('findPassRule')">{{ findPassForm.verifyCodeTxt }}</el-button>
@@ -191,7 +194,7 @@ $light_gray:#eee;
       <el-form-item prop="checkPsw"> <span class="svg-container"><svg-icon icon-class="password" /></span><el-input :key="passwordType" v-model.trim="findPassForm.checkPsw"  :type="passwordType" placeholder="确认新密码" clearable />
           <span class="show-pwd" @click="showPwd"><svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" /></span>
         </el-form-item>
-       <div class="flex flexbetween"><el-checkbox v-model.trim="checked">记住密码</el-checkbox> <span class="forget" @click.prevent="goLoginHandle">去登录</span></div>
+       <div class="flex flexbetween"><el-checkbox v-model.trim="checked">记住信息</el-checkbox> <span class="forget" @click.prevent="goLoginHandle">去登录</span></div>
       <el-button class="handle_login" :loading="loading" type="primary" @click="changePswHandler('findPassRule')">确 认</el-button>
     </el-form>
    </div>
@@ -203,33 +206,29 @@ $light_gray:#eee;
 
 import Cookies from 'js-cookie'
 import { getVerifyCode, findPass } from "@/api/user"
+import { validatePass } from '@/utils/validate.js'
 import md5 from 'js-md5'
 
 export default {
   name: 'login',
   data() {
   let validatePsw1 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error("请再次输入密码"))
-      } else if (value !== this.findPassForm.newPass) {
-        callback(new Error("两次输入密码不一致!"))
-      } else {
-        callback()
-      }
-    }
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
+      value === ""
+        ? callback(new Error("请输入密码"))
+        : !validatePass(value)
+        ? callback(new Error("请输入6~16位数字、字母和符号组合的密码"))
+        : this.findPassForm.checkPsw !== ""
+        ? callback()
+        : String
+          callback()
+    },
+    validatePsw2 = (rule, value, callback) => {
+      value === ""
+        ? callback(new Error("请再次输入密码"))
+        : value !== this.findPassForm.newPass
+        ? callback(new Error("两次输入密码不一致!"))
+        : String
+          callback()
     }
     function notNull(notNullName) { return [{required: true, message: `请输入${ notNullName }`, trigger: "blur" }] }
     return {
@@ -238,11 +237,13 @@ export default {
       checked: false,
       checkedStatus: false,
       loginForm: {
+        tenantName: null,
         username: null,
         password: null
       },
       loginRules: {
-        username:  notNull('用户名'),
+        tenantName: notNull('租户名'),
+        username:  notNull('账号'),
         password:  notNull('密码'),
       },
 
@@ -257,7 +258,7 @@ export default {
         verifyCodeTime: 60,
       },
       findPassRule: {
-        username: notNull('用户名'),
+        username: notNull('账号'),
         email: [
           notNull('邮箱地址')[0],
           {
@@ -267,15 +268,8 @@ export default {
           },
         ],
         verifyCode:notNull('验证码'),
-        newPass: [
-          notNull('新密码')[0],
-          {
-            min: 6,
-            message: "请输入大于6位数字和字母组合的密码",
-            trigger: "blur",
-          },
-        ],
-        checkPsw: [{required: true, validator: validatePsw1, trigger: 'blur' }],
+        newPass: [{required: true, validator: validatePsw1, trigger: 'blur' }],
+        checkPsw: [{required: true, validator: validatePsw2, trigger: 'blur' }],
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -319,15 +313,17 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login',user).then(() => {
            if(this.checked) {
-              Cookies.set('username',user['username'], {expires: 10})
+             Cookies.set('tenantName', user['tenantName'], {expires: 10})
+             Cookies.set('username',user['username'], {expires: 10})
              Cookies.set('password',user['password'], {expires: 10})
              Cookies.set('checkedStatus', true)
            } else {
+             Cookies.remove('tenantName')
              Cookies.remove('username')
              Cookies.remove('checkedStatus')
            }
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
+           this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+           this.loading = false
             }).catch(() => {
               this.loading = false
             })
@@ -397,6 +393,7 @@ export default {
         }
       })
     },
+    
 // 找回密码-提交并登录
     changePswHandler(findPassRule) {
       let _this = this,
@@ -410,29 +407,33 @@ export default {
               newPass: md5(changePswOld.newPass).toUpperCase()
             })).then((res) => {
               if (res.code === 0) {
+                _this.$message.success('密码修改成功，请登录')
+                _this.goLoginHandle()
 
-                if (_this.loading) { return }
-                _this.loading = true
-                let users = {
-                  username: user['username'],
-                  password: user['newPass']
-                }
+          //       if (_this.loading) { return }
+          //       _this.loading = true
+          //       let users = {
+          //         username: user['username'],
+          //         password: user['newPass']
+          //       }
  
-           _this.$store.dispatch('user/login',users).then(() => {
-           _this.$router.push({ path: _this.redirect || '/', query: _this.otherQuery })
-           _this.$message.success('密码修改成功，系统已为您自动登录！', 4000)
-           _this.$refs.findPassRule.resetFields()
-           if(_this.checked) {
-              Cookies.set('username', users['username'], {expires: 10})
-             Cookies.set('password', users['password'], {expires: 10})
-             Cookies.set('checkedStatus', true)
-           } else {
-             Cookies.remove('username')
-             Cookies.remove('checkedStatus')
-           }
-            }).finally(() => {
-                    _this.loading = false
-                  })
+          //  _this.$store.dispatch('user/login',users).then(() => {
+          //  _this.$router.push({ path: _this.redirect || '/', query: _this.otherQuery })
+          //  _this.$message.success('密码修改成功，系统已为您自动登录！', 4000)
+          //  _this.$refs.findPassRule.resetFields()
+          //  if(_this.checked) {
+          //    Cookies.set('tenantName', user['tenantName'], {expires: 10})
+          //    Cookies.set('username', users['username'], {expires: 10})
+          //    Cookies.set('password', users['password'], {expires: 10})
+          //    Cookies.set('checkedStatus', true)
+          //  } else {
+          //    Cookies.remove('tenantName')
+          //    Cookies.remove('username')
+          //    Cookies.remove('checkedStatus')
+          //  }
+          //   }).finally(() => {
+          //           _this.loading = false
+          //         })
               } else {
                _this.$message.error(res.msg)
               }
@@ -452,6 +453,7 @@ export default {
   
    let user = this.loginForm
    if(Cookies.get('username') && Cookies.get('checkedStatus')) {
+     user['tenantName'] = Cookies.get('tenantName')
      user['username'] = Cookies.get('username')
      user['password'] = Cookies.get('password')
      this.checked = true

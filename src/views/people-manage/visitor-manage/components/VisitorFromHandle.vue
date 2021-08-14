@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-30 11:21:59
+ * @LastEditTime: 2021-07-02 16:39:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -81,15 +81,15 @@ position: absolute;
        <el-form-item label="创建人："><el-input v-model="addVisitorForm.operator" class="w100" disabled></el-input></el-form-item>
        <el-form-item label="访客姓名：" prop="name"><el-input v-model.trim="addVisitorForm.name" maxlength="8" class="w120" clearable></el-input></el-form-item>
        <el-form-item label="性别："><el-select class="w100" v-model.trim="addVisitorForm.gender"><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-       <el-form-item label="电话：" prop="phone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
+       <el-form-item label="手机：" prop="phone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
         <el-form-item label="邮箱：" prop="email"><el-input class="w180" v-model.trim="addVisitorForm.email" clearable></el-input></el-form-item>
-       <el-form-item label="访客所在公司："  prop="position"><el-input class="w240" v-model.trim="addVisitorForm.visitorCompany" clearable></el-input></el-form-item>
+       <el-form-item label="访客所在公司：" prop="visitorCompany"><el-input class="w240" v-model.trim="addVisitorForm.visitorCompany" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w200" v-model.trim="addVisitorForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addVisitorForm.address" clearable></el-input></el-form-item>
-       <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim.trim="addVisitorForm.intervieweeName" maxlength="30" clearable></el-input> </el-form-item>
-       <el-form-item label="被访人公司："  prop="position"><el-input v-model.trim="addVisitorForm.orgId" class="w160" clearable disabled></el-input></el-form-item>
-      <el-form-item label="被访人电话：" prop="visitorPhone"><el-input class="w160" v-model.trim="addVisitorForm.intervieweePhone" clearable></el-input></el-form-item>
-      <el-form-item label="来访事由：" prop="reason"><el-input class="w300" v-model.trim.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
+       <el-form-item label="被访人姓名：" prop="visitorName"><el-input class="w160" v-model.trim="addVisitorForm.intervieweeName" maxlength="30" clearable></el-input> </el-form-item>
+       <el-form-item label="被访人公司："  prop="orgName"><el-input v-model.trim="addVisitorForm.orgName" class="w160" clearable disabled></el-input></el-form-item>
+      <el-form-item label="被访人电话：" prop="intervieweePhone"><el-input class="w160" v-model.trim="addVisitorForm.intervieweePhone" clearable></el-input></el-form-item>
+      <el-form-item label="来访事由：" prop="reason"><el-input class="w300" v-model.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
       <el-form-item label="来访时间" prop="date">
         <el-date-picker
           v-model="addVisitorForm.date"
@@ -106,7 +106,7 @@ position: absolute;
       <el-form-item label="头像类型：">
         <el-radio-group v-model="faceType" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
       </el-form-item><br>
-      <el-form-item label="头像采集：" prop="files">
+      <el-form-item label="头像采集：">
           <el-upload
             class="avatar-uploader fl"
             :action="proxyUrl"
@@ -189,13 +189,12 @@ position: absolute;
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveVisitor, editVisitor, visitorZip, visitorExcel, getVisitorTemplate, getImportStatus, getReslut } from '@/api/people-manage/visitorManage'
+import { saveVisitor, editVisitor, visitorZip, visitorExcel, getVisitorTemplate, getImportStatus } from '@/api/people-manage/visitorManage'
 import moment from 'moment'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard, validName } from '@/utils/validate'
 import { getGender, getFaceType} from '@/utils/business'
 import {proxyUrl_1, imgUrl, downVisitorTemplate } from '@/api/public'
-// import { pickerOptions } from '@/utils'
 
 let vm
 
@@ -291,10 +290,10 @@ export default {
   async saveVisitorHandle(el) {
     let a = this.addVisitorForm
        this.$refs[el].validate((valid) => {
-         this.httpRequest()
-      //   if (valid) {
-      //     a['files'] === null ? this.$message.warning('请上传访客头像！') : this.httpRequest()
-      // }
+        if (valid) {
+          this.httpRequest()
+          // a['files'] === null ? this.$message.warning('请上传访客头像！') : this.httpRequest()
+      }
      })
   },
   changeDate() {
@@ -478,7 +477,6 @@ export default {
         return excelType() && isLt1M
     },
    handleExcelSuccess(res, file) {
-     console.log(res)
      if(res === 'going') {
        getImportStatus().then(res => {
          
@@ -531,7 +529,6 @@ export default {
    }
   },
   mounted() {
-    // getReslut().then()
   },
 };
 </script>

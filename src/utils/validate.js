@@ -120,3 +120,41 @@ export function validateIdCard(idCard){
 export function validateChinese(str){
   return /[^\w]/.test(str) ? true : false
 }
+
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ * @description 不能输入特殊字符
+ */
+ export function validateChars(str){
+  return /[^\u4e00-\u9fa5\w]/.test(str) ? true : false
+}
+
+/**
+ * @param {string} str 
+ * @returns {Boolean}
+ * @description 输入6-16位数字、字母和符号组合的密码
+ */
+ export function validatePass(str) {
+  return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,.\/]).{6,16}$/.test(str)
+}
+
+/**
+ * @param {string} str 
+ * @returns {Boolean}
+ * @description 输入6-8位数字、字母组合的密码
+ */
+ export function validatePass1(str) {
+  return /^(?=.*\d).{6,8}$/.test(str)
+}
+
+/**
+ * @param {string} str 
+ * @returns {Boolean}
+ * @description 社会统一信用代码
+ */
+ export function validateCreditCode(str) {
+  return /^[^_IOZSVa-z\W]{2}\d{6}[^_IOZSVa-z\W]{10}$/g.test(str)
+}
+
+

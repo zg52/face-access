@@ -1,31 +1,48 @@
 /*
  * @Author: your name
  * @Date: 2021-02-09 18:33:47
- * @LastEditTime: 2021-03-29 16:20:14
+ * @LastEditTime: 2021-07-26 16:56:15
  * @LastEditors: Please set LastEditors
- * @Description: 全局业务参数配置
+ * @Description: 全局业务参数配置及信息获取
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\utils\business.js
  */
 import { 
     searchDevice,  // 获取设备列表
    } from '@/api/device-manage'
 
-   import {
+import {
       getRules //获取通行规则列表
    } from '@/api/traffic-rules'
+
+import {
+    getStaffList //获取员工列表
+ } from '@/api/people-manage/staffManage'
  
+import {
+  blockList //获取黑名单列表
+} from '@/api/blocklist'
+
+import { staffGroupLis // 员工分组列表
+ } from '@/api/people-manage/peopleGroup'
+
 /**
  * @description: 全局业务数据字典
  */
    
-const
-  userRoles = [
-    { id: 1, name: '超级管理员' }, //superAdmin
-    { id: 2, name: '管理员' }, //admin
+const userRoles = [
+    { id: '0', name: '系统管理员' }, // systemAdmin
+    { id: '1', name: '超级管理员' }, // superAdmin
+    { id: '2', name: '管理员' }, // admin
      ],
      userStatus = [
      { id:'VALID', value: '激活'},
      {id: 'INVALID', value: '禁用'}
+     ], 
+     visitorAuthorized = [
+      { id:'auth', value: '已授权' },
+      { id: 'unAuth', value: '未授权' },
+      { id: 'refuse', value: '已拒绝' },
+      { id: 'expire', value: '已过期' }
      ],
   passWayArr = [
     { label: '刷脸', value: 'face' },
@@ -103,15 +120,18 @@ const
       { id: 'always_open', value: '常开门' },
       { id: 'always_close', value: '常关门' },
       { id: 'power_off', value: '已关机' },
-      { id: 'statuses:removed', value: '已删除'}
-   ],
-   operate: [
-     { id: 'open', value: '开门' },
-     { id: 'close', value: '关门' },
-     { id: 'always_open', value: '常开门' },
-     { id: 'always_close', value: '常关门' },
-     { id: 'restart', value: '重启' },
-     { id: 'shutdown', value: '关机' },
+      { id: 'statuses:removed', value: '已删除'},
+    ],
+    operate: [
+	 { id: 'deviceActivate', value: '激活' },
+      { id: 'open', value: '开门' },
+      { id: 'close', value: '关门' },
+      { id: 'restart', value: '重启' },
+      { id: 'always_open', value: '常开门' },
+      { id: 'always_close', value: '常关门' },
+      { id: 'shutdown', value: '关机' },
+      { id: 'update', value: '升级' },
+      { id: 'set', value: '远程设置' }
    ]
    },
    deviceISOnline = [
@@ -125,7 +145,15 @@ const
  issuePersonStatus = [
    { id: 'normal',value: '已下发' },
    { id: 'issuing', value: '下发中' },
-   { id: 'removing', value: '删除中' }
+   { id: 'removing', value: '删除中' },
+   { id: 'issue_failed', value: '下发失败' },
+   { id: 'remove_failed', value: '删除失败' }
+ ],
+ deviceUpdateStatus = [
+	 { id: 0, value: '已下发' },
+	 { id: 1, value: '升级成功' },
+	 { id: 2, value: '下发失败' },
+	 { id: 3, value: '升级失败' }
  ]
  
 /**
@@ -163,40 +191,50 @@ export function passWayArrHandle() {
         { id: 4, value: '四' },
         { id: 5, value: '五' },
         { id: 6, value: '六' },
-        { id: 0, value: '日' }
+        { id: 0 || 7, value: '日' }
       ]
  }
 
 /**
  * @description: 根据设备id获取默认设备名称
+ * @param {Boolean} allDevice = [value] 
  */
- export async function getDeviceNames() {
-    let deviceName = []
+ export async function getDeviceNames(name_id) {
+	 let nameId = name_id || false
+    let deviceList = []
     return searchDevice({current: 1}).then((res) => {
       if(res.code === 0) {
        return searchDevice({size: res.data.total}).then((res) => {
           let data = res.data.records
           if(data) {
            data.map((x,y) => {
-                deviceName.push({
-                   name: x.name,
-                   id: x.id
-                })
-                   })
-                   return deviceName
-          } else {
-           this.$message.warning('无可用设备，请添加设备')
+             if(x.status !== 'removed') {
+               deviceList.push({
+                  name: x.name,
+                  id: x.id,
+				  isLine: x.online,
+				  disabled: !x.online
+               })
+	
+             }
+			// if(nameId) {
+			// 	 deviceList.push({
+			// 	   name: x.name,
+			// 	   id: x.id
+			// 	  })
+			// }
+			
+          })
+             return deviceList
           }
         })
-     } else {
-           this.$message.warning(res.msg)
-        }
+     }
     }
     )
   }
 
 /**
- * @description: 根据设备id获取默认设备名称
+ * @description: 获取规则名称
  */
 export async function getRuleNames() {
   let ruleName = []
@@ -212,23 +250,93 @@ export async function getRuleNames() {
               })
                  })
                  return ruleName
-        } else {
-        //  this.$message.warning('无可用规则，请添加规则')
         }
       })
-   } else {
-         this.$message.warning(res.msg)
-      }
+   }
+  }
+  )
+}
+
+/**
+ * @description: 获取员工姓名及id
+ */
+ export async function getStaff_name_id() {
+  let staff_name_id = []
+  return getStaffList({current: 1}).then((res) => {
+    if(res.code === 0) {
+     return getStaffList({size: res.data.total}).then((res) => {
+        let data = res.data.records
+        if(data) {
+         data.map((x,y) => {
+              staff_name_id.push({
+                 name: x.name,
+                 id: x.id
+              })
+                 })
+           return staff_name_id
+        }
+      })
+   }
+  }
+  )
+}
+
+/**
+ * @description: 获取员工分组名称及id
+ */
+ export async function getStaff_groupName_id() {
+  let staff_groupName_id = []
+  return staffGroupLis({current: 1}).then((res) => {
+    if(res.code === 0) {
+     return staffGroupLis({size: res.data.total}).then((res) => {
+        let data = res.data.records
+        if(data) {
+         data.map((x,y) => {
+              staff_groupName_id.push({
+                 value: x.groupId,
+                 label: x.userGroup.name,
+				 personCount: x.personCount
+              })
+                 })
+           return staff_groupName_id
+        }
+      })
+   }
+  }
+  )
+}
+
+/**
+ * @description: 获取黑名单姓名及id
+ */
+ export async function getBlockList_name_id() {
+  let blockList_name_id = []
+  return blockList({current: 1}).then((res) => {
+    if(res.code === 0) {
+     return blockList({size: res.data.total}).then((res) => {
+        let data = res.data.records
+        if(data) {
+         data.map((x,y) => {
+              blockList_name_id.push({
+                 name: x.name,
+                 id: x.id
+              })
+                 })
+           return blockList_name_id
+        }
+      })
+   }
   }
   )
 }
 
   /**
- * @description: 员工状态、性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型
+ * @description: 员工状态、性别、头像类型、人员类型、通行方向、通行结果、设备/人员告警、设备状态、设备操作、设备类型、设备升级状态
  */
   export { userStatus as getUserStatus }
   export { userRoles as getUserRoles }
   export { staffStates as getStaffStates }
+  export { visitorAuthorized as getVisitorAuthorized }
   export function getGender() { return genders }
   export function getFaceType() { return faceTypes }
   export function getDirection() { return directions }
@@ -241,5 +349,4 @@ export async function getRuleNames() {
   export function get_issuePersonStatus() { return issuePersonStatus }
   
   export { personTypes as getPersonTypes }
-  
-  
+  export { deviceUpdateStatus as getDeviceUpdateStatus }

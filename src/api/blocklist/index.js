@@ -1,9 +1,9 @@
 /*
  * @Author: your name
  * @Date: 2021-01-08 16:51:05
- * @LastEditTime: 2021-03-10 17:02:37
+ * @LastEditTime: 2021-07-05 15:05:32
  * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
+ * @Description: 黑名单
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\api\people-manage\staff-manage.js
  */
 import request from '@/utils/request'

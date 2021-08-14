@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-25 11:36:54
+ * @LastEditTime: 2021-06-30 11:46:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -55,8 +55,13 @@
        <el-table-column align="center" label="已注册人脸" width="95">
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
-       <el-table-column align="center" label="状态" width="90"><template v-slot="scope"><i v-show="scope.row.status !== 'normal' ? true : false" class="el-icon-loading"></i> <span :class="scope.row.status === 'normal' ? 'green': ''">{{ scope.row.status | filter_issuePersonStatus }}</span></template></el-table-column>
-      <el-table-column align="center" label="设备标识" width="200"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template></el-table-column>
+       <el-table-column align="center" label="状态" width="90"><template v-slot="scope"><i v-show="scope.row.status == 'issuing' || scope.row.status == 'removing' ? true : false" class="el-icon-loading"></i>&nbsp;
+        <span :class="scope.row.status == 'normal' ? 'green' : scope.row.status == 'issue_failed' ? 'red' : ''">{{ scope.row.status | filter_issuePersonStatus }}</span></template></el-table-column>
+       <el-table-column align="center" label="设备标识" width="100">
+         <template v-slot="scope">
+           <el-tooltip :disabled="scope.row.uniqueDeviceIdentifier.length >= 10 ? false : true" effect="light" :content="scope.row.uniqueDeviceIdentifier" placement="top"> 
+             <span class="block cell">{{ scope.row.uniqueDeviceIdentifier }}</span></el-tooltip>
+        </template></el-table-column>
       <el-table-column align="center" label="所在设备" width="200"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template></el-table-column>
       <el-table-column align="center" label="身份证号" width="200"><template v-slot="scope"> {{ scope.row.idNum }} </template></el-table-column>
       <el-table-column align="center" label="门禁卡" width="260"><template v-slot="scope"> {{ scope.row.gateCardId }} </template></el-table-column>
@@ -138,6 +143,8 @@ export default {
       })
       return txt
   }
+  },
+  computed: {
   },
   methods: {
     onSearch(){
@@ -269,7 +276,7 @@ export default {
     refreshPagingQuery() {
       this.pagingQuery = {}
       this.onSearch()
-    }
+    },
   },
   created() {
     vm = this
@@ -279,7 +286,7 @@ export default {
     this.onSearch()
      setInterval(() => {
        this.onSearch()
-     }, 60_000);
+     }, 60_000)
   },
   mounted() {},
 }

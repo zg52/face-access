@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-21 10:35:12
- * @LastEditTime: 2021-03-23 17:41:37
+ * @LastEditTime: 2021-07-02 17:44:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\views\dashboard\admin\components\Visitor.vue
@@ -39,7 +39,8 @@ export default {
     return {
       chart: null,
       xValue: [],
-      yValue: []
+      yValue: ['     '],
+      isRequerst: true
     }
   },
   methods: {
@@ -54,7 +55,7 @@ export default {
           fontSize: 14
         }
     },
-    color:['#FC7D02'],
+    color:['#ff993c'],
     textStyle: {
       color: '#FC7D02'
     },
@@ -118,7 +119,7 @@ export default {
     xAxis: {
         type: 'value',
          name: '数量',
-        boundaryGap: [0, 0.01],
+        boundaryGap: [0, 5],
           axisLine: {
             lineStyle: {
             color: '#FC7D02' ,
@@ -131,7 +132,7 @@ export default {
         data: this.yValue,
             axisLine: {
             lineStyle: {
-            color: '#FC7D02' ,
+            color: '#FC7D02',
             }
        },
     },
@@ -158,20 +159,30 @@ export default {
       if(res.hasOwnProperty('deviceNames')) {
         if(Array.isArray(res.deviceNames)) {
           if(res.deviceNames.length !== 0) {
-            console.log(res.deviceNames)
             this.yValue = res.deviceNames
-            this.xValue = res.counts
+			if(res.counts.length === 0) {
+             this.xValue = []
+			} else {
+				this.xValue = res.counts
+			}
               this.initChart()
+              this.isRequerst = true
           }
         }
+      } else {
+        this.isRequerst = false
       }
     })
   }
   },
   created() {
     this.onSearch()
-   setInterval(() => {
-      this.onSearch()
+   let timer = setInterval(() => {
+     if(this.isRequerst) {
+       this.onSearch()
+     } else {
+       clearInterval(timer)
+     }
       },(1000 * 60) * 30)
   },
   mounted() {

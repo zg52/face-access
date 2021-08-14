@@ -23,12 +23,18 @@ module.exports = {
   assetsDir: 'static',
   // lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
+  lintOnSave: false,
   devServer: {
     proxy: {
       "/_api": {
-        target: "http://192.168.10.148:31181/",
-        // target: "http://192.168.10.148:8082/",
+        target: "http://192.168.10.148:28888/",
         pathRewrite: { "^/_api": "" },
+        changeOrigin: true,
+        // ws: true //代理websockes
+      },
+      "/_apis": {
+        target: "http://192.168.10.148:48888/", // 多租户
+        pathRewrite: { "^/_apis": "" },
         changeOrigin: true,
         // ws: true //代理websockes
       }
@@ -37,7 +43,7 @@ module.exports = {
     open: true,
     overlay: {
       warnings: false,
-      errors: true
+      errors: false
     },
     // before: require('./mock/mock-server.js')
   },

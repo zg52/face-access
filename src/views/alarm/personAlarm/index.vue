@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-23 18:49:01
+ * @LastEditTime: 2021-07-05 14:56:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -11,7 +11,11 @@
 <template>
   <div class="app-container">
  <el-form :model="pagingQuery" :inline="true">
- <el-form-item label="姓名"><el-input class="w100" v-model.trim="pagingQuery.personName" clearable></el-input></el-form-item>
+ <el-form-item label="姓名">
+   		  <el-select v-model="pagingQuery.personId" placeholder="请选择/输入" filterable clearable>
+		       <el-option v-for="(name, index) of getBlockList_name_ids" :key="index" :label="name.name" :value="name.id"></el-option>
+		    </el-select>
+   </el-form-item>
  <el-form-item label="选择设备名称">
          <el-select v-model="pagingQuery.deviceId" placeholder="请选择" filterable clearable>
          <el-option v-for="(deviceName, index) of getDeviceNames" :key="index" :label="deviceName.name" :value="deviceName.id"></el-option>
@@ -20,7 +24,7 @@
   <el-form-item label="告警类型"><el-select class="w140" v-model="pagingQuery.category" clearable><el-option v-for="(deviceCategory, index) of deviceCategorys" :key="index" :label="deviceCategory.name" :value="deviceCategory.id"></el-option></el-select></el-form-item>
   <!-- <el-form-item label="人员类型"><el-select class="w140" v-model="pagingQuery.personType" clearable><el-option v-for="(personType, index) of personTypes" :key="index" :label="personType.name" :value="personType.id"></el-option></el-select></el-form-item> -->
     <el-form-item label="告警时间">
-      <el-date-picker
+      <el-date-picker 
         v-model="date"
         type="datetimerange"
         align="right"
@@ -39,12 +43,12 @@
   <el-table border :data="tableData" max-height="650" ref="multipleTable" v-loading="table_loading" element-loading-spinner="el-icon-loading">
     <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
     <el-table-column label="序列" :width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
-    <el-table-column align="center" label="姓名" width="auto"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
-    <el-table-column align="center" label="头像" width="auto"><template v-slot="scope">
-       <img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" />
+    <el-table-column align="center" label="姓名" width="100"><template v-slot="scope">{{ scope.row.personName }}</template></el-table-column>
+    <el-table-column align="center" label="头像" width="90"><template v-slot="scope">
+       <img :src="scope.row.imageId" width="100%" />
       </template></el-table-column>
     <el-table-column align="center" label="设备名称" width="auto"><template v-slot="scope"> {{ scope.row.deviceId | getDeviceId_name }} </template> </el-table-column>
-    <el-table-column align="center" label="设备标识" width="auto"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template> </el-table-column>
+    <el-table-column align="center" label="设备标识" width="600"><template v-slot="scope"> {{ scope.row.uniqueDeviceIdentifier }} </template> </el-table-column>
     <el-table-column align="center" label="告警类型" width="auto"><template v-slot="scope">{{ scope.row.category | filterCategory }}</template></el-table-column>
     <el-table-column align="center" label="告警时间" width="auto" sortable><template v-slot="scope"> {{ scope.row.createTime | filterDate }} </template></el-table-column>
     </el-table>
@@ -62,7 +66,7 @@
 <script>
 
 import { deviceException } from '@/api/alarm'
-import { getDeviceNames, getCategory, getPersonTypes } from '@/utils/business'
+import { getDeviceNames, getCategory, getPersonTypes, getBlockList_name_id } from '@/utils/business'
 import { pickerOptions } from '@/utils'
 import { imgUrl } from '@/api/public'
 import moment from 'moment'
@@ -82,10 +86,11 @@ export default {
       deviceCategorys: deviceCategory,
       date: null,
       getImgUrl: imgUrl(),
+      getBlockList_name_ids: [],
       tableData: [],
       personTypes: getPersonTypes.slice(0,2),
       pagingQuery: {
-        personName: null,
+        personId: null,
         personType: null,
         source: 'person',
         deviceId: null,
@@ -166,6 +171,9 @@ export default {
       getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
+      getBlockList_name_id().then(res => {
+	     this.getBlockList_name_ids = res
+		})
    this.onSearch()
   }
 }

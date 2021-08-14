@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 18:12:03
+ * @LastEditTime: 2021-07-16 14:29:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -156,7 +156,7 @@
     <div class="xia">
       <el-button @click="searchFailRecodrs"><i class="el-icon-view"></i> 最近导入失败记录</el-button>
      <el-button :disabled="zipShow ? true : false" @click.prevent="zipExcelToggle">{{ this.zipShow ? '下一步' : '上一步' }}</el-button>
-     <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
+     <router-link to="/people-manage/staff-manage/staffList" class="ml10"><el-button><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
     </div>
   </div>
  <el-button plain @click="open1" class="none"></el-button>
@@ -332,7 +332,7 @@ export default {
 
 // 编辑参数
       addStaffForm: {
-          id: null,
+          // id: null,
           operator: this.$store.getters.username,
           name: null,
           gender: null,
@@ -346,10 +346,13 @@ export default {
           icCardId: null,
           gateCardId: null,
           enrollTime: null,
-          faceType: null,
-          files: null
+          FaceType: null,
+          files: null,
+          imageId: null
          },
-         btn_el: ['edit']
+         btn_el: ['editErrStaff'],
+         errMsg: '未找到对应照片！',
+
     }
   },
   // filters: {
@@ -505,10 +508,17 @@ export default {
     },
     handleEdit(x, y) {
       this.dialogVisible1 = true
-      this.addStaffForm = y
+     if(y.errMsg.indexOf(this.errMsg) !== -1) {
+       y.imageId = 'null'
+       }
+
+       this.addStaffForm = y
+       this.addStaffForm.companyId = 1
+       this.addStaffForm.departmentId = 1
+      //  this.addStaffForm.FaceType = 'ID'
 
 // 去除编辑无需字段
-      let delEditParam = ['departmentId', 'img_height', 'img_width']
+      let delEditParam = ['imgHeight', 'imgWidth']
           delEditParam.forEach((item, index) => {
             delete this.addStaffForm[item]
           })

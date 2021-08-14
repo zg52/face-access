@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-04-01 09:45:55
+ * @LastEditTime: 2021-06-30 16:48:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\layout\index.vue
@@ -102,7 +102,7 @@
         <settings />
       </right-panel>
     </div>
-    <p class="copyright">CopyRight © 2016-2021 华捷艾米 版权所有 京ICP备18040828号-1</p>
+    <p class="copyright">{{ `版权信息： CopyRight © 2016-${ new Date().getFullYear() } 华捷艾米 版权所有 京ICP备18040828号-1` }}</p>
   </div>
 </template>
 
@@ -112,6 +112,7 @@ import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { exception_monitoring_blocklist, exception_monitoring_person } from '@/api/alarm'
 import { imgUrl } from '@/api/public'
+import { getToken } from '@/utils/auth'
 import { mapState } from 'vuex'
 let vm
 
@@ -123,7 +124,6 @@ export default {
       lastId2: null,
       blockListHtm: '',
       getImgUrl: imgUrl()
-
     }
   },
   components: {
@@ -175,7 +175,6 @@ export default {
       },
       websocketonmessage(e){ //数据接收
         const redata = JSON.parse(e.data)
-        console.log("🚀 ~ file: index.vue ~ line 136 ~ websocketonmessage ~ redata", redata)
         
       },
       websocketsend(Data){//数据发送
@@ -257,8 +256,12 @@ export default {
   mounted() {
     // this.get_exception_monitoring_person()
     this.get_exception_monitoring_blocklist()
-   setInterval(() => {
+   let timer = setInterval(() => {
+	   if(getToken()) {
      this.get_exception_monitoring_blocklist()
+	   } else {
+		   clearInterval(timer)
+	   }
    }, 10000)
 
   //  setInterval(() => {

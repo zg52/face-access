@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-12 17:22:53
+ * @LastEditTime: 2021-06-07 14:04:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\main.js
@@ -27,6 +27,7 @@ import './permission' // permission control
 import './utils/error-log' // error log
 import '../mock/mock-public'
 import * as filters from './filters' // global filters
+import './directive/waves/index.js' // 水波纹指令
 
 /**
  * If you don't want to use mock-server
@@ -46,15 +47,18 @@ Vue.use(Element, {
   i18n: (key, value) => i18n.t(key, value)
 })
 
-// register global utility filters
+// 注册全局过滤器
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 Vue.config.productionTip = false
+Vue.config.silent = true
+Vue.config.devtools = true
+
 new Vue({
-  el: '#app',
+  // el: '#app',
   router,
   store,
   i18n,
   render: h => h(App)
-})
+}).$mount('#app')

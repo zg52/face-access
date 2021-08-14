@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-16 10:13:42
+ * @LastEditTime: 2021-07-16 16:56:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -78,10 +78,10 @@ position: absolute;
        <el-form-item label="访客所在公司："  prop="position"><el-input v-model.trim="addVisitorForm.position" class="w160" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w200" v-model.trim="addVisitorForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addVisitorForm.address" clearable></el-input></el-form-item>
-       <el-form-item label="被访人姓名：" prop="name"><el-input class="w160" v-model.trim.trim="addVisitorForm.name" maxlength="30" clearable></el-input> </el-form-item>
+       <el-form-item label="被访人姓名：" prop="name"><el-input class="w160" v-model.trim="addVisitorForm.name" maxlength="30" clearable></el-input> </el-form-item>
        <el-form-item label="被访人公司："  prop="position"><el-input v-model.trim="addVisitorForm.position" class="w160" clearable></el-input></el-form-item>
       <el-form-item label="被访人电话：" prop="phone"><el-input class="w160" v-model.trim="addVisitorForm.phone" clearable></el-input></el-form-item>
-      <el-form-item label="访问事由：" prop="reason"><el-input class="w300" v-model.trim.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
+      <el-form-item label="访问事由：" prop="reason"><el-input class="w300" v-model.trim="addVisitorForm.reason" maxlength="30" clearable></el-input></el-form-item>
       <el-form-item label="来访时间">
         <el-date-picker
           v-model="date"

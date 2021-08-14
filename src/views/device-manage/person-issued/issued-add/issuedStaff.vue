@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-19 17:42:27
+ * @LastEditTime: 2021-07-02 11:11:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -41,6 +41,23 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="下发状态："><el-select class="w100" v-model.trim="pagingQuery.gender" disabled><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
+	       <el-form-item label="分组名称：">
+        <el-cascader
+        :options="getStaffGroup_name_ids"
+        :props="props"
+        v-model="pagingQuery.groupId"
+        collapse-tags
+        clearable
+        @change="changeGroupId"
+        >
+        <template v-slot="{ data }">
+         <div class="flexbetween">
+           <span>{{ data.label }}</span>
+           <span class="lineColor pl15">{{ data.personCount }}人</span>
+         </div>
+        </template>
+        </el-cascader>
+        </el-form-item>
 
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
@@ -57,6 +74,13 @@
         <template v-slot="scope"><img :src="`${ getImgUrl + scope.row.imageId}`" width="100%" /></template>
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender | filterGenter }} </template></el-table-column>
+	<el-table-column align="center" label="所在分组" width="120" v-slot="scope"><template>
+	   <el-tag v-if="scope.row.groupList.length === 0" class="block w100 ellipsis1" type="info">{{ scope.row.groupList | filterGroupList }}</el-tag>
+        <el-popover v-else width="200" placement="left-end" trigger="hover">
+               <div>{{ scope.row.groupList | filterGroupList }}</div>
+               <div slot="reference" class="pointer"><el-tag class="block w100 ellipsis1" type="info">{{ scope.row.groupList | filterGroupList }}</el-tag></div>
+          </el-popover>
+          </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"><template v-slot="scope">{{ scope.row.position }}</template></el-table-column>
       <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
@@ -78,7 +102,7 @@
 </template>
 <script>
 import DeviceNames from '@/components/Business/DeviceNames'
-import { getDeviceNames, getGender } from '@/utils/business'
+import { getDeviceNames, getGender, getStaff_groupName_id } from '@/utils/business'
 import { getStaffList } from '@/api/people-manage/staffManage'
 import { imgUrl } from '@/api/public'
 import { pickerOptions } from '@/utils'
@@ -95,6 +119,8 @@ export default {
   data() {
     return {
       getDeviceNames: [],
+	  props: { multiple: true },
+	  getStaffGroup_name_ids: [],
       deviceIds: null,
       pickerOptions: pickerOptions(),
       date: null,
@@ -124,6 +150,17 @@ export default {
       tableData: [],
     }
   },
+  filters: {
+   filterGroupList(val) {
+    if(val.length !== 0) {
+  		return val.map(item => {
+  		  return item.name
+  		}).join('，')
+  	} else {
+  		return '未分组'
+  	}
+   }
+    },
   methods: {
     getDeviceIds1(deviceIds) {
     this.deviceIds = deviceIds
@@ -131,6 +168,9 @@ export default {
    getStaffList() {
       let [params] = [this.pagingQuery]
       this.table_loading = true
+	 if(Array.isArray(params.groupId)) {
+	          params.groupId = params.groupId.join(',')
+	        }
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
         if(res.code === 0) {
@@ -155,7 +195,8 @@ export default {
     },
     handleIssuedPerson() {
       let _this = this
-     return Array.isArray(this.deviceIds) && this.deviceIds !== null ? HandleIssued() : this.$message.warning('请先选择设备！')
+      console.log(this.deviceIds)
+     return Array.isArray(this.deviceIds) && this.deviceIds !== null && this.deviceIds.length !== 0 ? HandleIssued() : this.$message.warning('请先选择设备！')
      function HandleIssued() {
       if (_this.multipleSelection.length !== 0) {
           _this.$confirm("此操作将下发已选员工至设备, 是否继续?", "提示", {
@@ -212,6 +253,17 @@ export default {
           (_p.createTimeTo = moment( this.date[1]).format("YYYY-MM-DD")))
         :  _p.createTimeFrom = _p.createTimeTo = null
     },
+ changeGroupId() {
+	    let groupId = this.pagingQuery.groupId
+	    if(groupId && groupId.length > 10) {
+	      let oldGroupId = [...groupId]
+	      oldGroupId.splice(10, 1)
+	      this.pagingQuery.groupId = oldGroupId
+	      this.$message.warning('分组查询最多可选则 10 项')
+	    } else {
+	      this.pagingQuery.groupId = this.pagingQuery.groupId.join(',')
+	    }
+	  },
     handleSizeChange(val) {
       this.pagingQuery.size = val
       this.getStaffList()
@@ -235,6 +287,9 @@ export default {
   getDeviceNames().then((res) => {
        this.getDeviceNames = res
     })
+ getStaff_groupName_id().then(res => {
+			this.getStaffGroup_name_ids = res
+			})
   },
   mounted() {
   },

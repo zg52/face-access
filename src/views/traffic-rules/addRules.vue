@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-17 15:20:23
+ * @LastEditTime: 2021-07-14 10:19:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -90,16 +90,16 @@
     <router-link to="/traffic-rules/rules" class="ml10"><el-button><i class="el-icon-view"></i> 查看已下发规则</el-button></router-link>
     </el-form>
 
-    <el-dialog title="选择通行员工" :visible.sync="staff_dialogVisible" top="0" width="68%" class="dialog__body">
-      <StaffList @employeeIds="getemployeeIds" v-if="staff_dialogVisible" :clearSelectionState1.sync="clearSelectionState1" />
+    <el-dialog title="选择通行员工" :visible.sync="staff_dialogVisible" :close-on-click-modal="false" top="0" width="68%" class="dialog__body">
+      <StaffList @employeeIds="getemployeeIds" v-if="staff_dialogVisible" @staffHandleTo="staffHandleTo" :clearSelectionState1.sync="clearSelectionState1" />
       <span slot="footer" class="dialog-footer">
         <el-button @click="staff_dialogVisible_handle">取 消</el-button>
         <el-button type="primary" @click="staffHandleTo">确 定</el-button>
       </span>
     </el-dialog>
     
-    <el-dialog title="选择通行访客" :visible.sync="visitor_dialogVisible" top="0" width="72%" class="dialog__body">
-      <VisitorList @visitorIds="getVisitorIds" v-if="visitor_dialogVisible" :clearSelectionState2.sync="clearSelectionState2" />
+    <el-dialog title="选择通行访客" :visible.sync="visitor_dialogVisible" :close-on-click-modal="false" top="0" width="72%" class="dialog__body">
+      <VisitorList @visitorIds="getVisitorIds" v-if="visitor_dialogVisible" @visitorHandleTo="visitorHandleTo"  :clearSelectionState2.sync="clearSelectionState2" />
       <span slot="footer" class="dialog-footer">
         <el-button @click="visitor_dialogVisible_handle">取 消</el-button>
         <el-button type="primary" @click="visitorHandleTo">确 定</el-button>
@@ -254,7 +254,7 @@ export default {
     changeDeviceIds() {
        this.addRules.deviceIds = this.deviceIds
     },
-
+		
 // 获取通行方式参数
     changeRuleNode() {
         let newArr = [],

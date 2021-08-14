@@ -32,10 +32,11 @@ export default {
   data() {
     return {
       chart: null,
-      online: [],
+      online: [0],
       offline: [],
       fault: [],
-      xValue: []
+      xValue: [],
+      isRequerst: true
     }
   },
   methods: {
@@ -154,11 +155,11 @@ export default {
         }
     ],
       grid: {
-                left: '0%',
-                right: '6%',
-                bottom: '8%',
-                top:'25%',
-                containLabel: true
+              left: '0%',
+              right: '5%',
+              bottom: '8%',
+              top:'25%',
+              containLabel: true
             },
 }
 )
@@ -189,10 +190,13 @@ export default {
            this.online = res.onlineCounts,
            this.offline = res.offlineCounts,
            this.fault = res.outOfOrderCounts
+           this.isRequerst = true
 
-            this.initChart()
+           this.initChart()
           }
         }
+      } else {
+        this.isRequerst = false
       }
     })
   },
@@ -206,19 +210,24 @@ export default {
   this.$nextTick(() => {
   this.initChart()
   this.onSearch()
-  setInterval(() => {
-     this.onSearch()
-     xuanfu()
-      },60_000)
+    var timer = setInterval(() => {
+    if(vm.isRequerst) {
+       this.onSearch()
+       xuanfu()
+     } else {
+       clearInterval(timer)
+     }
+     },60_000)
 
 xuanfu()
 function xuanfu() {
-    setTimeout(() => {
-      vm.chart.dispatchAction({
-      type: 'showTip',
-      seriesIndex: 0 ,
-      dataIndex: 0,
-      });
+   setTimeout(() => {
+     vm.chart.dispatchAction({
+     type: 'showTip',
+     seriesIndex: 0 ,
+     dataIndex: 0,
+     })
+
    },1000)
 }
   })

@@ -35,7 +35,8 @@ export default {
      face_swiping: [],
      swiping_card: [],
      qr_code: [],
-     fingerprint: []
+     fingerprint: [],
+     isRequerst: true,
     }
   },
   methods: {
@@ -255,10 +256,13 @@ export default {
               if(index === 0) { return item = '今日' }
                return item.substr(5) 
                })
-            this.face_swiping = res.counts
+              this.face_swiping = res.counts
               this.initChart()
+              this.isRequerst = true
           }
         }
+      } else {
+        this.isRequerst = false
       }
     })
   }
@@ -271,8 +275,12 @@ export default {
     this.$nextTick(() => {
       this.initChart()
       this.onSearch()
-      setInterval(() => {
-         this.onSearch()
+      let timer = setInterval(() => {
+        if(this.isRequerst) {
+          this.onSearch()
+        } else {
+        clearInterval(timer)
+        }
       },(1000 * 60) * 30)
     })
 

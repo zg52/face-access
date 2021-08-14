@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-24 14:35:52
+ * @LastEditTime: 2021-07-02 16:43:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\views\profile\index.vue
@@ -38,28 +38,44 @@ export default {
   data() {
     return {
       user: {},
-      activeTab: 'account'
+      activeTab: 'account',
     }
   },
   computed: {
     ...mapGetters([
       'username',
       'avatar',
-      'roles'
+      'roles',
+      'tenantId',
+      'tenantName',
+      'organizationName',
+			'organizationId'
     ])
-  },
-  created() {
-    this.getUser()
   },
   methods: {
     getUser() {
-      this.user = {
-        username: this.username,
-        role: this.roles.join(' | '),
-        email: '',
-        avatar: this.avatar
-      }
+          this.user = {
+            username: this.username,
+            role: this.roles.join(' | '),
+            email: '',
+            avatar: this.avatar,
+            tenantId: this.tenantId,
+            tenantName: this.tenantName,
+            organizationName: this.organizationName,
+		    organizationId: this.organizationId,
+          }
     }
+  },
+  created() {
+     this.$store.dispatch('user/tenantList').then((res) => {
+      this.user.tenantName = res.tenantName
+     })
+     this.$store.dispatch('user/getCompany').then((res) => {
+      this.user.organizationName = res.organizationName
+     })
+     this.getUser()
+  },
+  mounted() {
   }
 }
 </script>

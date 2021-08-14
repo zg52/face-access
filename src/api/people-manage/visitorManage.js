@@ -1,9 +1,9 @@
 /*
  * @Author: your name
  * @Date: 2021-02-03 19:56:03
- * @LastEditTime: 2021-03-05 15:43:24
+ * @LastEditTime: 2021-07-05 15:03:42
  * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
+ * @Description: 访客管理api
  * @FilePath: \tracking-Pluse:\hjimi\人脸辨识云\html\face-recognition-access\src\api\people-manage\visitorManage.js
  */
 
@@ -48,12 +48,12 @@ export function editVisitor(id, params) {
  }
 
   /**
- * @description: 访客-状态（正常/删除）
- * @param {0/1} 0正常，1删除
+ * @description: 访客-授权状态（已授权/未授权/已拒绝/已失效）
+ * @param {{ id:'auth', value: '已授权' }, { id: 'unAuth', value: '未授权' }, { id: 'refuse', value: '已拒绝' }, { id: 'expire', value: '已过期' }}
  */
 export function visitorState(id, params) {
   return request({
-     url: `${ person }valid/${ id }`,
+     url: `${ person }audit/${ id }`,
      method: 'POST',
      data: params
    })

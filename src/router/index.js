@@ -83,68 +83,93 @@ export const constantRoutes = [
   // },
 ]
 export const asyncRoutes = [
+  // {
+  //   path: '/section',
+  //   path: '/section',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       name: 'section',
+  //       meta: { title: '部门管理', icon: 'section'},
+  //      component: () => import('@/views/people-manage/section')
+  //     }
+  //   ]
+  // },
   {
     path: '/people-manage',
     component: Layout,
     name: 'people-manage',
     meta: { title: '人员管理', icon: 'peoples' },
-    redirect: '/people-manage/staff-manage/staff-list/staffList',
+    redirect: '/people-manage/staff-manage/staffList',
     children: [
-      // {
-      //   path: 'section',
-      //   component: () => import('@/views/people-manage/section'),
-      //   name: 'section',
-      //   meta: { title: '部门管理', icon: 'section'}
-      // },
       {
         path: 'staff-manage',
         component: () => import('@/views/people-manage'),
-        redirect: '/people-manage/staff-manage/staff-list/staffList',
+        redirect: '/people-manage/staff-manage/staffList',
         alwaysShow: true,
         meta: { title: '员工管理', icon: 'staff' },
         children: [
           {
-            path: 'staff-list/staffList',
+            path: 'staffList',
             component: () => import('@/views/people-manage/staff-manage/staff-list/staffList'),
             name: 'staffList',
             meta: { title: '员工列表' },
           },
           {
-            path: 'staff-add/staffAdd',
+            path: 'staffAdd',
             component: () => import('@/views/people-manage/staff-manage/staff-add/staffAdd'),
             name: 'staffAdd',
             meta: { title: '新增员工' }
          },
         {
-          path: 'staff-add/bulkImportStaff',
+          path: 'staffGroup',
+          component: () => import('@/views/people-manage/staff-manage/staff-group/staffGroup'),
+          name: 'staffGroup',
+          meta: { title: '员工分组' }
+        },
+        {
+          path: 'bulkImportStaff',
           component: () => import('@/views/people-manage/staff-manage/staff-add/bulkImportStaff'),
           name: 'bulkImportStaff',
           meta: { title: '批量导入员工' },
           hidden: true
        },
-        ]
+        ],
       },
       {
         path: 'visitor-manage',
         component: () => import('@/views/people-manage'),
-        redirect: '/people-manage/visitor-manage/visitor-list/visitorlist',
+        redirect: '/people-manage/visitor-manage/visitorList',
         alwaysShow: true,
         meta: { title: '访客管理', icon: 'visitor' },
         children: [
           {
-            path: 'visitor-list/visitorlist',
+            path: 'Visitorlist',
             component: () => import('@/views/people-manage/visitor-manage/visitor-list/visitorList'),
             name: 'visitorlist',
             meta: { title: '访客列表' },
           },
           {
-            path: 'visitor-add/visitorAdd',
+            path: 'visitorAdd',
             component: () => import('@/views/people-manage/visitor-manage/visitor-add/visitorAdd'),
             name: 'visitorAdd',
             meta: { title: '新增访客' }
          },
         ]
       },
+      {
+        path: 'EditGrop',
+        component: () => import('@/views/people-manage/components/EditGrop'),
+        name: 'EditGrop',
+        meta: { title: '编辑分组', icon: 'blocklist' },
+        hidden: true
+   },
+	  {
+	        path: 'blocklist',
+	        component: () => import('@/views/people-manage/blocklist/blocklist'),
+	        name: 'blocklist',
+	        meta: { title: '黑名单管理', icon: 'blocklist' },
+	  },
     ]
   },
   {
@@ -160,6 +185,12 @@ export const asyncRoutes = [
         component: () => import('@/views/device-manage/device-list/deviceList'),
         meta: { title: '设备列表', icon: 'door' },
       },
+	  {
+	    path: 'setDevice',
+	    name: 'setDevice',
+	    component: () => import('@/views/device-manage/set-device/setDevice'),
+	    meta: { title: '设备设置', icon: 'setDevice' },
+	  },
       {
         path: 'person-issued',
         component: () => import('@/views/device-manage/person-issued'),
@@ -168,13 +199,13 @@ export const asyncRoutes = [
         meta: { title: '人员下发', icon: 'guide' },
         children: [
           {
-            path: 'issued-add/issuedAdd',
+            path: 'issuedAdd',
             name: 'issuedAdd',
             component: () => import('@/views/device-manage/person-issued/issued-add/issuedAdd'),
             meta: { title: '选择人员下发' },
           },
           {
-            path: 'issued-list/issuedList',
+            path: 'issuedList',
             name: 'issuedList',
             component: () => import('@/views/device-manage/person-issued/issued-list/issuedList'),
             meta: { title: '已下发人员' },
@@ -224,7 +255,6 @@ export const asyncRoutes = [
   },
   {
     path: '/alarm',
-    name: 'alarm',
     component: Layout,
     meta: { title: '告警中心', icon: 'alarm' },
     redirect: '/alarm/deviceAlarm',
@@ -243,37 +273,77 @@ export const asyncRoutes = [
       },
     ]
   },
-  {
-    path: '/blocklist',
-    component: Layout,
-    children: [
-      {
-        path: '/blocklist',
-        component: () => import('@/views/blocklist/blocklist'),
-        name: 'blocklist',
-        meta: { title: '黑名单管理', icon: 'blocklist' },
-      }
-    ]
-  },
-  {
-    path: '/task',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/task'),
-        name: 'task',
-        meta: { title: '任务中心', icon: 'documentation' },
-     }
-    ]
-  },
+
+  // {
+  //  path: '/banner-manage',
+  //  component: Layout,
+  //  meta: { title: '广告管理', icon: 'ban' },
+  //  redirect: '/banner-manage/dtotal/ban-list/banList',
+  //  children: [
+  //    {
+  //      path: 'dtotal',
+  //      meta: { title: '广告库', icon: 'banku' },
+  //      component: () => import('@/views/banner-manage/dtotal'),
+  //      redirect: '/banner-manage/dtotal/ban-list/banList',
+  //      alwaysShow: true,
+  //      children: [
+  //        {
+  //          path: 'ban-list/banList',
+  //          name: 'banList',
+  //          component: () => import('@/views/banner-manage/dtotal/ban-list/banList'),
+  //          meta: { title: '广告列表'},
+  //        },
+  //        {
+  //         path: 'add-ban/addBan',
+  //         name: 'addBan',
+  //         component: () => import('@/views/banner-manage/dtotal/add-ban/addBan'),
+  //         meta: { title: '广告新增'},
+  //        }
+  //      ]
+  //    },
+  //    {
+  //     path: 'issue-ban',
+  //     component: () => import('@/views/banner-manage/issue-ban/issueBan'),
+  //     name: 'issueBan',
+  //     meta: { title: '广告投放', icon: 'guide' }
+  //   },
+  //   {
+  //     path: 'ban-info',
+  //     component: () => import('@/views/banner-manage/ban-info/banInfo'),
+  //     name: 'banInfo',
+  //     meta: { title: '广告统计', icon: 'banInfo' },
+  //   }
+  //  ]
+  // },
+
   {
     path: '/system-manage',
     component: Layout,
     name: 'system-manage',
-    meta: { title: '系统管理', icon: 'el-icon-setting', noCache: true, roles: ['1','superadmin','viewer'] },
+    meta: { title: '系统管理', icon: 'el-icon-setting', noCache: true, roles: ['0', '1'] },
     redirect: '/system-manage/user',
     children: [
+          {
+            path: 'multi-tenant',
+            component: () => import('@/views/system-manage/multi-tenant'),
+            meta: { title: '租户管理', icon: 'tenant', roles: ['0']  },
+            redirect: '/system-manage/multi-tenant/tenant-list',
+            name: 'tenant',
+            children: [
+            {
+              path: 'tenant-list',
+              name: 'tenantList',
+              component: () => import('@/views/system-manage/multi-tenant/tenant-list'),
+              meta: { title: '租户列表', icon: 'list' }
+            },
+            {
+              path: 'add-tenant',
+              name: 'addTenent',
+              component: () => import('@/views/system-manage/multi-tenant/add-tenant'),
+              meta: { title: '创建租户', icon: 'addTenant' }
+            }
+            ]
+          },
           {
             path: 'user',
             component: () => import('@/views/system-manage/user'),
@@ -297,14 +367,47 @@ export const asyncRoutes = [
               }
             ]
           },
-          {
-            path: 'ulog',
-            component: () => import('@/views/system-manage/ulog'),
-            name: 'ulog',
-            meta: { title: '操作日志', icon: 'clipboard' },
-          }
+		  {
+		    path: 'log-manage',
+		    component: () => import('@/views/system-manage/log-manage'),
+		    meta: { title: '日志查看', icon: 'clipboard' },
+		    redirect: '/system-manage/log-manage/ulog',
+		    name: 'logManage',
+		    children: [
+		    {
+		      path: 'ulog',
+		      name: 'ulog',
+		      component: () => import('@/views/system-manage/log-manage/ulog'),
+		      meta: { title: '操作日志', icon: 'el-icon-thumb' }
+		    },
+		    {
+		      path: 'melt-ulog',
+		      component: () => import('@/views/system-manage/log-manage/melt-ulog'),
+		      name: 'meltUlog',
+		      meta: { title: '崩溃日志', icon: 'deviceLog' }
+		    }
+		   ]
+		  },
+		  {
+		     path: 'msg-center',
+		     component: () => import('@/views/system-manage/msg-center'),
+		     name: 'msgCenter',
+		     meta: { title: '消息中心', icon: 'el-icon-bell' },
+		  }
     ]
   },
+	{
+	  path: '/task',
+	  component: Layout,
+	  children: [
+	    {
+	      path: 'index',
+	      component: () => import('@/views/task'),
+	      name: 'task',
+	      meta: { title: '任务中心', icon: 'documentation' },
+	   }
+	  ]
+	},
   { path: '*', redirect: '/404', hidden: true }
 ]
 const createRouter = () => new Router({
@@ -543,4 +646,3 @@ export default router
   // },
 
 // ]
-

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-29 16:33:15
+ * @LastEditTime: 2021-07-22 14:25:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \inventory-apie:\hjimi\人脸辨识云\html\face-recognition-access\src\filters\index.js
@@ -95,13 +95,14 @@ import {
   getGender,
   getFaceType,
   getStaffStates,
-  passWay, 
-  weekParams, 
+  getVisitorAuthorized,
+  // passWay, 
+  // weekParams, 
   passWayArrHandle, 
-  getDeviceNames, 
+  // getDeviceNames, 
   get_issuePersonStatus, 
   getPersonTypes,
-  getUserRoles,
+  // getUserRoles,
   getUserStatus
 } from '@/utils/business'
 
@@ -109,21 +110,6 @@ const businessData = [
   'success',
   'in'
 ]
-
-/**
- * @description: 获取角色名称
- * @param {*} Array
- */
-let roleId = []
-getUserRoles.forEach(item => roleId.push(item.id))
- export function filterUserRoleName(arr) {
-  if(arr && Array.isArray(arr) && arr.length !== 0) {
-   if(roleId.includes(arr[0])) {
-     let index = roleId.indexOf(arr[0])
-     return getUserRoles[index].name
-   }
-}
- }
 
 /**
  * @description: 处理通行结果
@@ -150,6 +136,21 @@ export function trafficRersultFilter(string, row) {
 }
 
 /**
+ * @description: 处理访客授权状态
+ * @param {*} string
+ */
+ export function filterVisitorAuthorized(string) {
+  let authorized = null
+  
+    for(let i = 0; i < getVisitorAuthorized.length; i++) {
+      if(getVisitorAuthorized[i].id === string) {
+        authorized = getVisitorAuthorized[i].value
+      }
+    }
+    return authorized
+ }
+
+/**
  * @description: 处理通行方向
  * @param {*} string
  */
@@ -170,7 +171,11 @@ export function verificationModes_handle(value) {
       if(Array.isArray(value)) {
         modelArr = [...value]
       } else {
-        modelArr = value.split()
+        if(value === null) {
+          
+        } else {
+          modelArr = value.split()
+        }
       }
     let [
       and, // 通行且（face,icCard）
@@ -207,9 +212,13 @@ export function verificationModes_handle(value) {
       return get_issuePersonStatus()[0].value
     } else if(value.includes(get_issuePersonStatus()[1].id)) {
       return get_issuePersonStatus()[1].value
-    } else {
+    } else if(value.includes(get_issuePersonStatus()[2].id)) {
       return get_issuePersonStatus()[2].value
-    }
+    } else if(value.includes(get_issuePersonStatus()[3].id)) {
+      return get_issuePersonStatus()[3].value
+    } else {
+	    return get_issuePersonStatus()[4].value
+	}
   }
 
 /**

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-22 17:51:25
+ * @LastEditTime: 2021-07-27 12:49:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
@@ -10,10 +10,15 @@
    .app-container1 {
        padding-top: 6px;
    }
+   .multipleTable_suspend {
+     width: 100%;
+     
+   }
+
 </style>
 <template>
   <div class="app-container1">
-    <div class="lis_tit"><i></i> <span>选择要下发的员工</span></div>
+    <div class="lis_tit"><i></i> <span>{{ listTit }}</span></div>
       <el-form :model="pagingQuery" :inline="true" ref="pagingQuery">
       <el-form-item label="员工姓名"><el-input class="w100" v-model.trim="pagingQuery.name" clearable></el-input></el-form-item>
       <el-form-item label="性别："><el-select class="w100" v-model="pagingQuery.gender" clearable><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
@@ -38,17 +43,37 @@
           >
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="下发状态："><el-select class="w100" v-model.trim="pagingQuery.gender" disabled><el-option v-for="(gender, index) of genders" :key="index" :label="gender.value" :value="gender.id"></el-option></el-select></el-form-item>
-
+      <el-form-item label="分组名称：">
+        <el-cascader
+        :options="getStaffGroup_name_ids"
+        :props="props"
+        v-model="pagingQuery.groupId"
+        collapse-tags
+        clearable
+        @change="changeGroupId"
+        >
+        <template v-slot="{ data }">
+         <div class="flexbetween">
+           <span>{{ data.label }}</span>
+           <span class="lineColor pl15">{{ data.personCount }}人</span>
+         </div>
+        </template>
+        </el-cascader>
+        </el-form-item>
       <el-button type="success" @click="onSearch" class="search"> <i class="el-icon-search"></i><span>查询</span></el-button>
        <el-button type="primary" @click="refreshPagingQuery" class="search"> <i class="el-icon-refresh"></i><span>重置</span></el-button>
-       <!-- <router-link to="/device-manage/person-issued/issued-list/issuedList?tab=0" class="ml10"><el-button type="primary"><i class="el-icon-view"></i> 已下发员工</el-button></router-link> -->
-       <!-- <el-button class="ml10" type="primary" :disabled="table_loading" @click="handleIssuedPerson"><svg-icon icon-class="guide" />  一键下发</el-button> -->
+       <el-form-item class="block1 multipleTable_suspend" v-if="multipleSelection.length !== 0 ? true : false">
+         <div class="fl"><span class="tip"><img src="../../../assets/image/check.jpg"></span>
+          <span>已选择<i class="theme"> {{ formSuspendParams.num }}</i> 项</span><el-button type="primary" @click="confirmSuspend" size="mini" class="cancel">{{ confirmTxt }}</el-button>
+		  <el-button @click="cacelSuspend" size="mini" class="cancel">取消</el-button>
+		  <span class="tip1 pl20" v-show="isShowTip.show"><i class="el-icon-info"></i> 提示：{{ isShowTip.txt }}</span>
+         </div>
+       </el-form-item>
     </el-form>
     
     <el-table :data="tableData" max-height="650" @selection-change="handleSelectionChange" element-loading-spinner="el-icon-loading" v-loading="table_loading"  ref="multipleTable" border>
       <template slot="empty"><svg-icon class="empty" icon-class="empty"/>暂无数据</template>
-      <el-table-column width="50" type="selection" fixed ></el-table-column>
+      <el-table-column width="50" type="selection" fixed :selectable="selectableHandle"></el-table-column>
       <el-table-column label="序列" width="60" align="center"><template v-slot="scope">{{ (scope.$index + pagingQuery.size * (pagingQuery.current - 1)) + 1 }}</template></el-table-column>
       <el-table-column align="center" label="员工姓名" width="80"> <template v-slot="scope"> {{ scope.row.name }} </template></el-table-column>
       <el-table-column align="center" label="已注册人脸" width="95">
@@ -56,6 +81,13 @@
       </el-table-column>
      <el-table-column align="center" label="性别" width="50"><template v-slot="scope"> {{ scope.row.gender | filterGenter }} </template></el-table-column>
       <el-table-column align="center" label="部门" width="100"><template> 华捷艾米 </template></el-table-column>
+	   <el-table-column align="center" label="所在分组" width="120" v-slot="scope"><template>
+	  	   <el-tag v-if="scope.row.groupList.length === 0" class="block w100 ellipsis1" type="info">{{ scope.row.groupList | filterGroupList }}</el-tag>
+	          <el-popover v-else width="200" placement="left-end" trigger="hover">
+	                 <div>{{ scope.row.groupList | filterGroupList }}</div>
+	                 <div slot="reference" class="pointer"><el-tag class="block w100 ellipsis1" type="info">{{ scope.row.groupList | filterGroupList }}</el-tag></div>
+	            </el-popover>
+	            </template></el-table-column>
       <el-table-column align="center" label="职务" width="108"><template v-slot="scope">{{ scope.row.position }}</template></el-table-column>
       <el-table-column align="center" label="工号" width="190"> <template v-slot="scope"> {{ scope.row.employeeNum }} </template></el-table-column>
       <!-- <el-table-column align="center" label="下发状态" width="160"><template v-slot="scope">{{ scope.row.status == 0 ? '已下发' : '未下发' }}</template> </el-table-column> -->
@@ -76,7 +108,7 @@
 </template>
 <script>
 import { getStaffList } from '@/api/people-manage/staffManage'
-import { getGender } from '@/utils/business'
+import { getGender, getStaff_groupName_id } from '@/utils/business'
 import { imgUrl } from '@/api/public'
 import { pickerOptions } from '@/utils'
 import moment from 'moment'
@@ -90,14 +122,38 @@ export default {
   props: {
     clearSelectionState1: {
       type: Boolean
-    }
-    
+    },
+		listTit: {
+			type:String,
+			default: '选择要下发的员工'
+		},
+    confirmTxt: {
+      type: String,
+      default() {
+        return '确认'
+      }
+    },
+  	selectabId: {
+  		type: Array,
+  		default: []
+  	},
+  	isShowTip: {
+  		type: Object,
+  		default() {
+  			return {
+  				show: false,
+				  txt: ''
+			}
+		}
+	}
   },
   data() {
     return {
       pickerOptions: pickerOptions(),
       date: null,
       multipleSelection: [],
+	  getStaffGroup_name_ids: [],
+	   props: { multiple: true },
       getImgUrl: imgUrl(),
       genders: getGender(),
       value: '华捷艾米',
@@ -120,8 +176,22 @@ export default {
         total: null,
       },
       tableData: [],
+      formSuspendParams: {
+        num: null,
+    },
     }
   },
+   filters: {
+   filterGroupList(val) {
+    if(val.length !== 0) {
+  		return val.map(item => {
+  		  return item.name
+  		}).join('，')
+  	} else {
+  		return '未分组'
+  	}
+   }
+    },
   watch: {
     clearSelectionState(val) {
       this.$refs.multipleTable.clearSelection()
@@ -131,6 +201,9 @@ export default {
      getStaffList() {
       let [params] = [this.pagingQuery]
       this.table_loading = true
+	   if(Array.isArray(params.groupId)) {
+	          params.groupId = params.groupId.join(',')
+	        }
       getStaffList(this.pagingQuery).then((res) => {
         this.tableData = []
         if(res.code === 0) {
@@ -177,22 +250,50 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-      this.$emit('employeeIds', this.multipleSelection)
+     this.formSuspendParams.num = val.length
+     this.$emit('employeeIds', this.multipleSelection)
     },
     refreshPagingQuery() {
       this.pagingQuery = {}
       this.date = null
       this.onSearch()
     },
+    confirmSuspend() {
+     this.$emit('staffHandleTo')
+    },
+    cacelSuspend() {
+      this.multipleSelection = [], this.$refs.multipleTable.clearSelection()
+    },
+	selectableHandle(row, index) {
+		 if(this.selectabId.length != 0) {
+			 return this.selectabId.includes(row.id) ? false : true
+		 } else {
+       return true
+     }
+	},
+  changeGroupId() {
+    let groupId = this.pagingQuery.groupId
+    if(groupId && groupId.length > 10) {
+      let oldGroupId = [...groupId]
+      oldGroupId.splice(10, 1)
+      this.pagingQuery.groupId = oldGroupId
+      this.$message.warning('分组查询最多可选则 10 项')
+    } else {
+      this.pagingQuery.groupId = this.pagingQuery.groupId.join(',')
+    }
+  },
   },
   created() {
     vm = this
   this.onSearch()
-
+   getStaff_groupName_id().then(res => {
+  		this.getStaffGroup_name_ids = res
+  		})
+   
   },
   mounted() {
   },
   destroyed() {
   },
-};
+}
 </script>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-01-07 18:28:14
- * @LastEditTime: 2021-03-13 10:34:44
+ * @LastEditTime: 2021-06-28 11:43:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\layout\components\Navbar.vue
@@ -130,7 +130,7 @@
         <lang-select class="right-menu-item hover-effect" />
 
       </template>
-      <span class="name">{{ username }}</span>
+      <span class="name">{{ tenantName }} | {{ username }}</span>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img :src="avatar" class="user-avatar"> -->
@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
@@ -179,6 +179,11 @@ export default {
     Search,
     News
   },
+  data() {
+    return {
+      tenantName: '租户'
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
@@ -194,9 +199,13 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
+    },
+    ...mapActions('user',['tenantList'])
   },
   created() {
+    this.tenantList().then(res => {
+      this.tenantName = res.tenantName
+    })
   }
 }
 </script>

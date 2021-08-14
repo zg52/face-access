@@ -1,11 +1,3 @@
-<!--
- * @Author: your name
- * @Date: 2021-01-08 16:14:42
- * @LastEditTime: 2021-03-26 18:50:10
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \tracking-Pluse:\hjimi\人脸\html\face-recognition-useCase\src\views\door-manage\people-manage\staff-manage\staff-list\index.vue
--->
 <style lang="scss" scoped>
  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -34,7 +26,7 @@ margin-left: 30px;
     }
   }
   .el-icon-plus {
-position: absolute;
+	position: absolute;
     top: 50%;
     font-size: 60px;
     margin-left: -30px;
@@ -83,19 +75,37 @@ position: absolute;
        <el-form-item label="住址：" prop="address"><el-input class="w300" v-model.trim="addStaffForm.address" clearable></el-input></el-form-item>
        <el-form-item label="身份证号：" prop="idNum"><el-input class="w300" v-model.trim="addStaffForm.idNum" clearable></el-input></el-form-item>
        <el-form-item label="邮箱：" prop="mail"><el-input class="w300" v-model.trim="addStaffForm.mail" clearable></el-input></el-form-item>
-       <el-form-item label="工号：" prop="employeeNum"><el-input class="w300" v-model.trim.trim="addStaffForm.employeeNum" maxlength="30" clearable></el-input> </el-form-item>
+       <el-form-item label="工号：" prop="employeeNum"><el-input class="w300" v-model.trim="addStaffForm.employeeNum" maxlength="9" clearable></el-input> </el-form-item>
        <el-form-item label="所属部门：">
          <el-select class="w300" v-model.trim="addStaffForm.region" placeholder="华捷艾米" disabled>
            <el-option label="人力组" value="shanghai"></el-option>
            <el-option label="行政组" value="beijing"></el-option>
          </el-select>
       </el-form-item>
-      <el-form-item label="IC卡号：" prop="icCardId"><el-input class="w300" v-model.trim.trim="addStaffForm.icCardId" maxlength="30" clearable></el-input></el-form-item>
-      <el-form-item label="门禁卡号：" prop="gateCardId"><el-input class="w300" v-model.trim.trim="addStaffForm.gateCardId" maxlength="30" clearable></el-input></el-form-item>
+      <el-form-item label="IC卡号：" prop="icCardId"><el-input class="w300" v-model.trim="addStaffForm.icCardId" maxlength="30" clearable></el-input></el-form-item>
+      <el-form-item label="门禁卡号：" prop="gateCardId"><el-input class="w300" v-model.trim="addStaffForm.gateCardId" maxlength="30" clearable></el-input></el-form-item>
       <el-form-item label="备注：" prop="description"><el-input class="w360" v-model.trim="addStaffForm.description" type="textarea" :rows="2" placeholder="请输入内容"> </el-input></el-form-item>
+      <el-form-item label="分组名称：" prop="groupId">
+        <el-cascader
+        :options="getStaffGroup_name_ids"
+        :props="groupProps"
+        v-model="addStaffForm.groupIds"
+        collapse-tags
+        clearable
+        @change="changeGroupId"
+        >
+        <template v-slot="{ data }">
+         <div class="flexbetween">
+           <span>{{ data.label }}</span>
+           <span class="lineColor pl15">{{ data.personCount }}人</span>
+         </div>
+        </template>
+       </el-cascader>
+        </el-form-item>
       <el-form-item label="头像类型：">
         <el-radio-group v-model="faceType" @change="changeImgType"><el-radio v-for="(faceType, index) of faceTypes" :key="index" :label="faceType.name">{{ faceType.name }}</el-radio></el-radio-group>
-      </el-form-item><br>
+      </el-form-item>
+      <br>
       <el-form-item label="头像采集：" prop="files">
           <el-upload
             class="avatar-uploader fl"
@@ -118,10 +128,10 @@ position: absolute;
        </div>
       </el-form-item><br>
      <el-form-item class="save_staff">
-       <router-link to="/people-manage/staff-manage/staff-add/bulkImportStaff"><el-button type="primary" v-show="!btn_el.includes('edit')"><i class="el-icon-folder-add" /> 批量导入</el-button></router-link>
+       <router-link to="/people-manage/staff-manage/bulkImportStaff"><el-button type="primary" v-show="btn_el.includes('add')"><i class="el-icon-folder-add" /> 批量导入</el-button></router-link>
         <el-button class="ml10" @click="resetAddStaffForm" v-show="!btn_el.includes('edit')"><i class="el-icon-refresh"></i><span>重 置</span></el-button>
         <el-button type="primary" :loading="save_loading" @click="saveStaffHandle('addStaffFormRule')"><i class="el-icon-check"></i> &nbsp;{{ save_loading_text }}</el-button>
-        <router-link to="/people-manage/staff-manage/staff-list/staffList" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
+        <router-link to="/people-manage/staff-manage/staffList" class="ml10"><el-button v-show="!btn_el.includes('edit')"><i class="el-icon-view"></i> 查看员工列表</el-button></router-link>
         <el-button @click="cancelEdit" v-show="!btn_el.includes('add')"><span>取 消</span></el-button>
      </el-form-item>
      </el-form>
@@ -129,13 +139,13 @@ position: absolute;
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { saveStaff, editStaff } from '@/api/people-manage/staffManage'
+import { saveStaff, editStaff, editBatchStaff } from '@/api/people-manage/staffManage'
 import moment from 'moment'
+import { getStaff_groupName_id } from '@/utils/business'
 import Mock from '../../../../../mock/proxyUrl'
 import { validPhone, validateIdCard, validName } from '@/utils/validate.js'
 import { getGender, getFaceType} from '@/utils/business'
 import {proxyUrl_1, imgUrl } from '@/api/public'
-// import { pickerOptions } from '@/utils'
 
 let vm
 
@@ -168,9 +178,11 @@ export default {
     function notNull(notNullName) { return [{required: true, message: `请输入员工${ notNullName }`, trigger: "blur" }] }
 
     return {
+      ops: [1,2],
       save_loading: false,
       addStaffFormVisible: true,
       imgUploading: false,
+      groupProps: {multiple: true},
       save_loading_text: '保 存',
       proxyUrl: proxyUrl_1,
       genders: getGender(),
@@ -215,6 +227,7 @@ export default {
           ],
           enrollTime: notNull('入职时间')
         },
+         getStaffGroup_name_ids: [],
     }
   },
   computed: {
@@ -228,7 +241,22 @@ export default {
     let a = this.addStaffForm
        this.$refs[el].validate((valid) => {
         if (valid) {
-          a['files'] === null ? this.$message.warning('请上传员工头像！') : this.httpRequest()
+          a['files'] === null || imageIdHandle() ? this.$message.warning('请上传员工头像！') : this.httpRequest()
+
+           /**
+            * @description: 批量导入人员时，编辑时需要传imagdid用于服务端匹配导入失败的记录 故
+            */
+           function imageIdHandle() {
+             if(a.hasOwnProperty('imageId')) {
+               if(a.imageId === 'null') {
+                 return true
+               } else {
+                 return false
+               }
+             } else {
+               return false
+             }
+           }
       }
      })
   },
@@ -270,6 +298,7 @@ export default {
 
 // 上传图片前
     imgBeforeHandle(file, fileList) {
+      console.log(file)
         function imageType () { return ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type) }
         const isLt2M = file.size / 1024 / 1024 < 2;
               if (!imageType()) { 
@@ -287,6 +316,10 @@ export default {
           this.imgUploading = false
           this.imageUrl = URL.createObjectURL(file.raw)
           this.addStaffForm['files'] = file.raw
+
+          if(this.addStaffForm.hasOwnProperty('imageId')) {
+            delete this.addStaffForm['imageId']
+          }
            }, 700)
       },
    async httpRequest(content){
@@ -294,10 +327,12 @@ export default {
          let a = this.addStaffForm,
           formData = new FormData()
           for(let item in a) { formData.append(item, a[item]) }
-          if(!this.btn_el.includes('edit')) {
+          if(this.btn_el.includes('add')) {
               add()
+          } else if(this.btn_el.includes('editErrStaff')) {
+            editErrStaff()
           } else {
-              edit()
+            edit()
           }
            function add() {
                saveStaff(formData).then((res) => {
@@ -316,6 +351,24 @@ export default {
            }
            function edit() {
                editStaff(vm.addStaffForm.id, formData).then((res) => {
+                if(res.code === 0) {
+                   vm.save_loading = false
+                   vm.$message.success(`${ a?.['name'] } 修改成功！`, 4000)
+                   vm.resetAddStaffForm()
+                   vm.cancelEdit()
+                     } else {
+                       vm.$message.warning(res.msg, 4000)
+                       vm.save_loading = false
+                     }
+                },(err) => {
+                   vm.save_loading = false
+                   vm.$message.error('保存失败，请重试！')
+                  })
+           }
+
+// 修改批量导入错误的员工信息
+             function editErrStaff() {
+               editBatchStaff(vm.addStaffForm.id, formData).then((res) => {
                 if(res.code === 0) {
                    vm.save_loading = false
                    vm.$message.success(`${ a?.['name'] } 修改成功！`, 4000)
@@ -351,13 +404,27 @@ export default {
     cancelEdit() {
         this.$emit('cacelEdit')
     },
+    changeGroupId() {
+    let groupIds = this.addStaffForm.groupIds
+    if(groupIds && groupIds.length > 10) {
+      let oldGroupIds = [...groupIds]
+        oldGroupIds.splice(10, 1)
+        this.addStaffForm.groupIds = oldGroupIds.join(',')
+        this.$message.warning('员工分组最多可选择 10 项')
+    } else {
+      this.addStaffForm.groupIds = this.addStaffForm.groupIds.join(',')
+    }
+  },
   },
   created() {
     vm = this
    this.imageUrl = ''
-   this.imageUrl = this.btn_el.includes('edit') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
+   this.imageUrl = this.btn_el.includes('edit') || this.btn_el.includes('editErrStaff') ? `${ imgUrl() }${ this.addStaffForm.imageId }` : ''
   },
   mounted() {
+    getStaff_groupName_id().then(res => {
+		this.getStaffGroup_name_ids = res
+		})
   },
 }
 </script>
